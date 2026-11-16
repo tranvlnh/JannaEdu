@@ -26,6 +26,11 @@ type Admin = ReturnType<typeof createAdminClient>;
 // An autosave fired right at the deadline still lands.
 const SAVE_GRACE_MS = 10_000;
 
+// Private bucket; tests.audio_path is a path inside it.
+const AUDIO_BUCKET = "listening-audio";
+// Longer than any test. Resuming an attempt signs a fresh URL.
+const AUDIO_URL_TTL_SECONDS = 3 * 60 * 60;
+
 const deadlineOf = (startedAt: string, durationSeconds: number | null) =>
   durationSeconds === null ? null : new Date(Date.parse(startedAt) + durationSeconds * 1000).toISOString();
 
@@ -110,8 +115,10 @@ async function finalize(
 }
 
 async function buildResult(admin: Admin, attempt: LoadedAttempt): Promise<AttemptResult> {
-  const answers = await grade(admin, attempt.id, attempt.testId);
-  return attemptResultSchema.parse({ attempt, test: attempt.test, rawScore: attempt.rawScore, total: answers.length, band: attempt.band, answers });
+  const graded = await grade(admin, attempt.id, attempt.testId);
+  // Exams report the score only. Per-question marks would leak the key: the same test can be retaken.
+  const answers = attempt.test.kind === "exam" ? [] : graded;
+  return attemptResultSchema.parse({ attempt, test: attempt.test, rawScore: attempt.rawScore, total: graded.length, band: attempt.band, answers });
 }
 
 // Starts a new attempt, or resumes the one in progress. An expired one is closed first.
@@ -125,7 +132,7 @@ export async function startAttempt(input: unknown): Promise<StartAttemptOutput> 
   const test = await admin
     .from("tests")
     .select(
-      "id, skill, kind, title, durationSeconds:duration_seconds, sections, questions(id, number, section, instruction, prompt, options)",
+      "id, skill, kind, title, durationSeconds:duration_seconds, sections, audioPath:audio_path, questions(id, number, section, instruction, prompt, options)",
     )
     .eq("id", testId)
     .order("number", { referencedTable: "questions" })
@@ -171,6 +178,13 @@ export async function startAttempt(input: unknown): Promise<StartAttemptOutput> 
     .eq("attempt_id", row.id);
   if (answers.error) throw new Error(answers.error.message);
 
+  let audioUrl: string | null = null;
+  if (test.data.audioPath) {
+    const signed = await admin.storage.from(AUDIO_BUCKET).createSignedUrl(test.data.audioPath, AUDIO_URL_TTL_SECONDS);
+    if (signed.error) throw new Error(signed.error.message);
+    audioUrl = signed.data.signedUrl;
+  }
+
   return startAttemptOutput.parse({
     serverNow: new Date().toISOString(),
     attempt: {
@@ -180,8 +194,7 @@ export async function startAttempt(input: unknown): Promise<StartAttemptOutput> 
       deadline: deadlineOf(row.startedAt, durationSeconds),
       submittedAt: null,
     },
-    // shortcut: audioUrl is always null, sign tests.audio_path here when the Listening bucket exists.
-    test: { ...test.data, audioUrl: null },
+    test: { ...test.data, audioUrl }, // the schema strips audioPath
     answers: answers.data,
   });
 }

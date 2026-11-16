@@ -142,6 +142,11 @@ function Room({ data, save, submit }: { data: StartAttemptOutput } & Actions) {
         </div>
       </header>
 
+      {/* Outside the section panel, so switching sections never restarts playback. */}
+      {test.audioUrl && (
+        <audio controls preload="auto" src={test.audioUrl} aria-label="Bài nghe" className="w-full border-b px-4 py-2" />
+      )}
+
       <div className="grid min-h-0 flex-1 md:grid-cols-2">
         <article className="overflow-y-auto border-b p-4 md:border-r md:border-b-0">
           {test.sections.length > 1 && (

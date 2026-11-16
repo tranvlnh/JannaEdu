@@ -22,6 +22,7 @@ async function Result({ params }: { params: Promise<{ attemptId: string }> }) {
         </p>
       </header>
 
+      {result.answers.length > 0 && (
       <table className="w-full border-collapse text-left text-sm">
         <thead>
           <tr className="border-b">
@@ -42,6 +43,7 @@ async function Result({ params }: { params: Promise<{ attemptId: string }> }) {
           ))}
         </tbody>
       </table>
+      )}
     </>
   );
 }

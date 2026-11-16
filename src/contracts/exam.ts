@@ -74,13 +74,14 @@ export type SaveAnswersOutput = z.infer<typeof saveAnswersOutput>;
 
 export const submitAttemptInput = z.object({ attemptId: z.uuid() });
 
-// Only exists for submitted attempts, so it may reveal the accepted answers.
+// Only exists for submitted attempts. Exams report the score only; practice also lists every answer with its key.
 export const attemptResultSchema = z.object({
   attempt: attemptSchema,
   test: testSummarySchema,
   rawScore: z.number().int().nonnegative(),
   total: z.number().int().positive(),
   band: z.number().min(0).max(9).nullable(), // null for practice tests
+  // Empty for exams.
   answers: z.array(
     z.object({
       questionId: z.uuid(),
