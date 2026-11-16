@@ -23,7 +23,7 @@ export async function proxy(request: NextRequest) {
 
   // Default-deny: new pages need login unless listed here, so FE never edits this file.
   const { pathname } = request.nextUrl;
-  const isPublic = pathname === "/" || pathname === "/login" || pathname.startsWith("/auth/");
+  const isPublic = ["/", "/login", "/courses", "/books"].includes(pathname) || pathname.startsWith("/auth/");
 
   if (!user && !isPublic) {
     return NextResponse.redirect(new URL("/login", request.url));

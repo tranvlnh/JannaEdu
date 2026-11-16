@@ -27,10 +27,20 @@ export const learningPlanSchema = z.object({
     .min(1)
     .max(5)
     .describe("Stages in study order, weakest areas first; at most 12 weeks in total"),
+  bookAdvice: z
+    .array(
+      z.object({
+        skill: pathSkillSchema.describe("The book, named by its skill"),
+        reason: z.string().describe("To the student, one sentence in Vietnamese: why this book, based on their results"),
+      }),
+    )
+    .max(2)
+    .describe("Janna Academy publishes one self-study book per skill, each for bands 5.0-6.5. The books this student should start with, most useful first; empty when their results are already above 6.5 in every skill"),
 });
 export type LearningPlan = z.infer<typeof learningPlanSchema>;
 
-export const learningPathSchema = learningPlanSchema.extend({
+// bookAdvice is optional here only: paths stored before it existed do not have it.
+export const learningPathSchema = learningPlanSchema.partial({ bookAdvice: true }).extend({
   bands: z.record(pathSkillSchema, bandSchema.nullable()), // latest band per skill; null = no result yet
   overall: bandSchema.nullable(), // null until all four skills have a result
   generatedAt: z.iso.datetime({ offset: true }),
