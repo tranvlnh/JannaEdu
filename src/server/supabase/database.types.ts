@@ -294,6 +294,75 @@ export type Database = {
         }
         Relationships: []
       }
+      writing_prompts: {
+        Row: {
+          created_at: string
+          id: string
+          prompt: string
+          task: number
+          title: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          prompt: string
+          task: number
+          title: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          prompt?: string
+          task?: number
+          title?: string
+        }
+        Relationships: []
+      }
+      writing_submissions: {
+        Row: {
+          band: number | null
+          essay: string
+          id: string
+          prompt_id: string
+          report: Json | null
+          student_id: string
+          submitted_at: string
+        }
+        Insert: {
+          band?: number | null
+          essay: string
+          id?: string
+          prompt_id: string
+          report?: Json | null
+          student_id: string
+          submitted_at?: string
+        }
+        Update: {
+          band?: number | null
+          essay?: string
+          id?: string
+          prompt_id?: string
+          report?: Json | null
+          student_id?: string
+          submitted_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "writing_submissions_prompt_id_fkey"
+            columns: ["prompt_id"]
+            isOneToOne: false
+            referencedRelation: "writing_prompts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "writing_submissions_student_id_fkey"
+            columns: ["student_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
