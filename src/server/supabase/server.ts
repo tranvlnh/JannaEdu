@@ -1,8 +1,10 @@
 import { createServerClient } from "@supabase/ssr";
 import type { Database } from "./database.types";
 import { cookies } from "next/headers";
+import { connection } from "next/server";
 
 export async function createClient() {
+  await connection(); // supabase-js reads Date.now() for the session; every use must run at request time
   const cookieStore = await cookies();
   return createServerClient<Database>(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
