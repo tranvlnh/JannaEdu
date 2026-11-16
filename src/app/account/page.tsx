@@ -1,4 +1,5 @@
 import { Suspense } from "react";
+import Link from "next/link";
 import { redirect } from "next/navigation";
 import { redeemLinkCodeInput } from "@/contracts/profile";
 import { signOut } from "@/server/auth";
@@ -45,6 +46,10 @@ async function Account() {
       </section>
 
       {isStudent ? <CreateCodeForm action={createCode} /> : <RedeemCodeForm action={redeemCode} />}
+
+      <Link href="/tests" className="underline">
+        {isStudent ? "Vào phòng thi" : "Xem bài đã nộp của con"}
+      </Link>
 
       <form action={signOut}>
         <button className="rounded border px-4 py-2">Sign out</button>

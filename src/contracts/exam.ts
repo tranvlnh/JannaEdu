@@ -55,6 +55,7 @@ export type SavedAnswer = z.infer<typeof savedAnswerSchema>;
 // Starts a new attempt, or resumes the one already in progress for this test.
 export const startAttemptInput = z.object({ testId: z.uuid() });
 export const startAttemptOutput = z.object({
+  serverNow: timestamp, // the client shows the countdown against this, not its own clock
   attempt: attemptSchema,
   test: testSchema,
   answers: z.array(savedAnswerSchema),
@@ -66,6 +67,7 @@ export const saveAnswersInput = z.object({
   attemptId: z.uuid(),
   answers: z.array(savedAnswerSchema).min(1).max(100),
 });
+export type SaveAnswersInput = z.infer<typeof saveAnswersInput>;
 // locked = the attempt was already submitted or its deadline passed; nothing was saved.
 export const saveAnswersOutput = z.object({ locked: z.boolean() });
 export type SaveAnswersOutput = z.infer<typeof saveAnswersOutput>;
@@ -90,3 +92,13 @@ export const attemptResultSchema = z.object({
   ),
 });
 export type AttemptResult = z.infer<typeof attemptResultSchema>;
+
+// A submitted attempt in a list. Students see their own, parents their linked children's.
+export const attemptSummarySchema = z.object({
+  id: z.uuid(),
+  testTitle: z.string(),
+  submittedAt: timestamp,
+  rawScore: z.number().int().nonnegative(),
+  band: z.number().min(0).max(9).nullable(),
+});
+export type AttemptSummary = z.infer<typeof attemptSummarySchema>;

@@ -1,7 +1,9 @@
 // Exam room API for the UI: list tests, take an attempt, read results.
 // Every write uses the admin client; the server owns the timer and the grading.
+import { z } from "zod";
 import {
   attemptResultSchema,
+  attemptSummarySchema,
   saveAnswersInput,
   skillSchema,
   startAttemptInput,
@@ -9,6 +11,7 @@ import {
   submitAttemptInput,
   testSummarySchema,
   type AttemptResult,
+  type AttemptSummary,
   type SaveAnswersOutput,
   type StartAttemptOutput,
   type TestSummary,
@@ -37,6 +40,18 @@ export async function listTests(): Promise<TestSummary[]> {
     .order("created_at");
   if (error) throw new Error(error.message);
   return testSummarySchema.array().parse(data);
+}
+
+// Submitted attempts the caller may see (RLS), newest first.
+export async function listAttempts(): Promise<AttemptSummary[]> {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("attempts")
+    .select("id, submittedAt:submitted_at, rawScore:raw_score, band, test:tests(title)")
+    .not("submitted_at", "is", null)
+    .order("submitted_at", { ascending: false });
+  if (error) throw new Error(error.message);
+  return attemptSummarySchema.array().parse(data.map((a) => ({ ...a, testTitle: a.test.title })));
 }
 
 async function loadAttempt(admin: Admin, attemptId: string) {
@@ -157,6 +172,7 @@ export async function startAttempt(input: unknown): Promise<StartAttemptOutput> 
   if (answers.error) throw new Error(answers.error.message);
 
   return startAttemptOutput.parse({
+    serverNow: new Date().toISOString(),
     attempt: {
       id: row.id,
       testId,
@@ -203,6 +219,7 @@ export async function submitAttempt(input: unknown): Promise<AttemptResult> {
 
 // For the student or a linked parent. Null while the attempt is in progress or not visible to the caller.
 export async function getAttemptResult(attemptId: string): Promise<AttemptResult | null> {
+  if (!z.uuid().safeParse(attemptId).success) return null; // comes straight from the URL
   // RLS decides who may see this attempt; the admin client is only used after that check.
   const supabase = await createClient();
   const visible = await supabase.from("attempts").select("id").eq("id", attemptId).maybeSingle();
