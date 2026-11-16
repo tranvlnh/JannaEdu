@@ -51,6 +51,10 @@ async function Account() {
         {isStudent ? "Vào phòng thi" : "Xem bài đã nộp của con"}
       </Link>
 
+      <Link href="/writing" className="underline">
+        {isStudent ? "Luyện Writing với AI" : "Xem bài Writing của con"}
+      </Link>
+
       <form action={signOut}>
         <button className="rounded border px-4 py-2">Sign out</button>
       </form>
