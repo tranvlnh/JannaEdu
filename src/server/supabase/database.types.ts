@@ -143,6 +143,32 @@ export type Database = {
           },
         ]
       }
+      learning_paths: {
+        Row: {
+          generated_at: string
+          path: Json
+          student_id: string
+        }
+        Insert: {
+          generated_at?: string
+          path: Json
+          student_id: string
+        }
+        Update: {
+          generated_at?: string
+          path?: Json
+          student_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "learning_paths_student_id_fkey"
+            columns: ["student_id"]
+            isOneToOne: true
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       link_codes: {
         Row: {
           code: string

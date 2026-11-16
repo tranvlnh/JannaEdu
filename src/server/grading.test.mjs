@@ -1,6 +1,24 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { isCorrect, overallBand, toBand } from "./grading.ts";
+import { isCorrect, latestBands, overallBand, toBand } from "./grading.ts";
+
+test("latestBands takes the newest result per skill and needs all four for an overall", () => {
+  const partial = latestBands([
+    { skill: "reading", band: 7 },
+    { skill: "reading", band: 5 },
+    { skill: "writing", band: 6 },
+  ]);
+  assert.deepEqual(partial.bands, { reading: 7, listening: null, writing: 6, speaking: null });
+  assert.equal(partial.overall, null);
+
+  const full = latestBands([
+    { skill: "reading", band: 7 },
+    { skill: "listening", band: 6.5 },
+    { skill: "writing", band: 6 },
+    { skill: "speaking", band: 6 },
+  ]);
+  assert.equal(full.overall, 6.5); // 6.375 rounds to 6.5
+});
 
 test("isCorrect ignores case and extra whitespace", () => {
   assert.ok(isCorrect("  Not   Given ", ["NOT GIVEN"]));

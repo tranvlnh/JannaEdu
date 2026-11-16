@@ -1,5 +1,6 @@
 // Pure grading rules for Reading/Listening. No I/O, so it is testable with `npm test`.
 import type { Skill } from "@/contracts/exam";
+import type { PathSkill } from "@/contracts/learning-path";
 
 const normalize = (s: string) => s.trim().toLowerCase().replace(/\s+/g, " ");
 
@@ -27,3 +28,14 @@ export function toBand(skill: Skill, rawScore: number, total: number): number {
 // IELTS overall band: mean of the criteria, rounded to the nearest half band (.25 and .75 round up).
 export const overallBand = (bands: number[]) =>
   Math.round((bands.reduce((sum, b) => sum + b, 0) / bands.length) * 2) / 2;
+
+const PATH_SKILLS: PathSkill[] = ["reading", "listening", "writing", "speaking"];
+
+// Latest band per skill from results sorted newest first. No overall until all four skills have one.
+export function latestBands(results: { skill: PathSkill; band: number }[]) {
+  const bands = Object.fromEntries(
+    PATH_SKILLS.map((skill) => [skill, results.find((r) => r.skill === skill)?.band ?? null]),
+  ) as Record<PathSkill, number | null>;
+  const known = Object.values(bands).filter((b) => b !== null);
+  return { bands, overall: known.length === PATH_SKILLS.length ? overallBand(known) : null };
+}
