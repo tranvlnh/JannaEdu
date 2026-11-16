@@ -261,6 +261,78 @@ export type Database = {
           },
         ]
       }
+      speaking_prompts: {
+        Row: {
+          created_at: string
+          id: string
+          part: number
+          prompt: string
+          title: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          part: number
+          prompt: string
+          title: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          part?: number
+          prompt?: string
+          title?: string
+        }
+        Relationships: []
+      }
+      speaking_submissions: {
+        Row: {
+          audio_path: string
+          audio_type: string
+          band: number | null
+          id: string
+          prompt_id: string
+          report: Json | null
+          student_id: string
+          submitted_at: string
+        }
+        Insert: {
+          audio_path: string
+          audio_type: string
+          band?: number | null
+          id?: string
+          prompt_id: string
+          report?: Json | null
+          student_id: string
+          submitted_at?: string
+        }
+        Update: {
+          audio_path?: string
+          audio_type?: string
+          band?: number | null
+          id?: string
+          prompt_id?: string
+          report?: Json | null
+          student_id?: string
+          submitted_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "speaking_submissions_prompt_id_fkey"
+            columns: ["prompt_id"]
+            isOneToOne: false
+            referencedRelation: "speaking_prompts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "speaking_submissions_student_id_fkey"
+            columns: ["student_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       tests: {
         Row: {
           audio_path: string | null

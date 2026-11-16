@@ -3,7 +3,8 @@
 import { z } from "zod";
 
 const timestamp = z.iso.datetime({ offset: true });
-const band = z.number().min(0).max(9).multipleOf(0.5);
+// Shared with the Speaking contract.
+export const bandSchema = z.number().min(0).max(9).multipleOf(0.5);
 
 export const writingPromptSchema = z.object({
   id: z.uuid(),
@@ -14,7 +15,7 @@ export const writingPromptSchema = z.object({
 export type WritingPrompt = z.infer<typeof writingPromptSchema>;
 
 const criterion = z.object({
-  band: band.describe("IELTS band for this criterion, 0 to 9 in steps of 0.5"),
+  band: bandSchema.describe("IELTS band for this criterion, 0 to 9 in steps of 0.5"),
   comment: z.string().describe("2-3 sentences in Vietnamese justifying the band, citing the essay"),
 });
 
@@ -44,7 +45,7 @@ export const writingAssessmentSchema = z.object({
 export type WritingAssessment = z.infer<typeof writingAssessmentSchema>;
 
 export const writingReportSchema = writingAssessmentSchema.extend({
-  band, // mean of the four criteria, rounded to the nearest half band
+  band: bandSchema, // mean of the four criteria, rounded to the nearest half band
 });
 export type WritingReport = z.infer<typeof writingReportSchema>;
 
@@ -74,6 +75,6 @@ export const writingSubmissionSummarySchema = z.object({
   id: z.uuid(),
   promptTitle: z.string(),
   submittedAt: timestamp,
-  band: band.nullable(),
+  band: bandSchema.nullable(),
 });
 export type WritingSubmissionSummary = z.infer<typeof writingSubmissionSummarySchema>;

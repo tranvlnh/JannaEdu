@@ -4,7 +4,8 @@ import { redirect } from "next/navigation";
 import type { WritingReport } from "@/contracts/writing";
 import { getProfile } from "@/server/profile";
 import { getWritingSubmission, gradeWriting } from "@/server/writing";
-import { RetryButton } from "./retry-button";
+import { AiReport } from "@/app/ai-report";
+import { RetryButton } from "@/app/retry-button";
 
 const CRITERIA: [keyof WritingReport["criteria"], string][] = [
   ["taskResponse", "Task Response"],
@@ -22,45 +23,13 @@ const ERROR_TYPE = {
 
 function Report({ report }: { report: WritingReport }) {
   return (
-    <>
-      <p className="text-lg">
-        <strong>Band {report.band.toFixed(1)}</strong>
-      </p>
-      <p>{report.summary}</p>
-
-      <section>
-        <h2 className="mb-2 font-semibold">Điểm theo tiêu chí</h2>
-        <dl className="flex flex-col gap-3">
-          {CRITERIA.map(([key, label]) => (
-            <div key={key}>
-              <dt className="font-medium">
-                {label}: {report.criteria[key].band.toFixed(1)}
-              </dt>
-              <dd className="text-sm text-zinc-600">{report.criteria[key].comment}</dd>
-            </div>
-          ))}
-        </dl>
-      </section>
-
-      <section>
-        <h2 className="mb-2 font-semibold">Lỗi cần sửa ({report.errors.length})</h2>
-        {report.errors.length === 0 ? (
-          <p className="text-sm text-zinc-600">Không có lỗi đáng kể.</p>
-        ) : (
-          <ol className="flex list-decimal flex-col gap-3 pl-5">
-            {report.errors.map((e, i) => (
-              <li key={i}>
-                <span className="text-sm text-zinc-600">{ERROR_TYPE[e.type]}</span>
-                <br />
-                <del className="text-red-600">{e.quote}</del> → <ins className="text-green-700 no-underline">{e.suggestion}</ins>
-                <br />
-                <span className="text-sm">{e.explanation}</span>
-              </li>
-            ))}
-          </ol>
-        )}
-      </section>
-    </>
+    <AiReport
+      band={report.band}
+      summary={report.summary}
+      criteria={CRITERIA.map(([key, label]) => ({ label, ...report.criteria[key] }))}
+      errors={report.errors}
+      errorTypes={ERROR_TYPE}
+    />
   );
 }
 

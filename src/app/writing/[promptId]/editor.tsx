@@ -64,7 +64,7 @@ export function Editor({ prompt, submit }: { prompt: WritingPrompt; submit: (ess
           {words} từ {words < min && `(còn thiếu ${min - words})`}
         </span>
         <button disabled={pending || words === 0} className="rounded border px-4 py-2">
-          {pending ? "Đang chấm bài, khoảng 15-30 giây..." : "Nộp bài để AI chấm"}
+          {pending ? "Đang chấm bài, có thể mất tới một phút..." : "Nộp bài để AI chấm"}
         </button>
       </div>
 
