@@ -39,6 +39,110 @@ export type Database = {
   }
   public: {
     Tables: {
+      answer_keys: {
+        Row: {
+          accepted: string[]
+          question_id: string
+        }
+        Insert: {
+          accepted: string[]
+          question_id: string
+        }
+        Update: {
+          accepted?: string[]
+          question_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "answer_keys_question_id_fkey"
+            columns: ["question_id"]
+            isOneToOne: true
+            referencedRelation: "questions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      attempt_answers: {
+        Row: {
+          answer: string | null
+          attempt_id: string
+          flagged: boolean
+          question_id: string
+        }
+        Insert: {
+          answer?: string | null
+          attempt_id: string
+          flagged?: boolean
+          question_id: string
+        }
+        Update: {
+          answer?: string | null
+          attempt_id?: string
+          flagged?: boolean
+          question_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "attempt_answers_attempt_id_fkey"
+            columns: ["attempt_id"]
+            isOneToOne: false
+            referencedRelation: "attempts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "attempt_answers_question_id_fkey"
+            columns: ["question_id"]
+            isOneToOne: false
+            referencedRelation: "questions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      attempts: {
+        Row: {
+          band: number | null
+          id: string
+          raw_score: number | null
+          started_at: string
+          student_id: string
+          submitted_at: string | null
+          test_id: string
+        }
+        Insert: {
+          band?: number | null
+          id?: string
+          raw_score?: number | null
+          started_at?: string
+          student_id: string
+          submitted_at?: string | null
+          test_id: string
+        }
+        Update: {
+          band?: number | null
+          id?: string
+          raw_score?: number | null
+          started_at?: string
+          student_id?: string
+          submitted_at?: string | null
+          test_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "attempts_student_id_fkey"
+            columns: ["student_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "attempts_test_id_fkey"
+            columns: ["test_id"]
+            isOneToOne: false
+            referencedRelation: "tests"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       link_codes: {
         Row: {
           code: string
@@ -116,6 +220,77 @@ export type Database = {
           full_name?: string | null
           id?: string
           role?: string | null
+        }
+        Relationships: []
+      }
+      questions: {
+        Row: {
+          id: string
+          instruction: string | null
+          number: number
+          options: Json | null
+          prompt: string
+          section: number
+          test_id: string
+        }
+        Insert: {
+          id?: string
+          instruction?: string | null
+          number: number
+          options?: Json | null
+          prompt: string
+          section: number
+          test_id: string
+        }
+        Update: {
+          id?: string
+          instruction?: string | null
+          number?: number
+          options?: Json | null
+          prompt?: string
+          section?: number
+          test_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "questions_test_id_fkey"
+            columns: ["test_id"]
+            isOneToOne: false
+            referencedRelation: "tests"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tests: {
+        Row: {
+          audio_path: string | null
+          created_at: string
+          duration_seconds: number | null
+          id: string
+          kind: string
+          sections: Json
+          skill: string
+          title: string
+        }
+        Insert: {
+          audio_path?: string | null
+          created_at?: string
+          duration_seconds?: number | null
+          id?: string
+          kind: string
+          sections: Json
+          skill: string
+          title: string
+        }
+        Update: {
+          audio_path?: string | null
+          created_at?: string
+          duration_seconds?: number | null
+          id?: string
+          kind?: string
+          sections?: Json
+          skill?: string
+          title?: string
         }
         Relationships: []
       }
