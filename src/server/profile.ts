@@ -37,7 +37,7 @@ export async function getLinkedProfiles(): Promise<Profile[]> {
   return profileSchema.array().parse(data);
 }
 
-async function requireProfile(): Promise<Profile> {
+export async function requireProfile(): Promise<Profile> {
   const profile = await getProfile();
   if (!profile) throw new Error("unauthenticated");
   return profile;

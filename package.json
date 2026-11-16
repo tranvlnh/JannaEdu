@@ -7,6 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
+    "test": "node --test \"src/**/*.test.mjs\"",
     "db:push": "supabase db push --remote",
     "db:types": "supabase gen types typescript --remote > src/server/supabase/database.types.ts"
   },
