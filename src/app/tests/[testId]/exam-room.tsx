@@ -26,7 +26,7 @@ export function ExamRoom({
   if (data) return <Room data={data} {...actions} />;
 
   return (
-    <main className="mx-auto flex min-h-screen max-w-md flex-col justify-center gap-4 p-6">
+    <main className="mx-auto flex flex-1 max-w-md flex-col justify-center gap-4 p-6">
       <h1 className="text-xl font-semibold">{test.title}</h1>
       <p className="text-sm text-zinc-600">
         {test.durationSeconds
@@ -131,7 +131,8 @@ function Room({ data, save, submit }: { data: StartAttemptOutput } & Actions) {
   const current = test.sections[section];
 
   return (
-    <div className="flex h-screen flex-col">
+    // shortcut: 4.5rem = one-row SiteNav height; on narrow screens the nav wraps and the page scrolls a bit
+    <div className="flex h-[calc(100dvh-4.5rem)] flex-col">
       <header className="flex items-center justify-between gap-4 border-b px-4 py-2">
         <h1 className="truncate font-semibold">{test.title}</h1>
         <div className="flex items-center gap-4">

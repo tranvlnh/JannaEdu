@@ -1,7 +1,6 @@
 import { Suspense } from "react";
 import type { Metadata } from "next";
 import Link from "next/link";
-import { SiteNav } from "@/app/site-nav";
 import type { PathSkill } from "@/contracts/learning-path";
 import { getLearningPath } from "@/server/learning-path";
 import { getProfile } from "@/server/profile";
@@ -78,7 +77,6 @@ async function Advice() {
 export default function BooksPage() {
   return (
     <>
-      <SiteNav />
       <main className="mx-auto flex w-full max-w-4xl flex-col gap-8 p-6">
         <header>
           <h1 className="text-3xl font-bold">Sách tự học IELTS</h1>

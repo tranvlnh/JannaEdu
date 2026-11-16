@@ -31,7 +31,7 @@ async function RolePicker() {
 
 export default function OnboardingPage() {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center">
+    <main className="flex flex-1 flex-col items-center justify-center">
       <Suspense fallback={<p>Loading...</p>}>
         <RolePicker />
       </Suspense>

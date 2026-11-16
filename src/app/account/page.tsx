@@ -6,6 +6,13 @@ import { signOut } from "@/server/auth";
 import { createLinkCode, getLinkedProfiles, getProfile, redeemLinkCode } from "@/server/profile";
 import { CreateCodeForm, RedeemCodeForm } from "./link-forms";
 
+const STUDENT_LINKS = [
+  ["/tests", "Phòng thi", "Reading, Listening có đếm giờ"],
+  ["/writing", "Writing", "Viết bài, AI chấm band"],
+  ["/speaking", "Speaking", "Ghi âm, AI chấm band"],
+  ["/learning-path", "Lộ trình học", "AI gợi ý từ kết quả thi"],
+] as const;
+
 async function createCode() {
   "use server";
   return createLinkCode();
@@ -56,17 +63,20 @@ async function Account() {
       {isStudent ? <CreateCodeForm action={createCode} /> : <RedeemCodeForm action={redeemCode} />}
 
       {isStudent && (
-        <>
-          <Link href="/tests" className="underline">
-            Vào phòng thi
-          </Link>
-          <Link href="/writing" className="underline">
-            Luyện Writing với AI
-          </Link>
-          <Link href="/speaking" className="underline">
-            Luyện Speaking với AI
-          </Link>
-        </>
+        <section>
+          <h2 className="font-semibold">Bắt đầu luyện tập</h2>
+          <ul className="mt-2 grid gap-3 sm:grid-cols-2">
+            {STUDENT_LINKS.map(([href, title, text]) => (
+              <li key={href}>
+                <Link href={href} className="block h-full rounded-lg border p-4 hover:border-orange-600 hover:bg-orange-50">
+                  <span className="font-medium">{title} →</span>
+                  <br />
+                  <span className="text-sm text-zinc-600">{text}</span>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </section>
       )}
 
       <form action={signOut}>
@@ -78,7 +88,7 @@ async function Account() {
 
 export default function AccountPage() {
   return (
-    <main className="mx-auto flex min-h-screen max-w-md flex-col justify-center gap-6 p-6">
+    <main className="mx-auto flex w-full max-w-2xl flex-col gap-6 p-6">
       <Suspense fallback={<p>Loading...</p>}>
         <Account />
       </Suspense>

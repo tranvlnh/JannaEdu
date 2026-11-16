@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { SiteNav } from "@/app/site-nav";
 
 const FEATURES = [
   ["Giám khảo AI 24/7", "Chấm Writing và Speaking, phân tích lỗi chi tiết theo tiêu chí IELTS."],
@@ -18,7 +17,6 @@ const WHY = [
 export default function Home() {
   return (
     <>
-      <SiteNav />
       <main className="mx-auto flex w-full max-w-4xl flex-col gap-12 p-6">
         <section className="flex flex-col items-start gap-4 py-8">
           <h1 className="text-4xl font-bold leading-tight">
