@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { isCorrect, toBand } from "./grading.ts";
+import { isCorrect, overallBand, toBand } from "./grading.ts";
 
 test("isCorrect ignores case and extra whitespace", () => {
   assert.ok(isCorrect("  Not   Given ", ["NOT GIVEN"]));
@@ -22,4 +22,12 @@ test("toBand follows the band boundaries", () => {
 test("toBand scales tests that do not have 40 questions", () => {
   assert.equal(toBand("reading", 10, 13), 7); // 31/40
   assert.equal(toBand("reading", 0, 0), 0);
+});
+
+test("overallBand rounds the mean to the nearest half band", () => {
+  assert.equal(overallBand([6, 6, 6, 7]), 6.5); // 6.25 rounds up
+  assert.equal(overallBand([6, 7, 7, 7]), 7); // 6.75 rounds up
+  assert.equal(overallBand([6.5, 6.5, 6, 6]), 6.5); // 6.25
+  assert.equal(overallBand([6, 6, 6, 6.5]), 6); // 6.125 rounds down
+  assert.equal(overallBand([7, 7, 7, 7]), 7);
 });

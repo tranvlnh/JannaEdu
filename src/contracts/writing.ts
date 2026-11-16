@@ -54,6 +54,10 @@ export const submitWritingInput = z.object({
 });
 export type SubmitWritingInput = z.infer<typeof submitWritingInput>;
 
+// The submission is saved even when grading fails; the page for this id then offers a retry.
+export const submitWritingOutput = z.object({ id: z.uuid() });
+export type SubmitWritingOutput = z.infer<typeof submitWritingOutput>;
+
 export const gradeWritingInput = z.object({ submissionId: z.uuid() });
 
 export const writingSubmissionSchema = z.object({

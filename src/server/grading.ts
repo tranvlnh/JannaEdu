@@ -23,3 +23,7 @@ export function toBand(skill: Skill, rawScore: number, total: number): number {
   const scaled = total > 0 ? Math.round((rawScore * 40) / total) : 0;
   return BANDS[skill].find(([min]) => scaled >= min)?.[1] ?? 0;
 }
+
+// IELTS overall band: mean of the criteria, rounded to the nearest half band (.25 and .75 round up).
+export const overallBand = (bands: number[]) =>
+  Math.round((bands.reduce((sum, b) => sum + b, 0) / bands.length) * 2) / 2;
