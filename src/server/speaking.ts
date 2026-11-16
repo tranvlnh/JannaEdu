@@ -36,12 +36,14 @@ export async function listSpeakingPrompts(): Promise<SpeakingPrompt[]> {
 }
 
 // Submissions the caller may see (RLS), newest first.
-export async function listSpeakingSubmissions(): Promise<SpeakingSubmissionSummary[]> {
+export async function listSpeakingSubmissions(studentId?: string): Promise<SpeakingSubmissionSummary[]> {
   const supabase = await createClient();
-  const { data, error } = await supabase
+  let query = supabase
     .from("speaking_submissions")
     .select("id, submittedAt:submitted_at, band, prompt:speaking_prompts(title)")
     .order("submitted_at", { ascending: false });
+  if (studentId) query = query.eq("student_id", studentId); // a parent looking at one child
+  const { data, error } = await query;
   if (error) throw new Error(error.message);
   return speakingSubmissionSummarySchema.array().parse(data.map((s) => ({ ...s, promptTitle: s.prompt.title })));
 }

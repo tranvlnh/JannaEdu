@@ -48,13 +48,15 @@ export async function listTests(): Promise<TestSummary[]> {
 }
 
 // Submitted attempts the caller may see (RLS), newest first.
-export async function listAttempts(): Promise<AttemptSummary[]> {
+export async function listAttempts(studentId?: string): Promise<AttemptSummary[]> {
   const supabase = await createClient();
-  const { data, error } = await supabase
+  let query = supabase
     .from("attempts")
     .select("id, submittedAt:submitted_at, rawScore:raw_score, band, test:tests(title)")
     .not("submitted_at", "is", null)
     .order("submitted_at", { ascending: false });
+  if (studentId) query = query.eq("student_id", studentId); // a parent looking at one child
+  const { data, error } = await query;
   if (error) throw new Error(error.message);
   return attemptSummarySchema.array().parse(data.map((a) => ({ ...a, testTitle: a.test.title })));
 }

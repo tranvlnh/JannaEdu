@@ -31,12 +31,14 @@ export async function listWritingPrompts(): Promise<WritingPrompt[]> {
 }
 
 // Submissions the caller may see (RLS), newest first.
-export async function listWritingSubmissions(): Promise<WritingSubmissionSummary[]> {
+export async function listWritingSubmissions(studentId?: string): Promise<WritingSubmissionSummary[]> {
   const supabase = await createClient();
-  const { data, error } = await supabase
+  let query = supabase
     .from("writing_submissions")
     .select("id, submittedAt:submitted_at, band, prompt:writing_prompts(title)")
     .order("submitted_at", { ascending: false });
+  if (studentId) query = query.eq("student_id", studentId); // a parent looking at one child
+  const { data, error } = await query;
   if (error) throw new Error(error.message);
   return writingSubmissionSummarySchema.array().parse(data.map((s) => ({ ...s, promptTitle: s.prompt.title })));
 }

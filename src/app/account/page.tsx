@@ -39,7 +39,15 @@ async function Account() {
         ) : (
           <ul className="list-disc pl-5">
             {linked.map((p) => (
-              <li key={p.id}>{p.fullName ?? "(chưa có tên)"}</li>
+              <li key={p.id}>
+                {isStudent ? (
+                  (p.fullName ?? "(chưa có tên)")
+                ) : (
+                  <Link href={`/children/${p.id}`} className="underline">
+                    {p.fullName ?? "(chưa có tên)"} · xem kết quả và lộ trình
+                  </Link>
+                )}
+              </li>
             ))}
           </ul>
         )}
@@ -47,17 +55,19 @@ async function Account() {
 
       {isStudent ? <CreateCodeForm action={createCode} /> : <RedeemCodeForm action={redeemCode} />}
 
-      <Link href="/tests" className="underline">
-        {isStudent ? "Vào phòng thi" : "Xem bài đã nộp của con"}
-      </Link>
-
-      <Link href="/writing" className="underline">
-        {isStudent ? "Luyện Writing với AI" : "Xem bài Writing của con"}
-      </Link>
-
-      <Link href="/speaking" className="underline">
-        {isStudent ? "Luyện Speaking với AI" : "Xem bài Speaking của con"}
-      </Link>
+      {isStudent && (
+        <>
+          <Link href="/tests" className="underline">
+            Vào phòng thi
+          </Link>
+          <Link href="/writing" className="underline">
+            Luyện Writing với AI
+          </Link>
+          <Link href="/speaking" className="underline">
+            Luyện Speaking với AI
+          </Link>
+        </>
+      )}
 
       <form action={signOut}>
         <button className="rounded border px-4 py-2">Sign out</button>
