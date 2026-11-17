@@ -158,7 +158,7 @@ export function ReadingExam({ test }: { test: PublicTest }) {
             <p
               role="timer"
               aria-live={lowTime ? "polite" : "off"}
-              className={`text-3xl font-bold tabular-nums lg:text-4xl ${lowTime ? "text-danger" : ""}`}
+              className={`text-3xl font-bold tabular-nums lg:text-4xl ${lowTime ? "text-danger-ink" : ""}`}
             >
               {formatClock(remainingSec)}
             </p>
@@ -171,7 +171,7 @@ export function ReadingExam({ test }: { test: PublicTest }) {
             Nộp bài
           </button>
         </div>
-        <p className="text-sm text-success">✓ Bài làm được tự động lưu</p>
+        <p className="text-sm text-success-ink">✓ Bài làm được tự động lưu</p>
         <button
           type="button"
           onClick={() => setGridOpen((o) => !o)}
@@ -182,7 +182,7 @@ export function ReadingExam({ test }: { test: PublicTest }) {
           {gridOpen ? "▾" : "▸"} Danh sách câu hỏi ({Object.values(draft.answers).filter(Boolean).length}/{allQuestions.length} đã làm)
         </button>
         <div id="question-grid" className={gridOpen ? "" : "hidden lg:block"}>
-          <p className="mt-2 text-sm text-brand italic">
+          <p className="mt-2 text-sm text-brand-ink italic">
             Bấm <Flag className="inline size-3.5" aria-hidden /> cạnh số câu để đánh dấu xem lại.
           </p>
           {test.passages.map((p, i) => {

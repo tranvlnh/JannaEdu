@@ -51,7 +51,7 @@ export function Tabs({
               onClick={() => setActive(t.id)}
               onKeyDown={(e) => onKeyDown(e, i)}
               className={`shrink-0 rounded-xl px-5 py-2 font-semibold whitespace-nowrap transition-colors focus-visible:outline-2 focus-visible:outline-brand ${
-                selected ? "bg-brand-soft text-brand" : "hover:bg-white/60"
+                selected ? "bg-brand-tint text-brand-ink" : "hover:bg-white/60"
               } ${variant === "underline" ? "mb-1" : ""}`}
             >
               {t.label}

@@ -15,7 +15,7 @@ export function QuestionReview({ testId, answerKey }: { testId: string; answerKe
     return (
       <p className="text-muted">
         Chưa có bài Reading đã nộp.{" "}
-        <Link href={`/mock-test/${testId}`} className="font-semibold text-brand hover:underline">
+        <Link href={`/mock-test/${testId}`} className="font-semibold text-brand-ink hover:underline">
           Làm bài ngay
         </Link>
       </p>
@@ -28,7 +28,7 @@ export function QuestionReview({ testId, answerKey }: { testId: string; answerKe
   return (
     <div className="flex flex-col gap-4">
       <p className="font-semibold">
-        Reading: <span className="text-success">{correct}</span>/{rows.length} câu đúng
+        Reading: <span className="text-success-ink">{correct}</span>/{rows.length} câu đúng
       </p>
       <table className="w-full text-sm">
         <thead className="text-left text-muted">
@@ -42,7 +42,7 @@ export function QuestionReview({ testId, answerKey }: { testId: string; answerKe
           {rows.map((r) => (
             <tr key={r.n} className="border-t border-navy/10">
               <td className="py-1.5 font-semibold">{r.n}</td>
-              <td className={r.ok ? "text-success" : "text-danger"}>
+              <td className={r.ok ? "text-success-ink" : "text-danger-ink"}>
                 <span className="sr-only">{r.ok ? "Đúng: " : "Sai: "}</span>
                 {r.given || "—"}
               </td>

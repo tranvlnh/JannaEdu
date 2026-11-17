@@ -54,10 +54,10 @@ export default function HomePage() {
 
       <section aria-labelledby="courses">
         <div className="mb-4 flex items-center justify-between">
-          <h2 id="courses" className="text-2xl font-bold text-brand">
+          <h2 id="courses" className="text-2xl font-bold text-brand-ink">
             Khóa học nổi bật
           </h2>
-          <Link href="/courses" className="flex items-center gap-1 font-medium text-brand hover:underline">
+          <Link href="/courses" className="flex items-center gap-1 font-medium text-brand-ink hover:underline">
             Xem tất cả <ArrowRight className="size-4" aria-hidden />
           </Link>
         </div>

@@ -33,8 +33,8 @@ export function SpeakingPractice({ question, part, criteria }: { question: strin
   return (
     <div className="flex flex-col gap-6">
       <div className="flex flex-wrap items-center gap-4">
-        <h1 className="mr-auto text-3xl font-bold text-brand">Speaking Practice</h1>
-        <p className="flex items-center gap-2 rounded-full border-2 border-brand px-4 py-1.5 text-brand" role="timer">
+        <h1 className="mr-auto text-3xl font-bold text-brand-ink">Speaking Practice</h1>
+        <p className="flex items-center gap-2 rounded-full border-2 border-brand px-4 py-1.5 text-brand-ink" role="timer">
           <Clock className="size-5" aria-hidden />
           Thời gian: <span className="tabular-nums">{formatClock(seconds)}</span>
         </p>
@@ -79,7 +79,7 @@ export function SpeakingPractice({ question, part, criteria }: { question: strin
             ) : (
               <p
                 aria-live="polite"
-                className="flex-1 rounded-full border-2 border-brand py-3 text-center text-xl font-medium text-brand"
+                className="flex-1 rounded-full border-2 border-brand py-3 text-center text-xl font-medium text-brand-ink"
               >
                 {recording ? "Đang ghi âm" : "Đang chấm…"}
               </p>

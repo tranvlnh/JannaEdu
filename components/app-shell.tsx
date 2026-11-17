@@ -45,7 +45,7 @@ export function Header({ user, menu = false }: { user: User; menu?: boolean }) {
         >
           <span
             aria-hidden
-            className="flex size-11 items-center justify-center rounded-full bg-brand-soft font-bold text-brand"
+            className="flex size-11 items-center justify-center rounded-full bg-brand-tint font-bold text-brand-ink"
           >
             {user.name.split(" ").at(-1)?.[0]}
           </span>

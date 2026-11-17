@@ -22,7 +22,7 @@ export function SkillPerformance({ scores, previous, title = "Hiệu suất theo
                 <ProgressBar value={scores[k]} max={9} barClass={s.bg} label={`${s.label} ${band(scores[k])}/9`} className="mt-1" />
               </div>
               <span className="w-10 text-right text-lg font-bold tabular-nums">{band(scores[k])}</span>
-              <span className={`w-12 text-sm font-semibold ${delta > 0 ? "text-success" : delta < 0 ? "text-danger" : "text-muted"}`}>
+              <span className={`w-12 text-sm font-semibold ${delta > 0 ? "text-success-ink" : delta < 0 ? "text-danger-ink" : "text-muted"}`}>
                 {delta > 0 ? "↑ +" : delta < 0 ? "↓ " : "– "}
                 {delta !== 0 && band(delta)}
               </span>

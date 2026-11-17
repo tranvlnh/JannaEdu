@@ -17,7 +17,7 @@ export function StageCard({ stage }: { stage: PathStage }) {
       <div className="flex items-center justify-between">
         <span className="grid size-11 place-items-center rounded-full bg-white">
           {stage.status === "done" ? (
-            <CircleCheck className="size-6 text-success" aria-hidden />
+            <CircleCheck className="size-6 text-success-ink" aria-hidden />
           ) : (
             <Icon className="size-6" aria-hidden />
           )}

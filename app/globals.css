@@ -7,11 +7,16 @@
   --color-navy: #0b2a5b;
   --color-brand: #f15a2b;
   --color-brand-soft: #fad3c4;
+  /* *-ink: màu chữ nhỏ đạt WCAG AA (≥4.5:1 trên trắng/surface). Màu gốc chỉ dùng cho nền, viền, chữ lớn. */
+  --color-brand-ink: #c2410c;
+  --color-brand-tint: #feede6; /* nền trạng thái active: brand-ink trên nền này 4.55:1 */
   --color-surface: #eaf2fe;
   --color-surface-deep: #dce8fd;
   --color-muted: #5b6b86;
   --color-success: #22a45d;
+  --color-success-ink: #15803d;
   --color-danger: #e5312b;
+  --color-danger-ink: #c81e1e;
   --color-warning-soft: #fbe3c4;
   --color-highlight: #fff085;
 
@@ -19,6 +24,10 @@
   --color-skill-reading: #1db98a;
   --color-skill-writing: #f5922b;
   --color-skill-speaking: #8b4df0;
+  --color-skill-listening-ink: #1d4ed8;
+  --color-skill-reading-ink: #047857;
+  --color-skill-writing-ink: #b45309;
+  --color-skill-speaking-ink: #6d28d9;
 
   --shadow-card: 0 4px 16px rgb(47 107 255 / 0.12);
 

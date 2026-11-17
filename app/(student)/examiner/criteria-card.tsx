@@ -14,7 +14,7 @@ export function CriteriaCard({ criteria, showDonut = true }: { criteria: Criteri
           label={`Band ${band(overall)}`}
           segments={criteria.map((c, i) => ({ value: c.score, color: skillStyle[SKILLS[i % SKILLS.length]].color }))}
         >
-          <div className="text-brand">
+          <div className="text-brand-ink">
             <p className="font-semibold">Band</p>
             <p className="text-3xl font-bold">{band(overall)}</p>
           </div>

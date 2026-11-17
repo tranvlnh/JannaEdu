@@ -21,7 +21,7 @@ export function CourseGrid({ courses, query = "" }: { courses: Course[]; query?:
       {query && (
         <p aria-live="polite">
           {courses.length} kết quả cho “<strong>{query}</strong>” ·{" "}
-          <Link href="/courses" className="font-semibold text-brand hover:underline">
+          <Link href="/courses" className="font-semibold text-brand-ink hover:underline">
             Xem tất cả
           </Link>
         </p>

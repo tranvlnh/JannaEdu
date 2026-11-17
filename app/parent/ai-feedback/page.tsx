@@ -23,7 +23,7 @@ export default function ParentAIFeedbackPage() {
           <div className="flex flex-col gap-3">
             <h2 className="text-2xl font-bold">Tổng quan nhận xét</h2>
             <p className="leading-relaxed">{aiFeedback.overview}</p>
-            <p className="flex items-center gap-2 self-start rounded-full border-2 border-skill-listening/50 bg-surface px-4 py-1.5 font-semibold text-skill-listening">
+            <p className="flex items-center gap-2 self-start rounded-full border-2 border-skill-listening/50 bg-surface px-4 py-1.5 font-semibold text-skill-listening-ink">
               <Bot className="size-5" aria-hidden />
               AI phân tích từ 100+ tiêu chí
             </p>

@@ -24,7 +24,7 @@ export default function PathPage() {
         <div className="relative mt-6 grid max-w-3xl gap-4 sm:grid-cols-2">
           <Card className="flex items-center gap-4 border-2 border-brand/40 bg-brand-soft/60! shadow-none!">
             <span className="grid size-16 shrink-0 place-items-center rounded-full bg-white">
-              <Target className="size-9 text-brand" aria-hidden />
+              <Target className="size-9 text-brand-ink" aria-hidden />
             </span>
             <div>
               <p className="font-semibold">Mục tiêu của bạn</p>

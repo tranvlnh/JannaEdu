@@ -26,7 +26,7 @@ export default function MockTestPage() {
         <div aria-hidden className="absolute -right-20 -bottom-24 hidden size-96 rounded-full bg-brand md:block" />
         <div className="relative max-w-2xl">
           <h1 className="text-4xl leading-tight font-bold sm:text-5xl">
-            Trải nghiệm kỳ thi IELTS <span className="block text-brand">như thật – mọi lúc, mọi nơi</span>
+            Trải nghiệm kỳ thi IELTS <span className="block text-brand-ink">như thật – mọi lúc, mọi nơi</span>
           </h1>
           <p className="mt-4 text-lg text-navy/80">
             Mô phỏng chính xác cấu trúc đề thi, áp lực thời gian và giao diện như kỳ thi thật tại IDP/BC.

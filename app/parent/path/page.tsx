@@ -37,7 +37,7 @@ export default function ParentPathPage() {
           {weekPlan.map((t) => (
             <li key={t.day} className="flex items-center gap-3">
               {t.done ? (
-                <CircleCheck className="size-5 shrink-0 text-success" aria-label="Đã xong" />
+                <CircleCheck className="size-5 shrink-0 text-success-ink" aria-label="Đã xong" />
               ) : (
                 <Circle className="size-5 shrink-0 text-muted" aria-label="Chưa làm" />
               )}

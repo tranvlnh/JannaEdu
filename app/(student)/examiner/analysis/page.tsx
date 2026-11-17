@@ -37,7 +37,7 @@ export default function AnalysisPage() {
   return (
     <div className="flex flex-col gap-6">
       <h1 className="text-4xl font-bold">
-        Phân tích lỗi <span className="text-brand">Speaking</span>
+        Phân tích lỗi <span className="text-brand-ink">Speaking</span>
       </h1>
       <Tabs
         variant="underline"

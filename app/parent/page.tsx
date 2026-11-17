@@ -29,7 +29,7 @@ export default function ParentHomePage() {
       <div className="grid gap-6 xl:grid-cols-[1.1fr_1fr_0.8fr]">
         <Card className="flex flex-wrap items-center gap-6">
           <div className="flex flex-col items-center gap-3">
-            <span aria-hidden className="grid size-28 place-items-center rounded-full bg-brand-soft text-4xl font-bold text-brand">
+            <span aria-hidden className="grid size-28 place-items-center rounded-full bg-brand-soft text-4xl font-bold text-brand-ink">
               {child.name.split(" ").at(-1)?.[0]}
             </span>
             <Pill tone="success" className="px-5 py-1.5 text-base">
@@ -69,7 +69,7 @@ export default function ParentHomePage() {
             </dl>
           </div>
           <p className="mt-4 text-sm">
-            <span className="font-semibold text-success">↑ +{band(delta)}</span> so với lần thi trước
+            <span className="font-semibold text-success-ink">↑ +{band(delta)}</span> so với lần thi trước
           </p>
         </Card>
 

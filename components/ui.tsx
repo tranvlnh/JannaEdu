@@ -32,9 +32,9 @@ export function CardTitle({ children, action }: { children: React.ReactNode; act
 
 const BUTTON = {
   primary: "bg-brand text-white hover:bg-brand/90",
-  outline: "border-2 border-brand text-brand hover:bg-brand-soft/40",
+  outline: "border-2 border-brand text-brand-ink hover:bg-brand-soft/40",
   navy: "bg-navy text-white hover:bg-navy/90",
-  ghost: "text-brand hover:bg-brand-soft/40",
+  ghost: "text-brand-ink hover:bg-brand-soft/40",
 };
 
 type ButtonProps = {
@@ -63,9 +63,9 @@ export function Button({ variant = "primary", className = "", children, ...props
 
 const PILL = {
   neutral: "bg-surface text-navy",
-  brand: "bg-brand-soft text-brand",
-  success: "bg-success/15 text-success",
-  danger: "bg-danger/10 text-danger",
+  brand: "bg-brand-tint text-brand-ink",
+  success: "bg-success/15 text-success-ink",
+  danger: "bg-danger/10 text-danger-ink",
   warning: "bg-yellow-300/80 text-navy",
 };
 
@@ -118,7 +118,7 @@ export function Delta({ value, suffix }: { value: number; suffix: string }) {
   const up = value >= 0;
   return (
     <p className="text-sm">
-      <span className={`font-semibold ${up ? "text-success" : "text-danger"}`}>
+      <span className={`font-semibold ${up ? "text-success-ink" : "text-danger-ink"}`}>
         {up ? "↑ +" : "↓ "}
         {value}
       </span>{" "}
@@ -184,8 +184,8 @@ export function SkillScoreCard({
 }
 
 const CHECK = {
-  good: { icon: CircleCheck, color: "text-success" },
-  bad: { icon: CircleAlert, color: "text-danger" },
+  good: { icon: CircleCheck, color: "text-success-ink" },
+  bad: { icon: CircleAlert, color: "text-danger-ink" },
 };
 
 /** Điểm mạnh (good) / Cần cải thiện (bad). */

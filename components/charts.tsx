@@ -95,7 +95,7 @@ export function LineChart({
       </ul>
       {/* Màn hẹp: giữ tối thiểu 32rem rồi cuộn ngang, tránh chữ trục co quá nhỏ */}
       <div className="overflow-x-auto">
-        <svg viewBox={`0 0 ${W} ${H}`} className="h-auto w-full min-w-lg text-muted" aria-hidden>
+        <svg viewBox={`0 0 ${W} ${H}`} className="h-auto w-full text-muted max-sm:min-w-lg" aria-hidden>
           {ticks.map((t) => (
             <g key={t}>
               <line x1={PAD.left} x2={W - PAD.right} y1={y(t)} y2={y(t)} stroke="currentColor" strokeOpacity={0.15} />

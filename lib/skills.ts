@@ -9,7 +9,7 @@ export const skillStyle: Record<
 > = {
   listening: {
     label: "Listening",
-    text: "text-skill-listening",
+    text: "text-skill-listening-ink",
     bg: "bg-skill-listening",
     soft: "bg-skill-listening/10",
     border: "border-skill-listening",
@@ -17,7 +17,7 @@ export const skillStyle: Record<
   },
   reading: {
     label: "Reading",
-    text: "text-skill-reading",
+    text: "text-skill-reading-ink",
     bg: "bg-skill-reading",
     soft: "bg-skill-reading/10",
     border: "border-skill-reading",
@@ -25,7 +25,7 @@ export const skillStyle: Record<
   },
   writing: {
     label: "Writing",
-    text: "text-skill-writing",
+    text: "text-skill-writing-ink",
     bg: "bg-skill-writing",
     soft: "bg-skill-writing/10",
     border: "border-skill-writing",
@@ -33,7 +33,7 @@ export const skillStyle: Record<
   },
   speaking: {
     label: "Speaking",
-    text: "text-skill-speaking",
+    text: "text-skill-speaking-ink",
     bg: "bg-skill-speaking",
     soft: "bg-skill-speaking/10",
     border: "border-skill-speaking",

@@ -56,7 +56,7 @@ function NavLink({ item, active }: { item: NavItem; active: boolean }) {
       href={item.href}
       aria-current={active ? "page" : undefined}
       className={`flex items-center gap-3 rounded-xl px-4 py-2.5 font-medium transition-colors focus-visible:outline-2 focus-visible:outline-brand ${
-        active ? "bg-brand-soft text-brand" : "hover:bg-surface"
+        active ? "bg-brand-tint text-brand-ink" : "hover:bg-surface"
       }`}
     >
       <Icon className="size-5 shrink-0" aria-hidden />

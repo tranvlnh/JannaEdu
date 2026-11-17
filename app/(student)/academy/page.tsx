@@ -36,7 +36,7 @@ function BookCover({ skill }: { skill: Skill }) {
     <div className="relative flex aspect-[3/4] flex-col overflow-hidden rounded-r-xl rounded-l-sm bg-white p-4 shadow-[6px_8px_20px_rgb(11_42_91/0.18)]">
       <p className="flex items-center gap-1 text-xs font-bold">
         <GraduationCap className="size-4" aria-hidden />
-        JANNA <span className="text-brand">BOOK</span>
+        JANNA <span className="text-brand-ink">BOOK</span>
       </p>
       <p className="mt-3 text-2xl leading-none font-black">IELTS</p>
       <p className={`text-2xl leading-tight font-black uppercase ${s.text}`}>{s.label}</p>
@@ -58,7 +58,7 @@ export default function AcademyPage() {
             Hệ sinh thái sản phẩm
           </p>
           <h1 className="mt-5 text-5xl font-bold sm:text-6xl">
-            Janna <span className="text-brand">Academy</span>
+            Janna <span className="text-brand-ink">Academy</span>
           </h1>
           <p className="mt-4 text-xl font-semibold">
             Hệ thống các khóa học video trực tuyến, dòng sách tự học và bộ đề luyện thi độc quyền IELTS

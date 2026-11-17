@@ -57,7 +57,7 @@ async function Result({ params }: Pick<PageProps<"/mock-test/[id]/result">, "par
               <p className="text-7xl font-black tabular-nums">{band(overall)}</p>
             </ArcGauge>
             <p className="text-lg">
-              <span className={`font-bold ${delta >= 0 ? "text-success" : "text-danger"}`}>
+              <span className={`font-bold ${delta >= 0 ? "text-success-ink" : "text-danger-ink"}`}>
                 {delta >= 0 ? "+" : ""}
                 {band(delta)}
               </span>{" "}

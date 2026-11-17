@@ -65,7 +65,7 @@ export function SettingsForm({ user }: { user: User }) {
 
       <div className="flex items-center gap-4">
         <Button type="submit">Lưu thay đổi</Button>
-        <p role="status" className="text-sm text-success">
+        <p role="status" className="text-sm text-success-ink">
           {saved && "Đã lưu (bản demo — chưa kết nối máy chủ)."}
         </p>
       </div>
