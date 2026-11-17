@@ -1,59 +1,73 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Janna Edu
 
-## Getting Started
+IELTS practice web app for Janna Academy: Reading/Listening mock tests, AI-graded Writing and Speaking, and AI learning paths for students and parents.
 
-First, run the development server:
+Stack: Next.js (App Router, TypeScript), Supabase (Postgres, Auth with Google, Storage), Gemini, zod.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## Prerequisites
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- Node.js 20+ and [Bun](https://bun.sh) (the repo uses `bun.lock`)
+- A Supabase project
+- A Google OAuth client (for sign-in)
+- A Gemini API key
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Database (Supabase)
-
-Schema chỉ thay đổi qua migration trong `supabase/migrations/`. Không sửa tay DB trên dashboard, không sửa tay `src/server/supabase/database.types.ts`.
-
-Lần đầu, link project Supabase (cần đăng nhập CLI):
+## Install
 
 ```bash
-npx supabase login
-npx supabase link --project-ref <project-ref>
+bun install
+cp .env.example .env.local
 ```
 
-Thêm thay đổi schema:
+Fill in `.env.local`:
+
+| Variable | Where to find it |
+| --- | --- |
+| `NEXT_PUBLIC_SUPABASE_URL` | Supabase dashboard → Project Settings → API |
+| `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` | Supabase dashboard → Project Settings → API Keys (publishable key) |
+| `SUPABASE_SECRET_KEY` | Same page (secret key). Server only, never prefix with `NEXT_PUBLIC_` |
+| `GEMINI_API_KEY` | Google AI Studio |
+
+## Set up the database
+
+Link the Supabase CLI to your project (first time only):
 
 ```bash
-npx supabase migration new <ten_migration>   # tạo file SQL rỗng trong supabase/migrations/
-# viết SQL vào file vừa tạo (nhớ bật RLS cho bảng mới)
-npx supabase db push --remote --dry-run      # xem migration nào sẽ chạy
-npm run db:push                              # áp migration lên project đã link
-npm run db:types                             # gen lại types, commit cùng migration
+bunx supabase login
+bunx supabase link --project-ref <project-ref>
 ```
 
-Dữ liệu mẫu nằm ở `supabase/seeds/`. Muốn nạp kèm khi push: `npx supabase db push --remote --include-seed`.
+Apply all migrations and load the sample data (seeds are safe to re-run):
 
-## Learn More
+```bash
+bunx supabase db push --remote --include-seed
+```
 
-To learn more about Next.js, take a look at the following resources:
+The sample Listening test expects an audio file `sample-beeps.wav` in the `listening-audio` storage bucket. Upload it by hand in the dashboard.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Set up Google sign-in
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+1. In Google Cloud Console, add `https://<project-ref>.supabase.co/auth/v1/callback` as an authorized redirect URI of the OAuth client.
+2. In Supabase → Authentication → Providers, enable Google and paste the OAuth client ID and secret.
+3. In Supabase → Authentication → URL Configuration, set the Site URL and add `http://localhost:3000/auth/callback` (plus your production URL) to the redirect URLs.
 
-## Deploy on Vercel
+## Run
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```bash
+bun dev          # dev server on http://localhost:3000
+bun run build    # production build
+bun run start    # serve the production build
+bun run lint
+bun run test
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Changing the database schema
+
+The schema changes only through migrations in `supabase/migrations/`. Don't edit the database in the dashboard, and don't hand-edit `src/server/supabase/database.types.ts`.
+
+```bash
+bunx supabase migration new <migration_name>   # creates an empty SQL file in supabase/migrations/
+# write the SQL in that file (enable RLS on every new table)
+bunx supabase db push --remote --dry-run       # preview which migrations will run
+bun run db:push                                # apply them to the linked project
+bun run db:types                               # regenerate types; commit them with the migration
+```
