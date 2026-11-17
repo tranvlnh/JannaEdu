@@ -19,8 +19,8 @@ export async function assessSpeaking(
   audio: { data: string; mimeType: string }, // data is base64
 ): Promise<SpeakingReport> {
   const assessment = await generateJson(speakingAssessmentSchema, SYSTEM, [
-    { type: "text", text: `IELTS Speaking Part ${prompt.part}\n\n<task>\n${prompt.prompt}\n</task>\n\nThe candidate's answer is the attached recording.` },
-    { type: "audio", data: audio.data, mime_type: audio.mimeType },
+    { text: `IELTS Speaking Part ${prompt.part}\n\n<task>\n${prompt.prompt}\n</task>\n\nThe candidate's answer is the attached recording.` },
+    { inlineData: { data: audio.data, mimeType: audio.mimeType } },
   ]);
   const band = overallBand(Object.values(assessment.criteria).map((c) => c.band));
   return speakingReportSchema.parse({ ...assessment, band });
