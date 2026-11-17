@@ -1,7 +1,7 @@
 // Contract for the AI Speaking examiner. FE and BE both import from here.
 // The .describe() texts are sent to the model as part of the response schema, so they are instructions too.
 import { z } from "zod";
-import { bandSchema } from "@/contracts/writing";
+import { bandSchema, tipsSchema } from "@/contracts/writing";
 
 const timestamp = z.iso.datetime({ offset: true });
 
@@ -48,10 +48,12 @@ export const speakingAssessmentSchema = z.object({
     )
     .max(20)
     .describe("The most important problems, most serious first; empty if there are none"),
+  tips: tipsSchema,
 });
 export type SpeakingAssessment = z.infer<typeof speakingAssessmentSchema>;
 
 export const speakingReportSchema = speakingAssessmentSchema.extend({
+  tips: tipsSchema.default([]), // reports graded before tips existed have none
   band: bandSchema, // mean of the four criteria, rounded to the nearest half band
 });
 export type SpeakingReport = z.infer<typeof speakingReportSchema>;

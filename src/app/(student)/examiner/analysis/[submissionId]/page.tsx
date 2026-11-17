@@ -153,15 +153,17 @@ async function Analysis({ params }: Pick<PageProps<"/examiner/analysis/[submissi
             content: withCriteria(
               <Card>
                 <h2 className="mb-4 text-xl font-bold">Gợi ý cải thiện</h2>
-                {report.errors.length === 0 ? (
-                  <p className="text-muted">Giữ phong độ và thử đề ở Part khác để AI đánh giá thêm.</p>
+                {report.tips.length === 0 ? (
+                  <p className="text-muted">
+                    {report.errors.length === 0 ? "Giữ phong độ và thử đề ở Part khác để AI đánh giá thêm." : "Bài này được chấm trước khi có gợi ý cải thiện."}
+                  </p>
                 ) : (
                   <ul className="flex flex-col gap-3">
-                    {report.errors.map((e, i) => (
+                    {report.tips.map((t, i) => (
                       <li key={i} className="flex gap-3">
                         <Lightbulb className="mt-0.5 size-5 shrink-0 text-skill-writing-ink" aria-hidden />
                         <span>
-                          <strong>{ERROR_TYPE[e.type]}:</strong> nói “{e.suggestion}” thay vì “{e.quote}”.
+                          <strong>{t.focus}:</strong> {t.advice}
                         </span>
                       </li>
                     ))}
