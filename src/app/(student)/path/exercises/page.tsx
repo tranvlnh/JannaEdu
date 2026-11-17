@@ -62,7 +62,7 @@ async function Exercises() {
       title: p.title,
       description: "AI chấm band theo 4 tiêu chí và chỉ ra từng lỗi",
       minutes: WRITING_MINUTES[p.task],
-      href: `/writing/${p.id}`,
+      href: `/examiner/writing/${p.id}`,
     })),
     ...speaking.map((p) => ({
       id: p.id,

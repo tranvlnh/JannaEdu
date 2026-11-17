@@ -94,7 +94,7 @@ async function Tests() {
   const sections: Record<Skill, Item[]> = {
     listening: testItems("listening"),
     reading: testItems("reading"),
-    writing: writing.map((p) => ({ id: p.id, href: `/writing/${p.id}`, title: p.title, meta: `Writing Task ${p.task} · AI chấm band` })),
+    writing: writing.map((p) => ({ id: p.id, href: `/examiner/writing/${p.id}`, title: p.title, meta: `Writing Task ${p.task} · AI chấm band` })),
     speaking: speaking.map((p) => ({ id: p.id, href: `/examiner/${p.id}`, title: p.title, meta: `Speaking Part ${p.part} · AI chấm band` })),
   };
 

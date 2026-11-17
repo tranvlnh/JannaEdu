@@ -1,17 +1,29 @@
+import type { Metadata } from "next";
 import { Suspense } from "react";
 import { notFound, redirect } from "next/navigation";
 import { submitWritingInput } from "@/contracts/writing";
+import { homeOf } from "@/server/auth";
 import { getProfile } from "@/server/profile";
 import { listWritingPrompts, submitWriting } from "@/server/writing";
 import { Editor } from "./editor";
 
-async function Write({ params }: { params: Promise<{ promptId: string }> }) {
+export const metadata: Metadata = { title: "Writing Practice" };
+
+export default function WritePage({ params }: PageProps<"/examiner/writing/[promptId]">) {
+  return (
+    <Suspense fallback={<p className="text-muted">Đang tải đề…</p>}>
+      <Write params={params} />
+    </Suspense>
+  );
+}
+
+async function Write({ params }: Pick<PageProps<"/examiner/writing/[promptId]">, "params">) {
   const { promptId } = await params;
   const [profile, prompts] = await Promise.all([getProfile(), listWritingPrompts()]);
   if (!profile) redirect("/login");
+  if (profile.role !== "student") redirect(homeOf(profile.role));
   const prompt = prompts.find((p) => p.id === promptId);
   if (!prompt) notFound();
-  if (profile.role !== "student") return <p>Chỉ tài khoản học sinh mới nộp bài được.</p>;
 
   // Returns the new submission id, or a message to show. Thrown errors would be masked in production.
   async function submit(essay: string) {
@@ -30,14 +42,4 @@ async function Write({ params }: { params: Promise<{ promptId: string }> }) {
   }
 
   return <Editor prompt={prompt} submit={submit} />;
-}
-
-export default function WritePage({ params }: PageProps<"/writing/[promptId]">) {
-  return (
-    <div className="mx-auto flex w-full max-w-5xl flex-col gap-4">
-      <Suspense fallback={<p>Loading...</p>}>
-        <Write params={params} />
-      </Suspense>
-    </div>
-  );
 }

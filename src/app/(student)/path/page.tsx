@@ -104,7 +104,7 @@ async function LearningPath() {
               bài thi
             </Link>
             , bài{" "}
-            <Link href="/writing" className="font-semibold text-brand-ink underline">
+            <Link href="/examiner" className="font-semibold text-brand-ink underline">
               Writing
             </Link>{" "}
             hoặc{" "}

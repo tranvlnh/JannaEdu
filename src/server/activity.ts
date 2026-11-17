@@ -34,7 +34,7 @@ export async function listActivity(studentId?: string): Promise<Activity[]> {
       submittedAt: s.submittedAt,
       band: s.band,
       detail: s.band === null ? "Chưa chấm" : "AI đã chấm",
-      href: `/writing/submissions/${s.id}`,
+      href: `/examiner/writing/analysis/${s.id}`,
     })),
     ...talks.map((s) => ({
       id: s.id,
