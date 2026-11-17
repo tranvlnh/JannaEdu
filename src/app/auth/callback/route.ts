@@ -3,8 +3,11 @@ import { roleSchema } from "@/contracts/profile";
 import { homeOf } from "@/server/auth";
 import { createClient } from "@/server/supabase/server";
 
+// Relative Location: behind Docker/tunnel request.url is http://0.0.0.0:3000, so the browser must resolve the host.
+const redirectTo = (path: string) => new NextResponse(null, { status: 307, headers: { Location: path } });
+
 export async function GET(request: Request) {
-  const { searchParams, origin } = new URL(request.url);
+  const { searchParams } = new URL(request.url);
   const code = searchParams.get("code");
   const next = searchParams.get("next");
 
@@ -18,10 +21,10 @@ export async function GET(request: Request) {
         .eq("id", data.user.id)
         .maybeSingle();
       const role = roleSchema.nullable().catch(null).parse(profile?.role ?? null);
-      // Same-origin paths only: the result is appended to our own origin.
-      const target = role && next?.startsWith("/") ? next : homeOf(role);
-      return NextResponse.redirect(`${origin}${target}`);
+      // Same-origin paths only; "//" would be protocol-relative to another host.
+      const target = role && next?.startsWith("/") && !next.startsWith("//") ? next : homeOf(role);
+      return redirectTo(target);
     }
   }
-  return NextResponse.redirect(`${origin}/login?error=oauth`);
+  return redirectTo("/login?error=oauth");
 }
