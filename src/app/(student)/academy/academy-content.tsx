@@ -1,7 +1,9 @@
+import type { ReactNode } from "react";
 import Image from "next/image";
-import { ArrowRight, BookOpenText, Check, Clapperboard, Clock, Lightbulb, Monitor, ShieldCheck, Star, type LucideIcon } from "lucide-react";
+import { ArrowRight, BookOpenText, Check, Clapperboard, Clock, Lightbulb, Monitor, ShieldCheck, Sparkles, Star, type LucideIcon } from "lucide-react";
 import { Logo } from "@/components/logo";
 import { Button, Card } from "@/components/ui";
+import type { LearningPath } from "@/contracts/learning-path";
 import { SKILLS, skillStyle, type Skill } from "@/lib/skills";
 
 const VALUES: { icon: LucideIcon; text: string }[] = [
@@ -40,8 +42,28 @@ function BookCover({ skill }: { skill: Skill }) {
   );
 }
 
-/** Nội dung Academy dùng chung cho /academy và /parent/academy. `showCourses=false` ẩn CTA dẫn sang khu học sinh. */
-export function AcademyContent({ showCourses = true }: { showCourses?: boolean }) {
+/** Sách AI đã gợi ý trong lộ trình học; không hiện gì khi chưa có lộ trình hoặc AI không gợi ý. */
+export function BookAdvice({ title, advice }: { title: string; advice: LearningPath["bookAdvice"] }) {
+  if (!advice?.length) return null;
+  return (
+    <div className="mt-6 rounded-2xl bg-white p-5 shadow-card">
+      <p className="flex items-center gap-2 font-bold">
+        <Sparkles className="size-5 text-brand-ink" aria-hidden />
+        {title}
+      </p>
+      <ul className="mt-3 flex flex-col gap-2">
+        {advice.map((b) => (
+          <li key={b.skill}>
+            <span className={`font-semibold ${skillStyle[b.skill].text}`}>IELTS {skillStyle[b.skill].label}:</span> {b.reason}
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+/** Nội dung Academy dùng chung cho /academy và /parent/academy. `showCourses=false` ẩn CTA dẫn sang khu học sinh. `advice` = gợi ý sách theo người xem. */
+export function AcademyContent({ showCourses = true, advice }: { showCourses?: boolean; advice?: ReactNode }) {
   return (
     <div className="flex flex-col gap-8">
       <div className="flex flex-wrap items-center gap-x-4 gap-y-1 rounded-full bg-skill-listening/25 px-6 py-4 sm:px-8">
@@ -87,6 +109,7 @@ export function AcademyContent({ showCourses = true }: { showCourses?: boolean }
         <p className="mt-2 max-w-2xl text-lg">
           Hệ thống sách thiết kế theo từng kỹ năng, từ cơ bản đến nâng cao, giúp người học hiểu sâu – tiến bộ.
         </p>
+        {advice}
         <div className="mt-8 grid gap-8 xl:grid-cols-[3fr_1fr]">
           <ul className="grid grid-cols-2 gap-6 md:grid-cols-4">
             {SKILLS.map((s) => (
