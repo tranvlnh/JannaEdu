@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { Suspense } from "react";
 import { usePathname } from "next/navigation";
 import {
   Bot,
@@ -13,6 +14,7 @@ import {
   Route,
   Settings,
   Users,
+  X,
   type LucideIcon,
 } from "lucide-react";
 import type { Role } from "@/lib/mock/users";
@@ -92,4 +94,32 @@ export function SidebarNav({ role, pathname }: { role: Role; pathname: string | 
 
 export function ActiveSidebarNav({ role }: { role: Role }) {
   return <SidebarNav role={role} pathname={usePathname()} />;
+}
+
+/** Menu mobile (< lg): popover trượt từ trái, đóng khi bấm link. Mở bằng nút popoverTarget="mobile-nav" ở Header. */
+export function MobileNav({ role }: { role: Role }) {
+  return (
+    <nav
+      id="mobile-nav"
+      popover="auto"
+      aria-label="Điều hướng chính"
+      onClick={(e) => {
+        if ((e.target as HTMLElement).closest("a")) e.currentTarget.hidePopover();
+      }}
+      className="fixed inset-y-0 right-auto left-0 m-0 h-dvh max-h-none w-72 flex-col bg-white px-4 py-6 shadow-card backdrop:bg-navy/40 open:flex lg:hidden"
+    >
+      <button
+        type="button"
+        popoverTarget="mobile-nav"
+        popoverTargetAction="hide"
+        aria-label="Đóng menu"
+        className="mb-4 self-end rounded-full p-2 hover:bg-surface"
+      >
+        <X className="size-6" aria-hidden />
+      </button>
+      <Suspense fallback={<SidebarNav role={role} pathname={null} />}>
+        <ActiveSidebarNav role={role} />
+      </Suspense>
+    </nav>
+  );
 }
