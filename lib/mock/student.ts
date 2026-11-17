@@ -149,15 +149,23 @@ export const exercises: Exercise[] = [
 
 // --- Tiến độ -------------------------------------------------------------------
 
-export const progressStats = {
-  studyHours: 29,
-  studyHoursDelta: 8,
-  completed: 52,
-  completedDelta: 10,
-  mockTests: 8,
-  mockTestsDelta: 2,
-  weeklyGoal: { done: 5, total: 7 },
+export type ProgressStats = {
+  studyHours: number;
+  studyHoursDelta: number;
+  completed: number;
+  completedDelta: number;
+  mockTests: number;
+  mockTestsDelta: number;
 };
+
+/** Thống kê theo khoảng thời gian (ngày); delta so với kỳ trước cùng độ dài. */
+export const progressByRange: Record<7 | 30 | 90, ProgressStats> = {
+  7: { studyHours: 8, studyHoursDelta: 2, completed: 14, completedDelta: 3, mockTests: 2, mockTestsDelta: 1 },
+  30: { studyHours: 29, studyHoursDelta: 8, completed: 52, completedDelta: 10, mockTests: 8, mockTestsDelta: 2 },
+  90: { studyHours: 78, studyHoursDelta: 15, completed: 140, completedDelta: 25, mockTests: 20, mockTestsDelta: 5 },
+};
+
+export const weeklyGoal = { done: 5, total: 7 };
 
 export const weeklyScores = {
   labels: ["Tuần 1", "Tuần 2", "Tuần 3", "Tuần 4"],

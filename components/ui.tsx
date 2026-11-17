@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { BookOpen, Bot, CircleAlert, CircleCheck, Headphones, Mic, PenLine, type LucideIcon } from "lucide-react";
+import { BookOpen, Bot, ChevronDown, CircleAlert, CircleCheck, Headphones, Mic, PenLine, type LucideIcon } from "lucide-react";
 import { skillStyle, type Skill } from "@/lib/skills";
 
 export const SKILL_ICON: Record<Skill, LucideIcon> = {
@@ -79,7 +79,7 @@ export function Pill({
   children: React.ReactNode;
 }) {
   return (
-    <span className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold ${PILL[tone]} ${className}`}>
+    <span className={`inline-flex shrink-0 items-center rounded-full px-3 py-1 text-xs font-semibold whitespace-nowrap ${PILL[tone]} ${className}`}>
       {children}
     </span>
   );
@@ -239,5 +239,26 @@ export function AIComment({
         {action}
       </div>
     </Card>
+  );
+}
+
+/** <select> gốc của trình duyệt, chỉ thêm style. `icon` hiện bên trái. */
+export function Select({
+  icon: Icon,
+  className = "",
+  children,
+  ...props
+}: { icon?: LucideIcon } & React.ComponentProps<"select">) {
+  return (
+    <span className={`relative inline-flex items-center ${className}`}>
+      {Icon && <Icon className="pointer-events-none absolute left-4 size-6" aria-hidden />}
+      <select
+        className={`w-full appearance-none rounded-2xl border-2 border-navy/80 bg-white py-2.5 pr-12 text-lg font-medium focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand ${Icon ? "pl-14" : "pl-4"}`}
+        {...props}
+      >
+        {children}
+      </select>
+      <ChevronDown className="pointer-events-none absolute right-4 size-5" aria-hidden />
+    </span>
   );
 }
