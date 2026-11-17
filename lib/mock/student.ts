@@ -57,6 +57,8 @@ export type SpeakingError = { category: string; issue: string; suggestion: strin
 
 export const speakingSession = {
   id: "sp-01",
+  part: "Part 1",
+  question: "Do you prefer studying alone or with other people? Why?",
   durationSec: 154,
   criteria: [
     { name: "Fluency & Coherence", score: 7.5 },

@@ -2,18 +2,9 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Download, RotateCcw } from "lucide-react";
+import { RotateCcw } from "lucide-react";
 import { Button } from "@/components/ui";
 import { grade, useExamDraft } from "@/lib/exam-draft";
-
-export function PrintButton() {
-  return (
-    <Button variant="navy" onClick={() => window.print()} className="print:hidden">
-      <Download className="size-5" aria-hidden />
-      Tải kết quả PDF
-    </Button>
-  );
-}
 
 /** Tab "Theo câu hỏi": chấm bài Reading đã làm (localStorage) với đáp án từ server. */
 export function QuestionReview({ testId, answerKey }: { testId: string; answerKey: Record<number, string> }) {

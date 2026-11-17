@@ -21,6 +21,17 @@
   --color-skill-speaking: #8b4df0;
 
   --shadow-card: 0 4px 16px rgb(47 107 255 / 0.12);
+
+  --animate-wave: wave 0.9s ease-in-out infinite;
+  @keyframes wave {
+    0%,
+    100% {
+      transform: scaleY(0.35);
+    }
+    50% {
+      transform: scaleY(1);
+    }
+  }
 }
 
 body {

@@ -9,7 +9,8 @@ import { band, formatDate } from "@/lib/format";
 import { readingTest } from "@/lib/mock/exam";
 import { mockTestResults } from "@/lib/mock/student";
 import { SKILLS, overallBand } from "@/lib/skills";
-import { PrintButton, QuestionReview } from "./client";
+import { PrintButton } from "@/components/print-button";
+import { QuestionReview } from "./client";
 
 export const metadata: Metadata = { title: "Kết quả bài thi" };
 

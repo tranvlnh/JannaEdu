@@ -45,6 +45,10 @@ export type SkillScores = Record<Skill, number>;
 
 /** Overall IELTS: trung bình 4 kỹ năng, làm tròn tới 0.5 gần nhất (.25 → lên .5, .75 → lên số nguyên). */
 export function overallBand(s: SkillScores): number {
-  const avg = SKILLS.reduce((sum, k) => sum + s[k], 0) / SKILLS.length;
+  return roundBand(SKILLS.reduce((sum, k) => sum + s[k], 0) / SKILLS.length);
+}
+
+/** Làm tròn tới 0.5 gần nhất, .25/.75 làm tròn lên (cũng dùng cho band tiêu chí Speaking/Writing). */
+export function roundBand(avg: number): number {
   return Math.round(avg * 2) / 2;
 }
