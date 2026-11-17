@@ -14,7 +14,7 @@ export function CreateCodeForm({ action }: { action: (prev: LinkCode | null) => 
         <p aria-live="polite">
           Mã: <strong className="font-mono text-xl tracking-widest">{code.code}</strong>
           <br />
-          <span className="text-sm text-zinc-600">
+          <span className="text-sm text-muted">
             Hết hạn lúc {new Date(code.expiresAt).toLocaleTimeString("vi-VN")}. Tạo mã mới sẽ huỷ mã này.
           </span>
         </p>
@@ -39,14 +39,14 @@ export function RedeemCodeForm({
           required
           maxLength={8}
           autoComplete="off"
-          className="rounded-lg border border-slate-300 bg-white px-3 py-2 font-mono uppercase tracking-widest"
+          className="rounded-lg border border-navy/20 bg-white px-3 py-2 font-mono uppercase tracking-widest"
         />
         <button disabled={pending} className="btn">
           Liên kết
         </button>
       </div>
       {error && (
-        <p role="alert" className="text-red-600">
+        <p role="alert" className="text-danger-ink">
           {error}
         </p>
       )}

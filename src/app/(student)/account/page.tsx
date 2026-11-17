@@ -4,14 +4,14 @@ import { redirect } from "next/navigation";
 import { redeemLinkCodeInput } from "@/contracts/profile";
 import { signOut } from "@/server/auth";
 import { createLinkCode, getLinkedProfiles, getProfile, redeemLinkCode } from "@/server/profile";
-import { Icon, type IconName } from "@/app/icons";
+import { ArrowRight, Mic, NotebookPen, PenLine, Route, type LucideIcon } from "lucide-react";
 import { CreateCodeForm, RedeemCodeForm } from "./link-forms";
 
-const STUDENT_LINKS: [string, string, string, IconName][] = [
-  ["/mock-test", "Phòng thi ảo", "Reading, Listening có đếm giờ", "test"],
-  ["/writing", "Writing", "Viết bài, AI chấm band", "pen"],
-  ["/examiner", "Speaking", "Ghi âm, AI chấm band", "mic"],
-  ["/path", "Lộ trình học", "AI gợi ý từ kết quả thi", "path"],
+const STUDENT_LINKS: [string, string, string, LucideIcon][] = [
+  ["/mock-test", "Phòng thi ảo", "Reading, Listening có đếm giờ", NotebookPen],
+  ["/writing", "Writing", "Viết bài, AI chấm band", PenLine],
+  ["/examiner", "Speaking", "Ghi âm, AI chấm band", Mic],
+  ["/path", "Lộ trình học", "AI gợi ý từ kết quả thi", Route],
 ];
 
 async function createCode() {
@@ -45,7 +45,7 @@ async function Account() {
       <section className="card flex flex-col gap-3">
         <h2 className="text-xl font-bold">{isStudent ? "Phụ huynh đã liên kết" : "Con đã liên kết"}</h2>
         {linked.length === 0 ? (
-          <p className="text-slate-600">Chưa có liên kết nào.</p>
+          <p className="text-muted">Chưa có liên kết nào.</p>
         ) : (
           <ul className="flex flex-col gap-2">
             {linked.map((p) => (
@@ -54,7 +54,7 @@ async function Account() {
                   (p.fullName ?? "(chưa có tên)")
                 ) : (
                   <Link href="/parent" className="btn">
-                    {p.fullName ?? "(chưa có tên)"} · xem tổng quan học tập <Icon name="arrow" className="size-5" />
+                    {p.fullName ?? "(chưa có tên)"} · xem tổng quan học tập <ArrowRight className="size-5" aria-hidden />
                   </Link>
                 )}
               </li>
@@ -69,13 +69,13 @@ async function Account() {
         <section>
           <h2 className="mb-3 text-xl font-bold">Bắt đầu luyện tập</h2>
           <ul className="grid gap-4 sm:grid-cols-2">
-            {STUDENT_LINKS.map(([href, title, text, icon]) => (
+            {STUDENT_LINKS.map(([href, title, text, Icon]) => (
               <li key={href}>
                 <Link href={href} className="card flex h-full items-center gap-4 hover:shadow-lg">
-                  <Icon name={icon} className="size-10 shrink-0 text-brand" />
+                  <Icon className="size-10 shrink-0 text-brand-ink" aria-hidden />
                   <span>
                     <span className="block text-lg font-bold">{title}</span>
-                    <span className="text-sm text-slate-600">{text}</span>
+                    <span className="text-sm text-muted">{text}</span>
                   </span>
                 </Link>
               </li>
@@ -93,10 +93,10 @@ async function Account() {
 
 export default function AccountPage() {
   return (
-    <main className="mx-auto flex w-full max-w-4xl flex-col gap-6 p-4 md:p-8">
+    <div className="mx-auto flex w-full max-w-4xl flex-col gap-6">
       <Suspense fallback={<p>Loading...</p>}>
         <Account />
       </Suspense>
-    </main>
+    </div>
   );
 }

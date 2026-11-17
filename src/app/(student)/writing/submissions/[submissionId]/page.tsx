@@ -52,7 +52,7 @@ async function Submission({ params }: { params: Promise<{ submissionId: string }
     <>
       <header>
         <h1 className="page-title">
-          Phân tích lỗi <span className="text-brand">Writing</span>
+          Phân tích lỗi <span className="text-brand-ink">Writing</span>
         </h1>
         <p className="mt-1 text-lg">{submission.prompt.title}</p>
       </header>
@@ -72,7 +72,7 @@ async function Submission({ params }: { params: Promise<{ submissionId: string }
 
       <section className="card">
         <h2 className="mb-2 text-xl font-bold">Đề bài</h2>
-        <p className="whitespace-pre-line text-slate-600">{submission.prompt.prompt}</p>
+        <p className="whitespace-pre-line text-muted">{submission.prompt.prompt}</p>
       </section>
       <section className="card">
         <h2 className="mb-2 text-xl font-bold">Bài viết</h2>
@@ -84,13 +84,13 @@ async function Submission({ params }: { params: Promise<{ submissionId: string }
 
 export default function SubmissionPage({ params }: PageProps<"/writing/submissions/[submissionId]">) {
   return (
-    <main className="mx-auto flex w-full max-w-6xl flex-col gap-6 p-4 md:p-8">
+    <div className="mx-auto flex w-full max-w-6xl flex-col gap-6">
       <Suspense fallback={<p>Loading...</p>}>
         <Submission params={params} />
       </Suspense>
-      <Link href="/writing" className="font-medium text-brand hover:underline">
+      <Link href="/writing" className="font-medium text-brand-ink hover:underline">
         ← Danh sách đề Writing
       </Link>
-    </main>
+    </div>
   );
 }

@@ -8,7 +8,7 @@ async function LoginState({ searchParams }: { searchParams: Promise<{ error?: st
 
   return (
     <>
-      {error && <p className="text-red-600">OAuth lỗi: {error}</p>}
+      {error && <p className="text-danger-ink">OAuth lỗi: {error}</p>}
       {user && <p>Đã đăng nhập: {user.email}</p>}
       <form action={user ? signOut : signInWithGoogle}>
         <button className="btn">
@@ -25,10 +25,10 @@ export default function LoginPage({
   searchParams: Promise<{ error?: string }>;
 }) {
   return (
-    <main className="flex flex-1 flex-col items-center justify-center p-4">
+    <main className="flex min-h-dvh flex-col items-center justify-center bg-linear-to-br from-surface to-surface-deep p-4">
       <div className="card flex flex-col items-center gap-4 p-10 text-center">
         <h1 className="page-title">
-          Chào mừng đến <span className="text-brand">Janna Edu</span>
+          Chào mừng đến <span className="text-brand-ink">Janna Edu</span>
         </h1>
       <Suspense fallback={<p>Loading...</p>}>
         <LoginState searchParams={searchParams} />
