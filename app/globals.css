@@ -13,6 +13,7 @@
   --color-success: #22a45d;
   --color-danger: #e5312b;
   --color-warning-soft: #fbe3c4;
+  --color-highlight: #fff085;
 
   --color-skill-listening: #2f6bff;
   --color-skill-reading: #1db98a;
@@ -24,4 +25,10 @@
 
 body {
   @apply bg-white text-navy;
+}
+
+/* Highlight trong màn thi (CSS Custom Highlight API).
+   Lightning CSS cảnh báo "not a valid pseudo-element" lúc build — vô hại, browser hỗ trợ. */
+::highlight(exam-highlight) {
+  background-color: var(--color-highlight);
 }
