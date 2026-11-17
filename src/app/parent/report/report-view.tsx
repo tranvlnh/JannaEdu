@@ -58,7 +58,7 @@ export function ReportView({ reports, goalBand }: { reports: MonthlyReport[]; go
           <CardTitle>Tiến độ điểm số</CardTitle>
           <LineChart
             title="Band tháng trước và tháng này"
-            labels={[`Tháng ${r.month - 1}`, `Tháng ${r.month}`]}
+            labels={[`Tháng ${r.month === 1 ? 12 : r.month - 1}`, `Tháng ${r.month}`]}
             domain={[4, 8]}
             series={[
               { name: "Overall", color: "var(--color-navy)", values: [overallBand(r.previousScores), overallBand(r.scores)] },

@@ -34,10 +34,10 @@ async function Write({ params }: { params: Promise<{ promptId: string }> }) {
 
 export default function WritePage({ params }: PageProps<"/writing/[promptId]">) {
   return (
-    <main className="mx-auto flex w-full max-w-5xl flex-col gap-4 p-4 md:p-8">
+    <div className="mx-auto flex w-full max-w-5xl flex-col gap-4">
       <Suspense fallback={<p>Loading...</p>}>
         <Write params={params} />
       </Suspense>
-    </main>
+    </div>
   );
 }
