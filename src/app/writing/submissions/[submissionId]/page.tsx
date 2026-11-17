@@ -50,12 +50,17 @@ async function Submission({ params }: { params: Promise<{ submissionId: string }
 
   return (
     <>
-      <h1 className="text-xl font-semibold">{submission.prompt.title}</h1>
+      <header>
+        <h1 className="page-title">
+          Phân tích lỗi <span className="text-brand">Writing</span>
+        </h1>
+        <p className="mt-1 text-lg">{submission.prompt.title}</p>
+      </header>
 
       {submission.report ? (
         <Report report={submission.report} />
       ) : (
-        <div className="flex flex-col items-start gap-2">
+        <div className="card flex flex-col items-start gap-3">
           <p role="status">Bài đã được lưu nhưng AI chưa chấm xong.</p>
           {profile?.role === "student" && (
             <form action={retry}>
@@ -65,12 +70,12 @@ async function Submission({ params }: { params: Promise<{ submissionId: string }
         </div>
       )}
 
-      <section>
-        <h2 className="mb-2 font-semibold">Đề bài</h2>
-        <p className="whitespace-pre-line text-sm text-zinc-600">{submission.prompt.prompt}</p>
+      <section className="card">
+        <h2 className="mb-2 text-xl font-bold">Đề bài</h2>
+        <p className="whitespace-pre-line text-slate-600">{submission.prompt.prompt}</p>
       </section>
-      <section>
-        <h2 className="mb-2 font-semibold">Bài viết</h2>
+      <section className="card">
+        <h2 className="mb-2 text-xl font-bold">Bài viết</h2>
         <p className="whitespace-pre-line leading-7">{submission.essay}</p>
       </section>
     </>
@@ -79,11 +84,11 @@ async function Submission({ params }: { params: Promise<{ submissionId: string }
 
 export default function SubmissionPage({ params }: PageProps<"/writing/submissions/[submissionId]">) {
   return (
-    <main className="mx-auto flex w-full max-w-2xl flex-col gap-6 p-6">
+    <main className="mx-auto flex w-full max-w-6xl flex-col gap-6 p-4 md:p-8">
       <Suspense fallback={<p>Loading...</p>}>
         <Submission params={params} />
       </Suspense>
-      <Link href="/writing" className="underline">
+      <Link href="/writing" className="font-medium text-brand hover:underline">
         ← Danh sách đề Writing
       </Link>
     </main>

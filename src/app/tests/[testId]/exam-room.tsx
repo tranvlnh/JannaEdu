@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useActionState, useEffect, useEffectEvent, useRef, useState, useTransition } from "react";
 import type {
   Question,
@@ -26,19 +27,21 @@ export function ExamRoom({
   if (data) return <Room data={data} {...actions} />;
 
   return (
-    <main className="mx-auto flex flex-1 max-w-md flex-col justify-center gap-4 p-6">
-      <h1 className="text-xl font-semibold">{test.title}</h1>
-      <p className="text-sm text-zinc-600">
-        {test.durationSeconds
-          ? `Thời gian làm bài: ${Math.round(test.durationSeconds / 60)} phút. Đồng hồ chạy ngay khi bạn bắt đầu và không dừng lại khi bạn thoát ra.`
-          : "Bài này không giới hạn thời gian."}{" "}
-        Nếu bạn đang làm dở, bài sẽ được mở lại.
-      </p>
-      <form action={startAction}>
-        <button disabled={pending} className="rounded border px-4 py-2">
-          {pending ? "Đang mở bài..." : "Bắt đầu / Làm tiếp"}
-        </button>
-      </form>
+    <main className="mx-auto flex max-w-lg flex-1 flex-col justify-center p-6">
+      <div className="card flex flex-col gap-4 p-8">
+        <h1 className="text-2xl font-bold">{test.title}</h1>
+        <p className="text-slate-600">
+          {test.durationSeconds
+            ? `Thời gian làm bài: ${Math.round(test.durationSeconds / 60)} phút. Đồng hồ chạy ngay khi bạn bắt đầu và không dừng lại khi bạn thoát ra.`
+            : "Bài này không giới hạn thời gian."}{" "}
+          Nếu bạn đang làm dở, bài sẽ được mở lại.
+        </p>
+        <form action={startAction}>
+          <button disabled={pending} className="btn px-6 py-3 text-lg">
+            {pending ? "Đang mở bài..." : "Bắt đầu / Làm tiếp"}
+          </button>
+        </form>
+      </div>
     </main>
   );
 }
@@ -64,7 +67,11 @@ function Timer({ deadline, serverNow, onExpire }: { deadline: string; serverNow:
   const text =
     left === null ? "--:--" : `${String(Math.floor(left / 60)).padStart(2, "0")}:${String(left % 60).padStart(2, "0")}`;
   return (
-    <span role="timer" aria-label="Thời gian còn lại" className={`font-mono text-lg ${left !== null && left < 60 ? "text-red-600" : ""}`}>
+    <span
+      role="timer"
+      aria-label="Thời gian còn lại"
+      className={`text-4xl font-bold tabular-nums ${left !== null && left < 60 ? "text-red-600" : ""}`}
+    >
       {text}
     </span>
   );
@@ -129,53 +136,49 @@ function Room({ data, save, submit }: { data: StartAttemptOutput } & Actions) {
   }
 
   const current = test.sections[section];
+  const unit = test.skill === "reading" ? "Passage" : "Part";
 
   return (
-    // shortcut: 4.5rem = one-row SiteNav height; on narrow screens the nav wraps and the page scrolls a bit
-    <div className="flex h-[calc(100dvh-4.5rem)] flex-col">
-      <header className="flex items-center justify-between gap-4 border-b px-4 py-2">
-        <h1 className="truncate font-semibold">{test.title}</h1>
-        <div className="flex items-center gap-4">
-          {attempt.deadline && <Timer deadline={attempt.deadline} serverNow={serverNow} onExpire={finish} />}
-          <button onClick={confirmSubmit} disabled={submitting} className="rounded border px-4 py-2">
-            {submitting ? "Đang nộp..." : "Nộp bài"}
-          </button>
-        </div>
+    // 5rem = the layout header. On phones the page scrolls instead of each panel.
+    <div className="flex flex-col gap-3 p-3 md:h-[calc(100dvh-5rem)] md:p-4">
+      <header className="flex flex-wrap items-center gap-3">
+        {test.sections.length > 1 && (
+          <nav aria-label="Phần" className="flex gap-2">
+            {test.sections.map((_, i) => (
+              <button
+                key={i}
+                onClick={() => setSection(i)}
+                aria-current={i === section}
+                className={`rounded-full px-4 py-1 text-sm font-medium shadow ${i === section ? "bg-navy text-white" : "bg-white"}`}
+              >
+                {unit} {i + 1}
+              </button>
+            ))}
+          </nav>
+        )}
+        <h1 className="min-w-0 flex-1 truncate text-2xl font-bold italic">{test.title}</h1>
+        <Link href="/tests" className="rounded-full bg-blue-500 px-5 py-1.5 font-medium text-white hover:bg-blue-600">
+          Thoát
+        </Link>
       </header>
 
       {/* Outside the section panel, so switching sections never restarts playback. */}
-      {test.audioUrl && (
-        <audio controls preload="auto" src={test.audioUrl} aria-label="Bài nghe" className="w-full border-b px-4 py-2" />
-      )}
+      {test.audioUrl && <audio controls preload="auto" src={test.audioUrl} aria-label="Bài nghe" className="w-full" />}
 
-      <div className="grid min-h-0 flex-1 md:grid-cols-2">
-        <article className="overflow-y-auto border-b p-4 md:border-r md:border-b-0">
-          {test.sections.length > 1 && (
-            <nav aria-label="Phần" className="mb-4 flex gap-2">
-              {test.sections.map((s, i) => (
-                <button
-                  key={i}
-                  onClick={() => setSection(i)}
-                  aria-current={i === section}
-                  className={`rounded border px-3 py-1 text-sm ${i === section ? "bg-zinc-900 text-white" : ""}`}
-                >
-                  Phần {i + 1}
-                </button>
-              ))}
-            </nav>
-          )}
-          <h2 className="mb-2 text-lg font-semibold">{current.title}</h2>
-          <p className="whitespace-pre-line leading-7">{current.passage}</p>
+      <div className="grid min-h-0 flex-1 gap-3 md:grid-cols-[1fr_1fr_15rem]">
+        <article className="card md:overflow-y-auto">
+          <h2 className="mb-3 text-center text-2xl font-bold">{current.title}</h2>
+          <p className="whitespace-pre-line leading-8">{current.passage}</p>
         </article>
 
-        <section aria-label="Câu hỏi" className="flex flex-col gap-5 overflow-y-auto p-4">
+        <section aria-label="Câu hỏi" className="card flex flex-col gap-5 md:overflow-y-auto">
           {test.questions
             .filter((q) => q.section === section)
             .map((q) => {
               const saved = answers[q.id];
               return (
                 <div key={q.id} id={`q-${q.number}`} className="flex flex-col gap-2">
-                  {q.instruction && <p className="rounded bg-zinc-100 p-2 text-sm font-medium text-zinc-900">{q.instruction}</p>}
+                  {q.instruction && <p className="rounded-lg bg-panel p-3 font-medium">{q.instruction}</p>}
                   <fieldset className="flex flex-col gap-1">
                     <legend className="mb-1">
                       <strong>{q.number}.</strong> {q.prompt}
@@ -188,6 +191,7 @@ function Room({ data, save, submit }: { data: StartAttemptOutput } & Actions) {
                             name={q.id}
                             checked={saved?.answer === option}
                             onChange={() => update(q.id, { answer: option })}
+                            className="accent-brand"
                           />
                           {option}
                         </label>
@@ -200,15 +204,16 @@ function Room({ data, save, submit }: { data: StartAttemptOutput } & Actions) {
                         maxLength={200}
                         autoComplete="off"
                         spellCheck={false}
-                        className="rounded border px-3 py-2"
+                        className="rounded-lg border border-slate-300 px-3 py-2"
                       />
                     )}
                   </fieldset>
-                  <label className="flex items-center gap-2 text-sm text-zinc-600">
+                  <label className="flex items-center gap-2 text-sm text-slate-600">
                     <input
                       type="checkbox"
                       checked={saved?.flagged ?? false}
                       onChange={(e) => update(q.id, { flagged: e.target.checked })}
+                      className="accent-amber-500"
                     />
                     Đánh dấu để xem lại
                   </label>
@@ -216,24 +221,53 @@ function Room({ data, save, submit }: { data: StartAttemptOutput } & Actions) {
               );
             })}
         </section>
-      </div>
 
-      <nav aria-label="Danh sách câu hỏi" className="flex flex-wrap gap-1 border-t px-4 py-2">
-        {test.questions.map((q) => {
-          const flagged = answers[q.id]?.flagged ?? false;
-          return (
-            <button
-              key={q.id}
-              onClick={() => goTo(q)}
-              aria-label={`Câu ${q.number}${isAnswered(q) ? ", đã trả lời" : ", chưa trả lời"}${flagged ? ", đã đánh dấu" : ""}`}
-              className={`h-8 min-w-8 rounded border px-1 text-sm ${isAnswered(q) ? "bg-zinc-900 text-white" : ""} ${flagged ? "outline outline-2 outline-offset-1 outline-amber-500" : ""}`}
-            >
-              {q.number}
-              {flagged && "⚑"}
-            </button>
-          );
-        })}
-      </nav>
+        <aside className="card order-first flex flex-col gap-4 md:order-none md:overflow-y-auto">
+          {attempt.deadline && (
+            <p className="flex flex-col">
+              <span className="text-xl font-semibold">Thời gian còn lại</span>
+              <Timer deadline={attempt.deadline} serverNow={serverNow} onExpire={finish} />
+            </p>
+          )}
+          <button
+            onClick={confirmSubmit}
+            disabled={submitting}
+            className="rounded-2xl bg-blue-500 py-3 text-2xl font-bold text-white hover:bg-blue-600 disabled:opacity-60"
+          >
+            {submitting ? "Đang nộp..." : "Nộp bài"}
+          </button>
+          <p className="text-sm italic text-brand">
+            Bài làm được tự động lưu. Bấm vào số câu để đi tới câu đó; câu đã đánh dấu có viền vàng.
+          </p>
+
+          <nav aria-label="Danh sách câu hỏi" className="flex flex-col gap-3">
+            {test.sections.map((_, i) => (
+              <div key={i}>
+                <h2 className="mb-2 font-semibold">
+                  {unit} {i + 1}
+                </h2>
+                <div className="flex flex-wrap gap-1.5">
+                  {test.questions
+                    .filter((q) => q.section === i)
+                    .map((q) => {
+                      const flagged = answers[q.id]?.flagged ?? false;
+                      return (
+                        <button
+                          key={q.id}
+                          onClick={() => goTo(q)}
+                          aria-label={`Câu ${q.number}${isAnswered(q) ? ", đã trả lời" : ", chưa trả lời"}${flagged ? ", đã đánh dấu" : ""}`}
+                          className={`size-9 rounded border border-slate-400 text-sm ${isAnswered(q) ? "bg-navy text-white" : "bg-white"} ${flagged ? "outline outline-2 outline-offset-1 outline-amber-500" : ""}`}
+                        >
+                          {q.number}
+                        </button>
+                      );
+                    })}
+                </div>
+              </div>
+            ))}
+          </nav>
+        </aside>
+      </div>
     </div>
   );
 }

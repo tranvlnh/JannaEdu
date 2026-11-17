@@ -11,7 +11,7 @@ export function RetryButton({
 }) {
   const { pending } = useFormStatus();
   return (
-    <button disabled={pending} className="rounded border px-4 py-2">
+    <button disabled={pending} className="btn">
       {pending ? pendingLabel : label}
     </button>
   );

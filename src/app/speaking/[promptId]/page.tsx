@@ -17,7 +17,11 @@ async function Speak({ params }: { params: Promise<{ promptId: string }> }) {
   async function submit(formData: FormData) {
     "use server";
     const input = submitSpeakingInput.safeParse({ promptId, audio: formData.get("audio") });
-    if (!input.success) return { error: "Bản ghi âm không hợp lệ hoặc quá dài. Hãy ghi lại." };
+    if (!input.success) {
+      const audio = formData.get("audio");
+      console.error("invalid speaking upload", audio instanceof Blob ? { type: audio.type, size: audio.size } : audio, input.error.issues);
+      return { error: "Bản ghi âm không hợp lệ hoặc quá dài. Hãy ghi lại." };
+    }
     try {
       return await submitSpeaking(input.data);
     } catch (error) {
@@ -34,7 +38,7 @@ async function Speak({ params }: { params: Promise<{ promptId: string }> }) {
 
 export default function SpeakPage({ params }: PageProps<"/speaking/[promptId]">) {
   return (
-    <main className="mx-auto flex w-full max-w-2xl flex-col gap-4 p-6">
+    <main className="mx-auto flex w-full max-w-4xl flex-col gap-4 p-4 md:p-8">
       <Suspense fallback={<p>Loading...</p>}>
         <Speak params={params} />
       </Suspense>

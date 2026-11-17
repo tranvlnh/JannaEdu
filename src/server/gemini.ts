@@ -2,7 +2,7 @@
 import { GoogleGenAI } from "@google/genai";
 import { z } from "zod";
 
-const MODEL = "gemini-4-hydrogen";
+const MODEL = "gemini-3.6-flash";
 const TIMEOUT_MS = 120_000;
 
 // Text, or a list of parts such as text plus an audio recording.

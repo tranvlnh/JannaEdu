@@ -11,8 +11,8 @@ async function LoginState({ searchParams }: { searchParams: Promise<{ error?: st
       {error && <p className="text-red-600">OAuth lỗi: {error}</p>}
       {user && <p>Đã đăng nhập: {user.email}</p>}
       <form action={user ? signOut : signInWithGoogle}>
-        <button className="rounded border px-4 py-2">
-          {user ? "Sign out" : "Sign in with Google"}
+        <button className="btn">
+          {user ? "Đăng xuất" : "Đăng nhập bằng Google"}
         </button>
       </form>
     </>
@@ -25,10 +25,15 @@ export default function LoginPage({
   searchParams: Promise<{ error?: string }>;
 }) {
   return (
-    <main className="flex flex-1 flex-col items-center justify-center gap-4">
+    <main className="flex flex-1 flex-col items-center justify-center p-4">
+      <div className="card flex flex-col items-center gap-4 p-10 text-center">
+        <h1 className="page-title">
+          Chào mừng đến <span className="text-brand">Janna Edu</span>
+        </h1>
       <Suspense fallback={<p>Loading...</p>}>
         <LoginState searchParams={searchParams} />
       </Suspense>
+      </div>
     </main>
   );
 }

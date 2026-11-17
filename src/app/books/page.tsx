@@ -1,34 +1,20 @@
 import { Suspense } from "react";
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import type { PathSkill } from "@/contracts/learning-path";
 import { getLearningPath } from "@/server/learning-path";
 import { getProfile } from "@/server/profile";
+import { Icon } from "@/app/icons";
 
 export const metadata: Metadata = { title: "Sách & tài liệu" };
 
 // One book per skill, so the AI advice in the learning path refers to a book by its skill.
-const BOOKS: Record<PathSkill, { title: string; tagline: string; contents: string[] }> = {
-  reading: {
-    title: "IELTS Reading",
-    tagline: "Build Your Skills, Achieve Your Goals",
-    contents: ["Strategies & Techniques", "Practice Tests", "Vocabulary Builder", "Detailed Explanations"],
-  },
-  listening: {
-    title: "IELTS Listening",
-    tagline: "Sharpen Your Ears, Boost Your Score",
-    contents: ["Listening Strategies", "Real Test Practice", "Key Vocabulary", "Full Transcripts & Answers"],
-  },
-  writing: {
-    title: "IELTS Writing",
-    tagline: "Organise Your Ideas, Express Your Voice",
-    contents: ["Task 1 & Task 2 Guidance", "Model Essays", "Useful Vocabulary & Phrases", "Sample Answers"],
-  },
-  speaking: {
-    title: "IELTS Speaking",
-    tagline: "Speak Confidently, Make an Impact",
-    contents: ["Part 1, 2 & 3 Strategies", "Useful Vocabulary", "Sample Answers", "Pronunciation Tips"],
-  },
+const BOOKS: Record<PathSkill, { title: string; cover: string }> = {
+  reading: { title: "IELTS Reading", cover: "/ref/book-reading.jpg" },
+  listening: { title: "IELTS Listening", cover: "/ref/book-listening.jpg" },
+  writing: { title: "IELTS Writing", cover: "/ref/book-writing.jpg" },
+  speaking: { title: "IELTS Speaking", cover: "/ref/book-speaking.jpg" },
 };
 
 const BENEFITS = [
@@ -43,7 +29,7 @@ async function Advice() {
   if (profile?.role !== "student") {
     return (
       <p>
-        <Link href="/account" className="underline">
+        <Link href="/account" className="font-medium text-brand underline">
           Đăng nhập bằng tài khoản học sinh
         </Link>{" "}
         và lập lộ trình học để AI gợi ý cuốn sách nên học trước.
@@ -55,7 +41,7 @@ async function Advice() {
     return (
       <p>
         Gợi ý sách đi kèm{" "}
-        <Link href="/learning-path" className="underline">
+        <Link href="/learning-path" className="font-medium text-brand underline">
           lộ trình học
         </Link>
         : bạn sẽ thấy gợi ý ở đây sau lần lập lộ trình tiếp theo.
@@ -76,48 +62,52 @@ async function Advice() {
 
 export default function BooksPage() {
   return (
-    <>
-      <main className="mx-auto flex w-full max-w-4xl flex-col gap-8 p-6">
-        <header>
-          <h1 className="text-3xl font-bold">Sách tự học IELTS</h1>
-          <p className="mt-2">
-            Hệ thống sách được thiết kế theo từng kỹ năng, từ cơ bản đến nâng cao, giúp người học hiểu sâu và tiến bộ.
-          </p>
-        </header>
+    <main className="mx-auto flex w-full max-w-6xl flex-col gap-8 p-4 md:p-8">
+      <header>
+        <h1 className="text-4xl font-extrabold">Sách tự học IELTS</h1>
+        <p className="mt-3 max-w-3xl text-xl">
+          Hệ thống sách được thiết kế theo từng kỹ năng, từ cơ bản đến nâng cao, giúp người học hiểu sâu và tiến bộ.
+        </p>
+      </header>
 
-        <section className="rounded-lg border border-orange-600 p-4">
-          <h2 className="mb-2 font-semibold">Gợi ý từ AI cho bạn</h2>
-          <Suspense fallback={<p>Loading...</p>}>
-            <Advice />
-          </Suspense>
-        </section>
+      <section className="card border-2 border-brand">
+        <h2 className="mb-2 flex items-center gap-2 text-xl font-bold text-brand">
+          <Icon name="robot" /> Gợi ý từ AI cho bạn
+        </h2>
+        <Suspense fallback={<p>Loading...</p>}>
+          <Advice />
+        </Suspense>
+      </section>
 
-        <ul className="grid gap-4 sm:grid-cols-2">
-          {Object.values(BOOKS).map((book) => (
-            <li key={book.title} className="rounded-lg border p-4">
-              <h2 className="font-semibold">{book.title}</h2>
-              <p className="text-sm text-orange-600">Band 5.0 – 6.5</p>
-              <p className="mt-1 text-sm" lang="en">
-                {book.tagline}
-              </p>
-              <ul className="mt-2 list-disc pl-5 text-sm" lang="en">
-                {book.contents.map((item) => (
-                  <li key={item}>{item}</li>
-                ))}
-              </ul>
+      <div className="grid items-center gap-6 rounded-3xl bg-white/60 p-5 lg:grid-cols-[1fr_17rem]">
+        <ul className="grid grid-cols-2 items-start gap-5 xl:grid-cols-4">
+          {(Object.keys(BOOKS) as PathSkill[]).map((skill) => (
+            <li key={skill}>
+              <Image
+                src={BOOKS[skill].cover}
+                alt={`Sách ${BOOKS[skill].title}, Band 5.0 – 6.5`}
+                width={400}
+                height={466}
+                className="w-full rounded-sm shadow-[4px_6px_14px_rgba(15,23,42,0.25)]"
+              />
             </li>
           ))}
         </ul>
 
         <section>
-          <h2 className="mb-2 text-xl font-semibold">Mỗi cuốn sách có</h2>
-          <ul className="list-disc pl-5">
+          <h2 className="mb-3 text-xl font-bold">Mỗi cuốn sách có</h2>
+          <ul className="flex flex-col gap-3">
             {BENEFITS.map((item) => (
-              <li key={item}>{item}</li>
+              <li key={item} className="flex items-center gap-3 font-medium">
+                <span className="grid size-14 shrink-0 place-items-center rounded-full border-4 border-white bg-navy text-white shadow">
+                  <Icon name="check" className="size-6" />
+                </span>
+                <span className="flex-1 rounded-full bg-white px-5 py-3 shadow-[3px_4px_0_#c7d7f3]">{item}</span>
+              </li>
             ))}
           </ul>
         </section>
-      </main>
-    </>
+      </div>
+    </main>
   );
 }

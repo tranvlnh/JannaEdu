@@ -7,7 +7,7 @@ export function CreateCodeForm({ action }: { action: (prev: LinkCode | null) => 
   const [code, formAction, pending] = useActionState(action, null);
   return (
     <form action={formAction} className="flex flex-col gap-2">
-      <button disabled={pending} className="rounded border px-4 py-2">
+      <button disabled={pending} className="btn self-start">
         {code ? "Tạo mã mới" : "Tạo mã liên kết cho phụ huynh"}
       </button>
       {code && (
@@ -39,9 +39,9 @@ export function RedeemCodeForm({
           required
           maxLength={8}
           autoComplete="off"
-          className="rounded border px-3 py-2 font-mono uppercase tracking-widest"
+          className="rounded-lg border border-slate-300 bg-white px-3 py-2 font-mono uppercase tracking-widest"
         />
-        <button disabled={pending} className="rounded border px-4 py-2">
+        <button disabled={pending} className="btn">
           Liên kết
         </button>
       </div>

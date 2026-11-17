@@ -33,7 +33,12 @@ async function Submission({ params }: { params: Promise<{ submissionId: string }
 
   return (
     <>
-      <h1 className="text-xl font-semibold">{submission.prompt.title}</h1>
+      <header>
+        <h1 className="page-title">
+          Phân tích lỗi <span className="text-brand">Speaking</span>
+        </h1>
+        <p className="mt-1 text-lg">{submission.prompt.title}</p>
+      </header>
       <audio controls src={submission.audioUrl} aria-label="Bản ghi âm" className="w-full" />
 
       {report ? (
@@ -45,7 +50,7 @@ async function Submission({ params }: { params: Promise<{ submissionId: string }
           errorTypes={ERROR_TYPE}
         />
       ) : (
-        <div className="flex flex-col items-start gap-2">
+        <div className="card flex flex-col items-start gap-3">
           <p role="status">Bản ghi âm đã được lưu nhưng AI chưa chấm xong.</p>
           {profile?.role === "student" && (
             <form action={retry}>
@@ -55,13 +60,13 @@ async function Submission({ params }: { params: Promise<{ submissionId: string }
         </div>
       )}
 
-      <section>
-        <h2 className="mb-2 font-semibold">Đề bài</h2>
-        <p className="whitespace-pre-line text-sm text-zinc-600">{submission.prompt.prompt}</p>
+      <section className="card">
+        <h2 className="mb-2 text-xl font-bold">Đề bài</h2>
+        <p className="whitespace-pre-line text-slate-600">{submission.prompt.prompt}</p>
       </section>
       {report && (
-        <section>
-          <h2 className="mb-2 font-semibold">AI nghe được</h2>
+        <section className="card">
+          <h2 className="mb-2 text-xl font-bold">AI nghe được</h2>
           <p className="whitespace-pre-line leading-7">{report.transcript || "(không nghe thấy lời nói)"}</p>
         </section>
       )}
@@ -71,11 +76,11 @@ async function Submission({ params }: { params: Promise<{ submissionId: string }
 
 export default function SubmissionPage({ params }: PageProps<"/speaking/submissions/[submissionId]">) {
   return (
-    <main className="mx-auto flex w-full max-w-2xl flex-col gap-6 p-6">
+    <main className="mx-auto flex w-full max-w-6xl flex-col gap-6 p-4 md:p-8">
       <Suspense fallback={<p>Loading...</p>}>
         <Submission params={params} />
       </Suspense>
-      <Link href="/speaking" className="underline">
+      <Link href="/speaking" className="font-medium text-brand hover:underline">
         ← Danh sách đề Speaking
       </Link>
     </main>
