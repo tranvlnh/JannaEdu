@@ -9,13 +9,10 @@ FROM node:24-alpine AS builder
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
-# NEXT_PUBLIC_* are inlined into the client bundle at build time, so they must be build args.
-ARG NEXT_PUBLIC_SUPABASE_URL
-ARG NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY
-ENV NEXT_PUBLIC_SUPABASE_URL=$NEXT_PUBLIC_SUPABASE_URL \
-    NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=$NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY \
-    NEXT_TELEMETRY_DISABLED=1
-RUN node_modules/.bin/next build
+ENV NEXT_TELEMETRY_DISABLED=1
+# NEXT_PUBLIC_* are inlined into the client bundle at build time. The env file is mounted
+# as a secret so next build reads it without it landing in any image layer.
+RUN --mount=type=secret,id=env,target=/app/.env.local node_modules/.bin/next build
 
 FROM node:24-alpine AS runner
 WORKDIR /app

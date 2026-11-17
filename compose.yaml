@@ -1,0 +1,14 @@
+services:
+  web:
+    build:
+      context: .
+      secrets: [env]
+    image: janna-edu
+    env_file: .env.local
+    ports:
+      - "3000:3000"
+    restart: unless-stopped
+
+secrets:
+  env:
+    file: .env.local

@@ -62,14 +62,13 @@ bun run test
 
 ## Deploy with Docker
 
-The image uses Next.js standalone output. `NEXT_PUBLIC_*` values are baked in at build time; secrets are passed only at run time.
+The image uses Next.js standalone output. With `.env.local` filled in on the server:
 
 ```bash
-docker build -t janna-edu \
-  --build-arg NEXT_PUBLIC_SUPABASE_URL=<url> \
-  --build-arg NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=<publishable-key> .
-docker run -d --name janna-edu --restart unless-stopped -p 3000:3000 --env-file .env.local janna-edu
+docker compose up -d --build
 ```
+
+`.env.local` is used twice: mounted as a build secret so `next build` can bake in the `NEXT_PUBLIC_*` values (it is not stored in the image), and passed as the container's runtime env.
 
 Put a reverse proxy with HTTPS (Caddy, nginx) in front of port 3000, and add `https://<your-domain>/auth/callback` to the Supabase redirect URLs.
 
