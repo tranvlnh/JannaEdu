@@ -155,6 +155,8 @@ function Room({ data, save, submit }: { data: StartAttemptOutput } & Actions) {
 
   return (
     <div className="grid gap-4 p-4 lg:h-[calc(100dvh-5rem)] lg:grid-cols-[1fr_1fr_17rem] lg:grid-rows-[auto_auto_1fr] lg:p-6">
+      {/* Not in globals.css: the build's CSS optimizer warns on ::highlight() even though browsers support it. */}
+      <style href={HIGHLIGHT} precedence="default">{`::highlight(${HIGHLIGHT}) { background-color: var(--color-highlight); }`}</style>
       <div className="flex flex-wrap items-center gap-3 lg:col-span-2">
         <label className="flex cursor-pointer items-center gap-2 text-sm italic">
           <input type="checkbox" role="switch" checked={highlightOn} onChange={(e) => setHighlightOn(e.target.checked)} className="peer sr-only" />

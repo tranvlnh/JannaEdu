@@ -67,7 +67,7 @@ function NavLink({ item, active }: { item: NavItem; active: boolean }) {
 
 // pathname = null → render không active (fallback Suspense khi route có param động).
 export function SidebarNav({ role, pathname }: { role: Role; pathname: string | null }) {
-  const settings: NavItem = { href: "/account", label: "Tài khoản & cài đặt", icon: Settings };
+  const settings: NavItem = { href: "/account", label: "Cài đặt", icon: Settings };
   return (
     <>
       <ul className="flex flex-col gap-1">

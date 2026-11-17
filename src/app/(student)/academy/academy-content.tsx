@@ -1,6 +1,7 @@
-import { ArrowRight, BookOpenText, Check, Clapperboard, Clock, GraduationCap, Lightbulb, Monitor, ShieldCheck, Star, type LucideIcon } from "lucide-react";
+import Image from "next/image";
+import { ArrowRight, BookOpenText, Check, Clapperboard, Clock, Lightbulb, Monitor, ShieldCheck, Star, type LucideIcon } from "lucide-react";
 import { Logo } from "@/components/logo";
-import { Button, Card, SKILL_ICON } from "@/components/ui";
+import { Button, Card } from "@/components/ui";
 import { SKILLS, skillStyle, type Skill } from "@/lib/skills";
 
 const VALUES: { icon: LucideIcon; text: string }[] = [
@@ -9,13 +10,6 @@ const VALUES: { icon: LucideIcon; text: string }[] = [
   { icon: Lightbulb, text: "Phương pháp học khoa học, linh hoạt" },
   { icon: Star, text: "Độc quyền chỉ có ở Janna Edu" },
 ];
-
-const BOOK_TAGLINE: Record<Skill, string> = {
-  listening: "Sharpen Your Ears",
-  reading: "Build Your Skills",
-  writing: "Organise Your Ideas",
-  speaking: "Speak Confidently",
-};
 
 const BOOK_PERKS = ["Giải thích chi tiết đáp án", "Chiến lược làm bài hiệu quả", "Bài tập thực hành phong phú", "Tài liệu bổ trợ (audio, video, PDF)"];
 
@@ -26,23 +20,23 @@ const COURSE_PERKS: { icon: LucideIcon; text: string }[] = [
   { icon: Clock, text: "Hỗ trợ giải đáp 24/7" },
 ];
 
-// ponytail: bìa sách dựng bằng CSS thay ảnh mockup; thay <Image> khi có file bìa thật
+const BOOK_SIZE: Record<Skill, [number, number]> = {
+  listening: [389, 464],
+  reading: [412, 466],
+  writing: [384, 463],
+  speaking: [371, 466],
+};
+
 function BookCover({ skill }: { skill: Skill }) {
-  const s = skillStyle[skill];
-  const Icon = SKILL_ICON[skill];
+  const [width, height] = BOOK_SIZE[skill];
   return (
-    <div className="relative flex aspect-[3/4] flex-col overflow-hidden rounded-r-xl rounded-l-sm bg-white p-4 shadow-[6px_8px_20px_rgb(11_42_91/0.18)]">
-      <p className="flex items-center gap-1 text-xs font-bold">
-        <GraduationCap className="size-4" aria-hidden />
-        JANNA <span className="text-brand-ink">BOOK</span>
-      </p>
-      <p className="mt-3 text-lg leading-none font-black sm:text-2xl">IELTS</p>
-      <p className={`text-lg leading-tight font-black uppercase sm:text-2xl ${s.text}`}>{s.label}</p>
-      <p className="mt-2 self-start rounded-full bg-navy px-2 py-0.5 text-xs font-bold text-white">Band 5.0 – 6.5</p>
-      <p className="mt-2 text-xs">{BOOK_TAGLINE[skill]}</p>
-      <Icon className={`absolute -right-4 -bottom-4 size-28 opacity-20 ${s.text}`} aria-hidden />
-      <div className={`absolute inset-x-0 bottom-0 h-3 ${s.bg}`} />
-    </div>
+    <Image
+      src={`/ref/book-${skill}.jpg`}
+      alt={`Bìa sách IELTS ${skillStyle[skill].label} Band 5.0 – 6.5`}
+      width={width}
+      height={height}
+      className="w-full rounded-r-xl rounded-l-sm shadow-[6px_8px_20px_rgb(11_42_91/0.18)]"
+    />
   );
 }
 
@@ -83,9 +77,7 @@ export function AcademyContent({ showCourses = true }: { showCourses?: boolean }
             Khám phá Janna Academy <ArrowRight className="size-5" aria-hidden />
           </Button>
         </div>
-        <div className="mx-auto w-48 rotate-6 sm:w-56" aria-hidden>
-          <BookCover skill="reading" />
-        </div>
+        <Image src="/ref/academy-book.jpg" alt="" width={1158} height={1120} preload className="mx-auto w-full max-w-md" />
       </section>
 
       <section id="books" aria-labelledby="books-title" className="scroll-mt-24 rounded-3xl bg-white/50 p-6 sm:p-10">
@@ -124,16 +116,19 @@ export function AcademyContent({ showCourses = true }: { showCourses?: boolean }
         <p className="mt-2 max-w-2xl text-lg">
           Học mọi lúc, mọi nơi với hệ thống khóa học chất lượng cao, thiết kế bài bản theo từng kỹ năng và trình độ.
         </p>
-        <ul className="mt-8 grid grid-cols-2 gap-4 lg:grid-cols-4">
-          {COURSE_PERKS.map(({ icon: Icon, text }) => (
-            <li key={text}>
-              <Card className="flex h-full flex-col items-center gap-4 text-center">
-                <Icon className="size-14" strokeWidth={1.25} aria-hidden />
-                <p className="font-medium">{text}</p>
-              </Card>
-            </li>
-          ))}
-        </ul>
+        <div className="mt-8 grid items-center gap-8 xl:grid-cols-[2fr_1fr]">
+          <ul className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+            {COURSE_PERKS.map(({ icon: Icon, text }) => (
+              <li key={text}>
+                <Card className="flex h-full flex-col items-center gap-4 text-center">
+                  <Icon className="size-14" strokeWidth={1.25} aria-hidden />
+                  <p className="font-medium">{text}</p>
+                </Card>
+              </li>
+            ))}
+          </ul>
+          <Image src="/ref/video-devices.jpg" alt="" width={666} height={390} className="mx-auto w-full max-w-md" />
+        </div>
         {showCourses && (
           <Button href="/courses" variant="outline" className="mt-8">
             Xem các khóa học <ArrowRight className="size-5" aria-hidden />

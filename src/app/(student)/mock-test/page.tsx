@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, Clock, Laptop, NotebookText, SearchCheck, Timer, type LucideIcon } from "lucide-react";
 import { Button, Card, Pill, SKILL_ICON } from "@/components/ui";
@@ -25,9 +26,8 @@ export default function MockTestPage() {
     <div className="flex flex-col gap-8">
       <section className="relative overflow-hidden rounded-3xl bg-white/60 px-6 py-10 sm:px-10 sm:py-14">
         <div aria-hidden className="absolute -top-16 -left-16 size-48 rounded-full bg-skill-listening/30" />
-        <div aria-hidden className="absolute right-24 -bottom-32 hidden size-80 rounded-full bg-skill-listening/40 xl:block" />
-        <div aria-hidden className="absolute -right-20 -bottom-24 hidden size-96 rounded-full bg-brand xl:block" />
-        <div className="relative max-w-2xl">
+        <Image src="/ref/exam-student.jpg" alt="" width={1065} height={677} preload className="absolute right-0 bottom-0 hidden h-full w-[40%] object-contain object-right-bottom xl:block" />
+        <div className="relative max-w-2xl xl:max-w-[58%]">
           <h1 className="text-4xl leading-tight font-bold sm:text-5xl">
             Trải nghiệm kỳ thi IELTS <span className="block text-brand-ink">như thật – mọi lúc, mọi nơi</span>
           </h1>

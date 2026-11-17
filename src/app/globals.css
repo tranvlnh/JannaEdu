@@ -47,12 +47,6 @@ body {
   @apply bg-white text-navy;
 }
 
-/* Highlight trong màn thi (CSS Custom Highlight API).
-   Lightning CSS cảnh báo "not a valid pseudo-element" lúc build — vô hại, browser hỗ trợ. */
-::highlight(exam-highlight) {
-  background-color: var(--color-highlight);
-}
-
 /* Utilities from develop, still used by account/writing/login/onboarding pages. */
 @theme {
   --color-brand-dark: #d4461a;

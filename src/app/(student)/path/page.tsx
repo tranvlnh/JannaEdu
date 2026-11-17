@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { Suspense } from "react";
 import { redirect } from "next/navigation";
-import { ArrowRight, BookOpen, Flag, Target } from "lucide-react";
+import { ArrowRight, BookOpen, Target } from "lucide-react";
 import { RetryButton } from "@/app/retry-button";
 import { Tabs } from "@/components/tabs";
 import { AIComment, Button, Card, ProgressBar, SKILL_ICON } from "@/components/ui";
@@ -45,12 +46,12 @@ async function LearningPath() {
   return (
     <div className="flex flex-col gap-6">
       <div className="relative overflow-hidden rounded-3xl bg-white/50 p-6 sm:p-8">
-        <Flag className="absolute -right-4 -bottom-6 hidden size-56 -rotate-12 text-skill-listening/15 lg:block" aria-hidden />
+        <Image src="/ref/learning-path.jpg" alt="" width={492} height={407} preload className="absolute top-6 right-6 hidden h-auto w-[30%] max-w-sm xl:block" />
         <h1 className="text-4xl font-bold">Lộ trình học cá nhân hóa</h1>
-        <p className="mt-2 max-w-3xl text-lg text-navy/80">
+        <p className="mt-2 max-w-3xl text-lg text-navy/80 xl:max-w-[65%]">
           Dựa trên mục tiêu, kết quả bài thi và phân tích từ AI, Janna Edu thiết kế lộ trình phù hợp nhất để giúp bạn đạt mục tiêu IELTS.
         </p>
-        <div className="relative mt-6 grid max-w-3xl gap-4 sm:grid-cols-2">
+        <div className="relative mt-6 grid max-w-3xl gap-4 sm:grid-cols-2 xl:max-w-[65%]">
           <Card className="flex items-center gap-4 border-2 border-brand/40 bg-brand-soft/60! shadow-none!">
             <span className="grid size-16 shrink-0 place-items-center rounded-full bg-white">
               <Target className="size-9 text-brand-ink" aria-hidden />
@@ -131,7 +132,7 @@ async function LearningPath() {
                 content: (
                   <>
                     <h2 className="sr-only">Các giai đoạn</h2>
-                    <ol className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+                    <ol className="grid grid-cols-[repeat(auto-fit,minmax(12rem,1fr))] gap-4">
                       {timeline.stages.map((s, i) => (
                         <li key={i}>
                           <StageCard stage={s} />

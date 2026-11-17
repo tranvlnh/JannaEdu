@@ -1,12 +1,11 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { BookOpen, Clock, GraduationCap } from "lucide-react";
+import { BookOpen, Clock } from "lucide-react";
 import { Button, Card, Pill } from "@/components/ui";
 import type { Course } from "@/lib/courses";
-
-const BG = ["bg-skill-listening/15", "bg-skill-reading/15", "bg-skill-writing/15", "bg-skill-speaking/15"];
 
 /** Lọc theo `?q=` (ô tìm kiếm trên Header submit về đây). */
 export function CourseList({ courses }: { courses: Course[] }) {
@@ -27,12 +26,10 @@ export function CourseGrid({ courses, query = "" }: { courses: Course[]; query?:
         </p>
       )}
       <ul className="grid gap-6 sm:grid-cols-2 xl:grid-cols-4">
-        {courses.map((c, i) => (
+        {courses.map((c) => (
           <li key={c.id} id={c.id} className="scroll-mt-24">
             <Card className="flex h-full flex-col gap-3 p-4!">
-              <div className={`grid aspect-video place-items-center rounded-xl ${BG[i % BG.length]}`}>
-                <GraduationCap className="size-12 text-navy/40" aria-hidden />
-              </div>
+              <Image src={c.image} alt="" width={150} height={88} className="aspect-video w-full rounded-xl object-cover" />
               <Pill className="self-start">{c.range}</Pill>
               <h2 className="text-xl font-bold">{c.title}</h2>
               <p className="flex-1 text-navy/80">{c.description}</p>
