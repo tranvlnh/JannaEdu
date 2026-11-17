@@ -15,15 +15,15 @@ Stack: Next.js (App Router, TypeScript), Supabase (Postgres, Auth with Google, S
 
 ```bash
 bun install
-cp .env.example .env.local
+cp .env.example .env
 ```
 
-Fill in `.env.local`:
+Fill in `.env` (used by `bun dev`, `bun run build` and Docker Compose):
 
 | Variable | Where to find it |
 | --- | --- |
-| `NEXT_PUBLIC_SUPABASE_URL` | Supabase dashboard → Project Settings → API |
-| `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` | Supabase dashboard → Project Settings → API Keys (publishable key) |
+| `SUPABASE_URL` | Supabase dashboard → Project Settings → API |
+| `SUPABASE_PUBLISHABLE_KEY` | Supabase dashboard → Project Settings → API Keys (publishable key) |
 | `SUPABASE_SECRET_KEY` | Same page (secret key). Server only, never prefix with `NEXT_PUBLIC_` |
 | `GEMINI_API_KEY` | Google AI Studio |
 
@@ -62,14 +62,13 @@ bun run test
 
 ## Deploy with Docker
 
-The image uses Next.js standalone output. `NEXT_PUBLIC_*` values are baked in at build time; secrets are passed only at run time.
+The image uses Next.js standalone output. With `.env` filled in on the server:
 
 ```bash
-docker build -t janna-edu \
-  --build-arg NEXT_PUBLIC_SUPABASE_URL=<url> \
-  --build-arg NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=<publishable-key> .
-docker run -d --name janna-edu --restart unless-stopped -p 3000:3000 --env-file .env.local janna-edu
+docker compose up -d --build
 ```
+
+The image holds no env; `.env` is read at runtime. To change config, edit `.env` and run `docker compose up -d` (no rebuild needed). Rebuild (`--build`) only when the code changes.
 
 Put a reverse proxy with HTTPS (Caddy, nginx) in front of port 3000, and add `https://<your-domain>/auth/callback` to the Supabase redirect URLs.
 

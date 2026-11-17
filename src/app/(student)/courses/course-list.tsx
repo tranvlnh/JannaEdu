@@ -29,7 +29,7 @@ export function CourseGrid({ courses, query = "" }: { courses: Course[]; query?:
         {courses.map((c) => (
           <li key={c.id} id={c.id} className="scroll-mt-24">
             <Card className="flex h-full flex-col gap-3 p-4!">
-              <Image src={c.image} alt="" width={150} height={88} className="aspect-video w-full rounded-xl object-cover" />
+              <Image src={c.image} alt="" width={800} height={450} className="aspect-video w-full rounded-xl object-cover" />
               <Pill className="self-start">{c.range}</Pill>
               <h2 className="text-xl font-bold">{c.title}</h2>
               <p className="flex-1 text-navy/80">{c.description}</p>
