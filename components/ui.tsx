@@ -1,6 +1,13 @@
 import Link from "next/link";
-import { Bot, CircleAlert, CircleCheck, type LucideIcon } from "lucide-react";
+import { BookOpen, Bot, CircleAlert, CircleCheck, Headphones, Mic, PenLine, type LucideIcon } from "lucide-react";
 import { skillStyle, type Skill } from "@/lib/skills";
+
+export const SKILL_ICON: Record<Skill, LucideIcon> = {
+  listening: Headphones,
+  reading: BookOpen,
+  writing: PenLine,
+  speaking: Mic,
+};
 
 export function Card({
   className = "",
@@ -157,18 +164,17 @@ export function SkillScoreCard({
   skill,
   score,
   max = 9,
-  icon: Icon,
 }: {
   skill: Skill;
   score: number;
   max?: number;
-  icon?: LucideIcon;
 }) {
   const s = skillStyle[skill];
+  const Icon = SKILL_ICON[skill];
   return (
     <div className={`flex flex-col gap-3 rounded-2xl border-2 p-4 ${s.border} ${s.soft}`}>
       <div className={`flex items-center gap-2 font-semibold ${s.text}`}>
-        {Icon && <Icon className="size-5" aria-hidden />}
+        <Icon className="size-5" aria-hidden />
         {s.label}
       </div>
       <p className="text-4xl font-bold tabular-nums">{score.toFixed(1)}</p>
