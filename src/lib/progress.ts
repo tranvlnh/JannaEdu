@@ -1,6 +1,9 @@
 // Pure helpers that turn a student's activity list into bands, counts and time series.
 import { SKILLS, roundBand, type Skill } from "./skills.ts";
 
+/** Day ranges offered on the progress page. */
+export const RANGES = [7, 30, 90] as const;
+
 export type Activity = {
   id: string;
   skill: Skill;

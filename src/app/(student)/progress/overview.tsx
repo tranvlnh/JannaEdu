@@ -4,9 +4,8 @@ import { useState } from "react";
 import { Bot, CalendarDays, FileText, NotebookPen, Target } from "lucide-react";
 import { Delta, ProgressBar, Select, StatCard } from "@/components/ui";
 import { band } from "@/lib/format";
-import type { rangeStats } from "@/lib/progress";
+import { RANGES, type rangeStats } from "@/lib/progress";
 
-export const RANGES = [7, 30, 90] as const;
 type Range = (typeof RANGES)[number];
 
 /** Tiêu đề + chọn khoảng thời gian + 4 thẻ thống kê. Dùng cho học sinh và phụ huynh. */

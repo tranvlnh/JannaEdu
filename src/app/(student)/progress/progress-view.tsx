@@ -2,10 +2,10 @@ import { ActivityList } from "@/components/activity-list";
 import { LineChart } from "@/components/charts";
 import { Card, CardTitle } from "@/components/ui";
 import { formatDate } from "@/lib/format";
-import { bandSeries, bandsAt, overallOf, periodEnds, rangeStats, type Activity } from "@/lib/progress";
+import { bandSeries, bandsAt, overallOf, periodEnds, RANGES, rangeStats, type Activity } from "@/lib/progress";
 import { SKILLS, skillStyle } from "@/lib/skills";
 import { requestTime } from "@/server/activity";
-import { ProgressOverview, RANGES } from "./overview";
+import { ProgressOverview } from "./overview";
 
 const WEEKS = 8;
 
