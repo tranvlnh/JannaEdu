@@ -75,3 +75,14 @@ export function useExamDraft(testId: string) {
 
   return { draft, update, reset };
 }
+
+export type GradedAnswer = { n: number; given: string; correct: string; ok: boolean };
+
+/** Chấm: bỏ khoảng trắng thừa, không phân biệt hoa thường. */
+export function grade(answers: Record<number, string>, key: Record<number, string>): GradedAnswer[] {
+  const norm = (s: string) => s.trim().replace(/\s+/g, " ").toLowerCase();
+  return Object.entries(key).map(([n, correct]) => {
+    const given = answers[Number(n)] ?? "";
+    return { n: Number(n), given, correct, ok: given !== "" && norm(given) === norm(correct) };
+  });
+}

@@ -27,9 +27,11 @@ export function ReadingExam({ test }: { test: PublicTest }) {
   const remainingSec = draft.startedAt && now ? (draft.startedAt + durationMs - now) / 1000 : test.minutes * 60;
 
   // Lần đầu vào đề → ghi giờ bắt đầu (reload vẫn giữ giờ cũ).
+  // Kiểm tra trong updater (đọc storage mới nhất): lượt render hydration thấy draft rỗng,
+  // nếu kiểm tra theo `draft` sẽ ghi đè giờ bắt đầu cũ mỗi lần reload.
   useEffect(() => {
-    if (!draft.startedAt && !draft.submittedAt) update((d) => ({ ...d, startedAt: Date.now() }));
-  }, [draft.startedAt, draft.submittedAt, update]);
+    update((d) => (d.startedAt || d.submittedAt ? d : { ...d, startedAt: Date.now() }));
+  }, [update]);
 
   function submit() {
     update((d) => ({ ...d, submittedAt: Date.now() }));

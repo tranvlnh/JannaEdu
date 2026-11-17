@@ -7,7 +7,7 @@ import { roleLabel, type User } from "@/lib/mock/users";
 export function Header({ user }: { user: User }) {
   const isStudent = user.role === "student";
   return (
-    <header className="flex h-20 items-center gap-4 px-4 lg:gap-6 lg:px-6">
+    <header className="flex h-20 items-center gap-4 px-4 lg:gap-6 lg:px-6 print:hidden">
       <div className="shrink-0 lg:w-56">
         <Logo href={isStudent ? "/" : "/parent"} />
       </div>

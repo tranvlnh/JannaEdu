@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { formatClock, parseDraft } from "./exam-draft.ts";
+import { formatClock, grade, parseDraft } from "./exam-draft.ts";
 
 test("formatClock", () => {
   assert.equal(formatClock(2400), "40:00");
@@ -14,4 +14,9 @@ test("parseDraft chịu được dữ liệu hỏng", () => {
   assert.deepEqual(parseDraft("{not json").flagged, []);
   assert.equal(parseDraft('{"answers":{"1":"iv"}}').answers[1], "iv");
   assert.equal(parseDraft('{"answers":{}}').startedAt, null);
+});
+
+test("grade chuẩn hóa khoảng trắng + hoa thường", () => {
+  const r = grade({ 1: "iv", 2: "  Reaction   Times ", 3: "" }, { 1: "iv", 2: "reaction times", 3: "TRUE" });
+  assert.deepEqual(r.map((x) => x.ok), [true, true, false]);
 });
