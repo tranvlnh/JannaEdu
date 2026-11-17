@@ -6,14 +6,20 @@ export const goal = { band: 7.0, totalWeeks: 12, currentWeek: 4 };
 /** Điểm hiện tại — dùng chung cho mọi màn tổng quan (overall = 6.0). */
 export const currentScores: SkillScores = { listening: 7.0, reading: 6.5, writing: 5.5, speaking: 5.5 };
 
-export type Course = { id: string; title: string; range: string; image: string };
+export type Course = {
+  id: string;
+  title: string;
+  range: string;
+  description: string;
+  lessons: number;
+  weeks: number;
+};
 
-// ponytail: image là đường dẫn dự kiến trong public/, chưa có ảnh → UI cần fallback
 export const featuredCourses: Course[] = [
-  { id: "foundation", title: "IELTS Foundation", range: "Band 4.0 – 5.0", image: "/courses/foundation.jpg" },
-  { id: "intensive", title: "IELTS Intensive", range: "Band 5.5 – 7.0", image: "/courses/intensive.jpg" },
-  { id: "advanced", title: "IELTS Advanced", range: "Band 7.0+", image: "/courses/advanced.jpg" },
-  { id: "practice", title: "Luyện đề toàn diện", range: "Mọi trình độ", image: "/courses/practice.jpg" },
+  { id: "foundation", title: "IELTS Foundation", range: "Band 4.0 – 5.0", description: "Xây nền ngữ pháp, từ vựng và làm quen 4 kỹ năng IELTS.", lessons: 36, weeks: 8 },
+  { id: "intensive", title: "IELTS Intensive", range: "Band 5.5 – 7.0", description: "Chiến lược làm bài từng dạng câu hỏi, luyện đề có chấm chữa.", lessons: 48, weeks: 12 },
+  { id: "advanced", title: "IELTS Advanced", range: "Band 7.0+", description: "Nâng band Writing/Speaking với từ vựng học thuật và lập luận chặt.", lessons: 40, weeks: 10 },
+  { id: "practice", title: "Luyện đề toàn diện", range: "Mọi trình độ", description: "Bộ đề mô phỏng thi thật, chấm điểm và phân tích lỗi bằng AI.", lessons: 30, weeks: 6 },
 ];
 
 // --- Mock test ---------------------------------------------------------------
