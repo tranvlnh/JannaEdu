@@ -109,6 +109,25 @@ export const pathStages: PathStage[] = [
   { weeks: "Tuần 11 – 12", title: "Full Practice", description: "Luyện đề tổng hợp", progress: 0, status: "locked" },
 ];
 
+export type WeekTask = { day: string; task: string; skill: Skill; minutes: number; done: boolean };
+
+/** Kế hoạch tuần hiện tại (tuần 4). */
+export const weekPlan: WeekTask[] = [
+  { day: "Thứ 2", task: "Listening Part 3 – Multiple choice", skill: "listening", minutes: 30, done: true },
+  { day: "Thứ 3", task: "Reading – Matching headings", skill: "reading", minutes: 40, done: true },
+  { day: "Thứ 4", task: "Từ vựng chủ đề Environment (20 từ)", skill: "reading", minutes: 20, done: true },
+  { day: "Thứ 5", task: "Listening Part 4 – Note completion", skill: "listening", minutes: 30, done: false },
+  { day: "Thứ 6", task: "Reading – True / False / Not Given", skill: "reading", minutes: 40, done: false },
+  { day: "Thứ 7", task: "Mini test Listening + Reading", skill: "listening", minutes: 60, done: false },
+];
+
+export const resources = [
+  { title: "IELTS Listening Band 5.0 – 6.5 (Janna Book)", type: "Sách", href: "/academy" },
+  { title: "IELTS Reading Band 5.0 – 6.5 (Janna Book)", type: "Sách", href: "/academy" },
+  { title: "Video: Chiến lược Matching headings", type: "Video", href: "/academy" },
+  { title: "Bộ 300 từ vựng học thuật thường gặp", type: "PDF", href: "/academy" },
+];
+
 export type Exercise = {
   id: string;
   skill: Skill;
