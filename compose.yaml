@@ -1,14 +1,9 @@
 services:
-  web:
-    build:
-      context: .
-      secrets: [env]
+  janna-edu:
+    build: .
     image: janna-edu
+    # All config is read at runtime: edit .env, then `docker compose up -d` (no rebuild).
     env_file: .env
     ports:
       - "3000:3000"
     restart: unless-stopped
-
-secrets:
-  env:
-    file: .env

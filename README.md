@@ -22,8 +22,8 @@ Fill in `.env` (used by `bun dev`, `bun run build` and Docker Compose):
 
 | Variable | Where to find it |
 | --- | --- |
-| `NEXT_PUBLIC_SUPABASE_URL` | Supabase dashboard → Project Settings → API |
-| `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` | Supabase dashboard → Project Settings → API Keys (publishable key) |
+| `SUPABASE_URL` | Supabase dashboard → Project Settings → API |
+| `SUPABASE_PUBLISHABLE_KEY` | Supabase dashboard → Project Settings → API Keys (publishable key) |
 | `SUPABASE_SECRET_KEY` | Same page (secret key). Server only, never prefix with `NEXT_PUBLIC_` |
 | `GEMINI_API_KEY` | Google AI Studio |
 
@@ -68,7 +68,7 @@ The image uses Next.js standalone output. With `.env` filled in on the server:
 docker compose up -d --build
 ```
 
-`.env` is used twice: mounted as a build secret so `next build` can bake in the `NEXT_PUBLIC_*` values (it is not stored in the image), and passed as the container's runtime env.
+The image holds no env; `.env` is read at runtime. To change config, edit `.env` and run `docker compose up -d` (no rebuild needed). Rebuild (`--build`) only when the code changes.
 
 Put a reverse proxy with HTTPS (Caddy, nginx) in front of port 3000, and add `https://<your-domain>/auth/callback` to the Supabase redirect URLs.
 
