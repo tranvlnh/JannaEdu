@@ -264,3 +264,16 @@ export function Select({
     </span>
   );
 }
+
+/** Google profile picture, or the initial of the last name when there is none. */
+export function Avatar({ name, src, className }: { name: string; src: string | null; className: string }) {
+  if (src) {
+    // eslint-disable-next-line @next/next/no-img-element -- external Google URL, already sized by Google
+    return <img src={src} alt="" referrerPolicy="no-referrer" className={`${className} rounded-full object-cover`} />;
+  }
+  return (
+    <span aria-hidden className={`${className} grid place-items-center rounded-full font-bold text-brand-ink`}>
+      {name.split(" ").at(-1)?.[0]}
+    </span>
+  );
+}

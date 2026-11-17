@@ -18,7 +18,7 @@ import { getUser } from "@/server/auth";
 import { createAdminClient } from "@/server/supabase/admin";
 import { createClient } from "@/server/supabase/server";
 
-const COLUMNS = "id, role, fullName:full_name, goalBand:goal_band";
+const COLUMNS = "id, role, fullName:full_name, avatarUrl:avatar_url, goalBand:goal_band";
 const CHILD_COOKIE = "janna-child";
 const CODE_ALPHABET = "ABCDEFGHJKMNPQRSTVWXYZ23456789"; // no 0/O, 1/I/L, U
 const CODE_TTL_MS = 15 * 60 * 1000;

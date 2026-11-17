@@ -1,12 +1,13 @@
 import { Suspense } from "react";
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import { Bell, ChevronDown, LogOut, Menu, Search, UserRound } from "lucide-react";
 import type { Role } from "@/contracts/profile";
 import { ChildPicker } from "@/components/child-picker";
 import { Logo } from "@/components/logo";
 import { PopoverPanel } from "@/components/popover-panel";
 import { ActiveSidebarNav, MobileNav, SidebarNav } from "@/components/sidebar-nav";
-import { Button } from "@/components/ui";
+import { Avatar, Button } from "@/components/ui";
 import { formatDate } from "@/lib/format";
 import { listActivity, requestTime } from "@/server/activity";
 import { signOut } from "@/server/auth";
@@ -39,6 +40,8 @@ export function Header({ role, menu = false }: { role: Role; menu?: boolean }) {
 
 async function HeaderUser({ role: fallbackRole, menu }: { role: Role; menu: boolean }) {
   const profile = await getProfile();
+  // Every shell page shows the header, so this sends a signed-in user without a role to onboarding instead of the student fallback.
+  if (profile && !profile.role) redirect("/onboarding");
   const role = profile?.role ?? fallbackRole;
   const isStudent = role === "student";
   const family = role === "parent" ? await getSelectedChild() : null;
@@ -76,9 +79,7 @@ async function HeaderUser({ role: fallbackRole, menu }: { role: Role; menu: bool
               aria-label={`Tài khoản: ${name}${profile.role ? `, ${ROLE_LABEL[profile.role]}` : ""}`}
               className="flex items-center gap-3 rounded-full py-1 pr-2 pl-1 hover:bg-surface"
             >
-              <span aria-hidden className="flex size-11 items-center justify-center rounded-full bg-brand-tint font-bold text-brand-ink">
-                {name.split(" ").at(-1)?.[0]}
-              </span>
+              <Avatar name={name} src={profile.avatarUrl} className="size-11 shrink-0 bg-brand-tint" />
               <span className="hidden text-left leading-tight sm:block">
                 <span className="block font-semibold">{name}</span>
                 {profile.role && <span className="block text-sm text-muted">{ROLE_LABEL[profile.role]}</span>}
