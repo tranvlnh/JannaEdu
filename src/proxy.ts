@@ -26,7 +26,8 @@ export async function proxy(request: NextRequest) {
   const isPublic = ["/", "/login", "/courses"].includes(pathname) || pathname.startsWith("/auth/");
 
   if (!user && !isPublic) {
-    return NextResponse.redirect(new URL("/login", request.url));
+    // Relative Location: behind Docker/tunnel request.url is http://0.0.0.0:3000.
+    return new NextResponse(null, { status: 307, headers: { Location: "/login" } });
   }
   return response;
 }
