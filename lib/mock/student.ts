@@ -10,9 +10,9 @@ export type Course = { id: string; title: string; range: string; image: string }
 
 // ponytail: image là đường dẫn dự kiến trong public/, chưa có ảnh → UI cần fallback
 export const featuredCourses: Course[] = [
-  { id: "foundation", title: "IELTS Foundation", range: "4.0 – 5.0", image: "/courses/foundation.jpg" },
-  { id: "intensive", title: "IELTS Intensive", range: "5.5 – 7.0", image: "/courses/intensive.jpg" },
-  { id: "advanced", title: "IELTS Advanced", range: "7.0+", image: "/courses/advanced.jpg" },
+  { id: "foundation", title: "IELTS Foundation", range: "Band 4.0 – 5.0", image: "/courses/foundation.jpg" },
+  { id: "intensive", title: "IELTS Intensive", range: "Band 5.5 – 7.0", image: "/courses/intensive.jpg" },
+  { id: "advanced", title: "IELTS Advanced", range: "Band 7.0+", image: "/courses/advanced.jpg" },
   { id: "practice", title: "Luyện đề toàn diện", range: "Mọi trình độ", image: "/courses/practice.jpg" },
 ];
 
