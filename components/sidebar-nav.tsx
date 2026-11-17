@@ -35,11 +35,9 @@ const NAV: Record<Role, NavItem[]> = {
     { href: "/parent/progress", label: "Tiến độ học tập", icon: ChartLine },
     { href: "/parent/ai-feedback", label: "Nhận xét AI", icon: Bot },
     { href: "/parent/path", label: "Lộ trình học", icon: Route },
-    { href: "/academy", label: "Tài liệu & Tài nguyên", icon: FileText },
+    { href: "/parent/academy", label: "Tài liệu & Tài nguyên", icon: FileText },
   ],
 };
-
-const SETTINGS: NavItem = { href: "/settings", label: "Cài đặt", icon: Settings };
 
 function isActive(pathname: string | null, href: string) {
   if (!pathname) return false;
@@ -66,6 +64,7 @@ function NavLink({ item, active }: { item: NavItem; active: boolean }) {
 
 // pathname = null → render không active (fallback Suspense khi route có param động).
 export function SidebarNav({ role, pathname }: { role: Role; pathname: string | null }) {
+  const settings: NavItem = { href: role === "parent" ? "/parent/settings" : "/settings", label: "Cài đặt", icon: Settings };
   return (
     <>
       <ul className="flex flex-col gap-1">
@@ -76,7 +75,7 @@ export function SidebarNav({ role, pathname }: { role: Role; pathname: string | 
         ))}
       </ul>
       <div className="mt-auto pt-6">
-        <NavLink item={SETTINGS} active={isActive(pathname, SETTINGS.href)} />
+        <NavLink item={settings} active={isActive(pathname, settings.href)} />
       </div>
     </>
   );
