@@ -9,6 +9,7 @@ export const profileSchema = z.object({
   id: z.uuid(),
   role: roleSchema.nullable(), // null until the user picks one at onboarding
   fullName: z.string().nullable(),
+  avatarUrl: z.url().nullable(), // Google profile picture
   goalBand: bandSchema.nullable(), // the student's target band; null until they pick one
 });
 export type Profile = z.infer<typeof profileSchema>;
