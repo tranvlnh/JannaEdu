@@ -32,16 +32,39 @@ export const activities = [
   { id: "a-4", text: "Con hoàn thành bài tập Listening", at: "2026-11-17T20:00:00+07:00" },
 ];
 
-export const monthlyReport = {
-  month: 10,
-  from: "2026-10-01",
-  to: "2026-10-31",
-  stats: { hours: 30, hoursDelta: 3, completed: 50, completedDelta: 12, mockTests: 6, mockTestsDelta: 3, vocab: 98, vocabDelta: 20 },
-  scores: currentScores,
-  previousScores: { listening: 6.5, reading: 6.0, writing: 5.0, speaking: 5.0 } satisfies SkillScores,
-  teacherComment:
-    "Con đã có tiến bộ ở Listening và Reading: khả năng nghe hiểu thông tin và đọc hiểu nội dung bài đã được cải thiện. Tuy nhiên, con cần tiếp tục trau dồi từ vựng, luyện tập thường xuyên và nâng cao khả năng xử lý thông tin để cải thiện kết quả trong thời gian tới.",
+export type MonthlyReport = {
+  month: number;
+  from: string;
+  to: string;
+  stats: { hours: number; hoursDelta: number; completed: number; completedDelta: number; mockTests: number; mockTestsDelta: number; vocab: number; vocabDelta: number };
+  scores: SkillScores;
+  previousScores: SkillScores;
+  teacherComment: string;
 };
+
+/** Mới nhất trước. */
+export const monthlyReports: MonthlyReport[] = [
+  {
+    month: 10,
+    from: "2026-10-01",
+    to: "2026-10-31",
+    stats: { hours: 30, hoursDelta: 3, completed: 50, completedDelta: 12, mockTests: 6, mockTestsDelta: 3, vocab: 98, vocabDelta: 20 },
+    scores: currentScores,
+    previousScores: { listening: 6.5, reading: 6.0, writing: 5.0, speaking: 5.0 },
+    teacherComment:
+      "Con đã có tiến bộ ở Listening và Reading: khả năng nghe hiểu thông tin và đọc hiểu nội dung bài đã được cải thiện. Tuy nhiên, con cần tiếp tục trau dồi từ vựng, luyện tập thường xuyên và nâng cao khả năng xử lý thông tin để cải thiện kết quả trong thời gian tới.",
+  },
+  {
+    month: 9,
+    from: "2026-09-01",
+    to: "2026-09-30",
+    stats: { hours: 27, hoursDelta: -2, completed: 38, completedDelta: 5, mockTests: 3, mockTestsDelta: 0, vocab: 78, vocabDelta: 10 },
+    scores: { listening: 6.5, reading: 6.0, writing: 5.0, speaking: 5.0 },
+    previousScores: { listening: 6.0, reading: 6.0, writing: 5.0, speaking: 5.0 },
+    teacherComment:
+      "Tháng này con duy trì lịch học khá đều. Listening cải thiện rõ ở dạng bài điền từ; Writing và Speaking chưa có nhiều thay đổi, cần thêm bài luyện có chấm chữa.",
+  },
+];
 
 export const aiFeedback = {
   overview:

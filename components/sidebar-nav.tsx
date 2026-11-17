@@ -12,6 +12,7 @@ import {
   NotebookPen,
   Route,
   Settings,
+  Users,
   type LucideIcon,
 } from "lucide-react";
 import type { Role } from "@/lib/mock/users";
@@ -74,7 +75,15 @@ export function SidebarNav({ role, pathname }: { role: Role; pathname: string | 
           </li>
         ))}
       </ul>
-      <div className="mt-auto pt-6">
+      <div className="mt-auto flex flex-col gap-4 pt-6">
+        {role === "parent" && (
+          <div className="rounded-2xl bg-surface p-4">
+            <Users className="mb-2 size-9" strokeWidth={1.5} aria-hidden />
+            <p className="leading-snug">
+              <strong>Đồng hành cùng con</strong> trên hành trình chinh phục <strong>IELTS</strong>
+            </p>
+          </div>
+        )}
         <NavLink item={settings} active={isActive(pathname, settings.href)} />
       </div>
     </>

@@ -28,7 +28,7 @@ export function CourseGrid({ courses, query = "" }: { courses: Course[]; query?:
       )}
       <ul className="grid gap-6 sm:grid-cols-2 xl:grid-cols-4">
         {courses.map((c, i) => (
-          <li key={c.id} id={c.id} className="scroll-mt-6">
+          <li key={c.id} id={c.id} className="scroll-mt-24">
             <Card className="flex h-full flex-col gap-3 p-4!">
               <div className={`grid aspect-video place-items-center rounded-xl ${BG[i % BG.length]}`}>
                 <GraduationCap className="size-12 text-navy/40" aria-hidden />

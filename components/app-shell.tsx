@@ -7,7 +7,7 @@ import { roleLabel, type User } from "@/lib/mock/users";
 export function Header({ user }: { user: User }) {
   const isStudent = user.role === "student";
   return (
-    <header className="flex h-20 items-center gap-4 px-4 lg:gap-6 lg:px-6 print:hidden">
+    <header className="sticky top-0 z-20 flex h-20 items-center gap-4 bg-white px-4 lg:gap-6 lg:px-6 print:hidden">
       <div className="shrink-0 lg:w-56">
         <Logo href={isStudent ? "/" : "/parent"} />
       </div>
@@ -59,7 +59,7 @@ export function AppShell({ user, children }: { user: User; children: React.React
     <div className="flex min-h-screen flex-col">
       <Header user={user} />
       <div className="flex flex-1">
-        <nav aria-label="Điều hướng chính" className="hidden w-64 shrink-0 flex-col px-4 pt-2 pb-6 lg:sticky lg:top-0 lg:flex lg:h-screen lg:self-start lg:overflow-y-auto">
+        <nav aria-label="Điều hướng chính" className="hidden w-64 shrink-0 flex-col px-4 pt-2 pb-6 lg:sticky lg:top-20 lg:flex lg:h-[calc(100dvh-5rem)] lg:self-start lg:overflow-y-auto">
           {/* usePathname suspend ở route có param động (cacheComponents) */}
           <Suspense fallback={<SidebarNav role={user.role} pathname={null} />}>
             <ActiveSidebarNav role={user.role} />

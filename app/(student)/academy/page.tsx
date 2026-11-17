@@ -85,7 +85,7 @@ export default function AcademyPage() {
         </div>
       </section>
 
-      <section id="books" aria-labelledby="books-title" className="scroll-mt-6 rounded-3xl bg-white/50 p-6 sm:p-10">
+      <section id="books" aria-labelledby="books-title" className="scroll-mt-24 rounded-3xl bg-white/50 p-6 sm:p-10">
         <h2 id="books-title" className="text-3xl font-bold sm:text-4xl">
           Sách tự học IELTS
         </h2>

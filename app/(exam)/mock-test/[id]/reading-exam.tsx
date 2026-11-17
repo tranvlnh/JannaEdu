@@ -137,7 +137,7 @@ export function ReadingExam({ test }: { test: PublicTest }) {
       </div>
 
       {/* Bảng điều khiển: timer, nộp, lưới câu — sticky trên mobile */}
-      <aside className="sticky top-0 z-10 flex flex-col gap-3 rounded-2xl bg-white p-4 shadow-card lg:row-span-2 lg:overflow-y-auto">
+      <aside className="sticky top-20 z-10 flex flex-col gap-3 rounded-2xl bg-white p-4 shadow-card lg:row-span-2 lg:overflow-y-auto">
         <div className="flex items-center justify-between gap-3 lg:flex-col lg:items-start">
           <div>
             <p className="text-sm font-medium lg:text-lg">Thời gian còn lại</p>

@@ -123,29 +123,32 @@ export function LineChart({
           </g>
         ))}
       </svg>
-      <table className="sr-only">
-        <caption>{title}</caption>
-        <thead>
-          <tr>
-            <th scope="col">Kỹ năng</th>
-            {labels.map((l) => (
-              <th key={l} scope="col">
-                {l}
-              </th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {series.map((s) => (
-            <tr key={s.name}>
-              <th scope="row">{s.name}</th>
-              {s.values.map((v, i) => (
-                <td key={i}>{v}</td>
+      {/* sr-only đặt trên div: <table> không bị co về 1px, sẽ kéo dài trang */}
+      <div className="sr-only">
+        <table>
+          <caption>{title}</caption>
+          <thead>
+            <tr>
+              <th scope="col">Kỹ năng</th>
+              {labels.map((l) => (
+                <th key={l} scope="col">
+                  {l}
+                </th>
               ))}
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {series.map((s) => (
+              <tr key={s.name}>
+                <th scope="row">{s.name}</th>
+                {s.values.map((v, i) => (
+                  <td key={i}>{v}</td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </figure>
   );
 }
