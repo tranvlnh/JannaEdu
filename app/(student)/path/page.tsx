@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { CircleCheck, ClipboardList, Clock, ExternalLink, Flag, Layers, Lock, Target } from "lucide-react";
+import { ArrowRight, CircleCheck, ClipboardList, Clock, ExternalLink, Flag, Layers, Lock, Target } from "lucide-react";
 import { Tabs } from "@/components/tabs";
-import { Card, Pill, ProgressBar, SKILL_ICON } from "@/components/ui";
+import { Button, Card, Pill, ProgressBar, SKILL_ICON } from "@/components/ui";
 import { band } from "@/lib/format";
 import { goal, pathStages, resources, weekPlan, type PathStage } from "@/lib/mock/student";
 import { skillStyle } from "@/lib/skills";
@@ -76,6 +76,9 @@ export default function PathPage() {
             </p>
           </Card>
         </div>
+        <Button href="/path/exercises" variant="ghost" className="relative mt-4 -ml-4">
+          Xem bài tập AI gợi ý <ArrowRight className="size-4" aria-hidden />
+        </Button>
       </div>
 
       <Tabs

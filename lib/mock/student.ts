@@ -135,13 +135,15 @@ export type Exercise = {
   title: string;
   description: string;
   minutes: number;
+  /** Màn làm bài; undefined = chưa có (UI hiện "Sắp có"). */
+  href?: string;
 };
 
 export const exercises: Exercise[] = [
   { id: "ex-1", skill: "listening", part: "Part 4", title: "Listening Part 4: Environment", description: "Trả lời câu hỏi dạng Multiple choice, Note completion", minutes: 10 },
   { id: "ex-2", skill: "writing", part: "Task 1", title: "Writing Task 1: Bar chart", description: "Mô tả biểu đồ theo đúng cấu trúc", minutes: 20 },
-  { id: "ex-3", skill: "speaking", part: "Part 2", title: "Speaking Part 2: Describe an event", description: "Luyện nói theo chủ đề trong 2 phút", minutes: 15 },
-  { id: "ex-4", skill: "reading", part: "Passage 2", title: "Reading: Matching headings", description: "Chọn tiêu đề phù hợp cho từng đoạn văn", minutes: 20 },
+  { id: "ex-3", skill: "speaking", part: "Part 2", title: "Speaking Part 2: Describe an event", description: "Luyện nói theo chủ đề trong 2 phút", minutes: 15, href: "/examiner" },
+  { id: "ex-4", skill: "reading", part: "Passage 2", title: "Reading: Matching headings", description: "Chọn tiêu đề phù hợp cho từng đoạn văn", minutes: 20, href: "/mock-test/reading-01" },
   { id: "ex-5", skill: "writing", part: "Task 2", title: "Writing Task 2: Opinion essay", description: "Lập dàn ý và viết bài luận nêu quan điểm", minutes: 40 },
 ];
 
