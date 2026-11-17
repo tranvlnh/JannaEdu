@@ -1,36 +1,86 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Janna Edu
 
-## Getting Started
+IELTS practice web app for Janna Academy: Reading/Listening mock tests, AI-graded Writing and Speaking, and AI learning paths for students and parents.
 
-First, run the development server:
+Stack: Next.js (App Router, TypeScript), Supabase (Postgres, Auth with Google, Storage), Gemini, zod.
+
+## Prerequisites
+
+- Node.js 20+ and [Bun](https://bun.sh) (the repo uses `bun.lock`)
+- A Supabase project
+- A Google OAuth client (for sign-in)
+- A Gemini API key
+
+## Install
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+bun install
+cp .env.example .env.local
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Fill in `.env.local`:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+| Variable | Where to find it |
+| --- | --- |
+| `NEXT_PUBLIC_SUPABASE_URL` | Supabase dashboard → Project Settings → API |
+| `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` | Supabase dashboard → Project Settings → API Keys (publishable key) |
+| `SUPABASE_SECRET_KEY` | Same page (secret key). Server only, never prefix with `NEXT_PUBLIC_` |
+| `GEMINI_API_KEY` | Google AI Studio |
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Set up the database
 
-## Learn More
+Link the Supabase CLI to your project (first time only):
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+bunx supabase login
+bunx supabase link --project-ref <project-ref>
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Apply all migrations and load the sample data (seeds are safe to re-run):
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```bash
+bunx supabase db push --remote --include-seed
+```
 
-## Deploy on Vercel
+The sample Listening test expects an audio file `sample-beeps.wav` in the `listening-audio` storage bucket. Upload it by hand in the dashboard.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Set up Google sign-in
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+1. In Google Cloud Console, add `https://<project-ref>.supabase.co/auth/v1/callback` as an authorized redirect URI of the OAuth client.
+2. In Supabase → Authentication → Providers, enable Google and paste the OAuth client ID and secret.
+3. In Supabase → Authentication → URL Configuration, set the Site URL and add `http://localhost:3000/auth/callback` (plus your production URL) to the redirect URLs.
+
+## Run
+
+```bash
+bun dev          # dev server on http://localhost:3000
+bun run build    # production build
+bun run start    # serve the production build
+bun run lint
+bun run test
+```
+
+## Deploy with Docker
+
+The image uses Next.js standalone output. `NEXT_PUBLIC_*` values are baked in at build time; secrets are passed only at run time.
+
+```bash
+docker build -t janna-edu \
+  --build-arg NEXT_PUBLIC_SUPABASE_URL=<url> \
+  --build-arg NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=<publishable-key> .
+docker run -d --name janna-edu --restart unless-stopped -p 3000:3000 --env-file .env.local janna-edu
+```
+
+Put a reverse proxy with HTTPS (Caddy, nginx) in front of port 3000, and add `https://<your-domain>/auth/callback` to the Supabase redirect URLs.
+
+## Changing the database schema
+
+The schema changes only through migrations in `supabase/migrations/`. Don't edit the database in the dashboard, and don't hand-edit `src/server/supabase/database.types.ts`.
+
+```bash
+bunx supabase migration new <migration_name>   # creates an empty SQL file in supabase/migrations/
+# write the SQL in that file (enable RLS on every new table)
+bunx supabase db push --remote --dry-run       # preview which migrations will run
+bun run db:push                                # apply them to the linked project
+bun run db:types                               # regenerate types; commit them with the migration
+```
