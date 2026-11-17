@@ -3,7 +3,7 @@ import { Suspense } from "react";
 import { ChevronRight } from "lucide-react";
 import { ActivityList } from "@/components/activity-list";
 import { DonutChart, LineChart } from "@/components/charts";
-import { Card, CardTitle, Delta, Pill, ProgressBar } from "@/components/ui";
+import { Avatar, Card, CardTitle, Delta, Pill, ProgressBar } from "@/components/ui";
 import { band, formatDate } from "@/lib/format";
 import { bandSeries, bandsAt, lastMonths, overallOf } from "@/lib/progress";
 import { SKILLS, skillStyle } from "@/lib/skills";
@@ -46,9 +46,7 @@ async function Overview() {
       <div className="grid gap-6 xl:grid-cols-[1.1fr_1fr_0.8fr]">
         <Card className="flex flex-wrap items-center gap-6">
           <div className="flex flex-col items-center gap-3">
-            <span aria-hidden className="grid size-28 place-items-center rounded-full bg-brand-soft text-4xl font-bold text-brand-ink">
-              {name.split(" ").at(-1)?.[0]}
-            </span>
+            <Avatar name={name} src={child.avatarUrl} className="size-28 bg-brand-soft text-4xl" />
             <Pill tone={active ? "success" : "neutral"} className="px-5 py-1.5 text-base">
               {active ? "Đang học" : "Chưa học gần đây"}
             </Pill>
