@@ -4,7 +4,10 @@ import { useState } from "react";
 import { Clock } from "lucide-react";
 import { Button, Card, Pill } from "@/components/ui";
 import type { Exercise } from "@/lib/mock/student";
-import { SKILLS, skillStyle, type Skill } from "@/lib/skills";
+import { skillStyle, type Skill } from "@/lib/skills";
+
+// Thứ tự theo mockup (Reading trước Listening).
+const FILTERS = ["all", "reading", "listening", "writing", "speaking"] as const;
 
 export function ExerciseList({ exercises }: { exercises: Exercise[] }) {
   const [filter, setFilter] = useState<Skill | "all">("all");
@@ -13,7 +16,7 @@ export function ExerciseList({ exercises }: { exercises: Exercise[] }) {
   return (
     <div className="flex flex-col gap-5">
       <div role="group" aria-label="Lọc theo kỹ năng" className="flex flex-wrap gap-3">
-        {(["all", ...SKILLS] as const).map((f) => (
+        {FILTERS.map((f) => (
           <button
             key={f}
             type="button"
@@ -26,7 +29,10 @@ export function ExerciseList({ exercises }: { exercises: Exercise[] }) {
         ))}
       </div>
 
-      <ul className="flex flex-col gap-4" aria-live="polite">
+      <p role="status" className="sr-only">
+        {shown.length} bài tập
+      </p>
+      <ul className="flex flex-col gap-4">
         {shown.map((e) => (
           <li key={e.id}>
             <Card className="flex flex-wrap items-center gap-4">
@@ -34,7 +40,7 @@ export function ExerciseList({ exercises }: { exercises: Exercise[] }) {
                 <h2 className="text-xl font-bold">{e.title}</h2>
                 <p className="text-navy/80">{e.description}</p>
                 <div className="mt-3 flex gap-2">
-                  <Pill className={`${skillStyle[e.skill].soft} ${skillStyle[e.skill].text}`}>{skillStyle[e.skill].label}</Pill>
+                  <Pill tone="none" className={`${skillStyle[e.skill].soft} ${skillStyle[e.skill].text}`}>{skillStyle[e.skill].label}</Pill>
                   <Pill>{e.part}</Pill>
                 </div>
               </div>
@@ -54,8 +60,8 @@ export function ExerciseList({ exercises }: { exercises: Exercise[] }) {
             </Card>
           </li>
         ))}
-        {shown.length === 0 && <p className="text-muted">Chưa có bài tập gợi ý cho kỹ năng này.</p>}
       </ul>
+      {shown.length === 0 && <p className="text-muted">Chưa có bài tập gợi ý cho kỹ năng này.</p>}
     </div>
   );
 }

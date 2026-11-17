@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { ChevronRight } from "lucide-react";
 import { DonutChart, LineChart } from "@/components/charts";
-import { Card, CardTitle, Pill, ProgressBar } from "@/components/ui";
+import { Card, CardTitle, Delta, Pill, ProgressBar } from "@/components/ui";
 import { band, formatDate, formatTime } from "@/lib/format";
 import { activities, child, monthlyScores } from "@/lib/mock/parent";
 import { SKILLS, overallBand, skillStyle } from "@/lib/skills";
@@ -68,9 +68,9 @@ export default function ParentHomePage() {
               ))}
             </dl>
           </div>
-          <p className="mt-4 text-sm">
-            <span className="font-semibold text-success-ink">↑ +{band(delta)}</span> so với lần thi trước
-          </p>
+          <div className="mt-4">
+            <Delta value={delta} suffix="so với lần thi trước" />
+          </div>
         </Card>
 
         <Card className="flex flex-col gap-4">

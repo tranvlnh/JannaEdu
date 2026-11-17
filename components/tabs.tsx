@@ -67,7 +67,7 @@ export function Tabs({
           aria-labelledby={`${base}-tab-${t.id}`}
           hidden={t.id !== active}
           tabIndex={0}
-          className="pt-6 focus-visible:outline-none"
+          className="mt-6 rounded-2xl focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand"
         >
           {t.content}
         </div>

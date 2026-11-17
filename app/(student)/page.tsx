@@ -7,7 +7,7 @@ const FEATURES: { href: string; icon: LucideIcon; title: string; text: string }[
   { href: "/examiner", icon: Bot, title: "Giám khảo AI 24/7", text: "Chấm điểm, phân tích lỗi chi tiết theo chuẩn quốc tế chỉ trong vài giây." },
   { href: "/mock-test", icon: Lightbulb, title: "Phòng thi ảo", text: "Mô phỏng áp lực thời gian, giao diện và cấu trúc đề thi thật." },
   { href: "/path", icon: Target, title: "Lộ trình phù hợp", text: "AI phân tích điểm yếu, gợi ý bài tập trọng tâm, tối ưu thời gian." },
-  { href: "/parent", icon: Users, title: "Phụ huynh theo dõi", text: "Theo dõi kết quả và báo cáo tiến độ học tập của con." },
+  { href: "/parent", icon: Users, title: "Phụ huynh theo dõi tiến độ", text: "Theo dõi kết quả và báo cáo tiến độ học tập của con." },
 ];
 
 // Màu nền thay ảnh khóa học (chưa có asset) — xoay vòng theo index.

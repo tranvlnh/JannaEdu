@@ -67,6 +67,8 @@ const PILL = {
   success: "bg-success/15 text-success-ink",
   danger: "bg-danger/10 text-danger-ink",
   warning: "bg-yellow-300/80 text-navy",
+  /** Không màu mặc định — tự truyền màu qua className. */
+  none: "",
 };
 
 export function Pill({
@@ -120,7 +122,7 @@ export function Delta({ value, suffix }: { value: number; suffix: string }) {
     <p className="text-sm">
       <span className={`font-semibold ${up ? "text-success-ink" : "text-danger-ink"}`}>
         {up ? "↑ +" : "↓ "}
-        {value}
+        {Math.abs(value)}
       </span>{" "}
       {suffix}
     </p>
@@ -149,7 +151,7 @@ export function StatCard({
         <span className={`flex size-10 shrink-0 items-center justify-center rounded-xl ${iconClass}`}>
           <Icon className="size-5" aria-hidden />
         </span>
-        <h3 className="font-medium">{label}</h3>
+        <p className="font-medium">{label}</p>
       </div>
       <p className="text-4xl font-bold tabular-nums">
         {value}
@@ -203,10 +205,10 @@ export function CheckList({
   const { icon: Icon, color } = CHECK[tone];
   return (
     <div className={className}>
-      <h3 className={`mb-3 flex items-center gap-2 text-xl font-bold ${color}`}>
+      <h2 className={`mb-3 flex items-center gap-2 text-xl font-bold ${color}`}>
         <Icon className="size-6" aria-hidden />
         {title}
-      </h3>
+      </h2>
       <ul className="flex flex-col gap-3">
         {items.map((item) => (
           <li key={item} className="flex items-start gap-2">

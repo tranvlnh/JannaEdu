@@ -2,7 +2,7 @@ import { DonutChart } from "@/components/charts";
 import { Card } from "@/components/ui";
 import { band } from "@/lib/format";
 import type { Criterion } from "@/lib/mock/student";
-import { SKILLS, roundBand, skillStyle } from "@/lib/skills";
+import { roundBand } from "@/lib/skills";
 
 /** Donut band + 4 tiêu chí chấm (Speaking/Writing). Dùng ở /examiner và /examiner/analysis. */
 export function CriteriaCard({ criteria, showDonut = true }: { criteria: Criterion[]; showDonut?: boolean }) {
@@ -11,8 +11,12 @@ export function CriteriaCard({ criteria, showDonut = true }: { criteria: Criteri
     <Card className="flex flex-col items-center gap-6">
       {showDonut && (
         <DonutChart
-          label={`Band ${band(overall)}`}
-          segments={criteria.map((c, i) => ({ value: c.score, color: skillStyle[SKILLS[i % SKILLS.length]].color }))}
+          label={`Band ${band(overall)} trên 9`}
+          // Vòng band/9 một màu — tiêu chí không phải kỹ năng nên không dùng màu skill
+          segments={[
+            { value: overall, color: "var(--color-skill-listening)" },
+            { value: 9 - overall, color: "color-mix(in srgb, var(--color-navy) 12%, transparent)" },
+          ]}
         >
           <div className="text-brand-ink">
             <p className="font-semibold">Band</p>

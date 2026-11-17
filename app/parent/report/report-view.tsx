@@ -34,7 +34,10 @@ export function ReportView({ reports, goalBand }: { reports: MonthlyReport[]; go
         </Select>
       </div>
 
-      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4" aria-live="polite">
+      <p role="status" className="sr-only">
+        Đang xem báo cáo tháng {r.month}
+      </p>
+      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <StatCard icon={Clock} label="Tổng thời gian học" value={st.hours} unit="giờ">
           <Delta value={st.hoursDelta} suffix={`giờ ${PREV}`} />
         </StatCard>

@@ -22,8 +22,8 @@ export default function MockTestPage() {
     <div className="flex flex-col gap-8">
       <section className="relative overflow-hidden rounded-3xl bg-white/60 px-6 py-10 sm:px-10 sm:py-14">
         <div aria-hidden className="absolute -top-16 -left-16 size-48 rounded-full bg-skill-listening/30" />
-        <div aria-hidden className="absolute right-24 -bottom-32 hidden size-80 rounded-full bg-skill-listening/40 md:block" />
-        <div aria-hidden className="absolute -right-20 -bottom-24 hidden size-96 rounded-full bg-brand md:block" />
+        <div aria-hidden className="absolute right-24 -bottom-32 hidden size-80 rounded-full bg-skill-listening/40 xl:block" />
+        <div aria-hidden className="absolute -right-20 -bottom-24 hidden size-96 rounded-full bg-brand xl:block" />
         <div className="relative max-w-2xl">
           <h1 className="text-4xl leading-tight font-bold sm:text-5xl">
             Trải nghiệm kỳ thi IELTS <span className="block text-brand-ink">như thật – mọi lúc, mọi nơi</span>
@@ -40,8 +40,8 @@ export default function MockTestPage() {
       <ul className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         {PERKS.map(({ icon: Icon, title, text }) => (
           <li key={title}>
-            <Card className="h-full">
-              <span className="mb-3 flex size-12 items-center justify-center rounded-full bg-surface">
+            <Card className="h-full text-center">
+              <span className="mx-auto mb-3 flex size-12 items-center justify-center rounded-full bg-surface">
                 <Icon className="size-6" aria-hidden />
               </span>
               <h2 className="text-lg font-bold">{title}</h2>
@@ -57,13 +57,18 @@ export default function MockTestPage() {
           <fieldset>
             <legend className="mb-4 text-xl font-bold">Chọn bài thi</legend>
             <div className="grid gap-3 sm:grid-cols-2">
-              {["IELTS Academic", "IELTS General Training"].map((label, i) => (
+              {/* ponytail: chỉ có đề Academic; General Training khóa tới khi có dữ liệu */}
+              {[
+                { label: "IELTS Academic", value: "academic", ready: true },
+                { label: "IELTS General Training", value: "general", ready: false },
+              ].map((t) => (
                 <label
-                  key={label}
-                  className="cursor-pointer rounded-xl border-2 border-navy/15 px-4 py-3 text-center font-medium transition-colors has-checked:border-brand has-checked:bg-brand has-checked:text-white has-focus-visible:outline-2 has-focus-visible:outline-brand"
+                  key={t.value}
+                  className="flex cursor-pointer items-center justify-center gap-2 rounded-xl border-2 border-navy/15 px-4 py-3 text-center font-medium transition-colors has-checked:border-brand has-checked:bg-brand has-checked:text-white has-disabled:cursor-not-allowed has-disabled:opacity-60 has-focus-visible:outline-2 has-focus-visible:outline-brand"
                 >
-                  <input type="radio" name="type" value={i === 0 ? "academic" : "general"} defaultChecked={i === 0} className="sr-only" />
-                  {label}
+                  <input type="radio" name="type" value={t.value} defaultChecked={t.ready} disabled={!t.ready} className="sr-only" />
+                  {t.label}
+                  {!t.ready && <Pill>Sắp có</Pill>}
                 </label>
               ))}
             </div>

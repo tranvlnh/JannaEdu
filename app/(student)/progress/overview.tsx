@@ -38,7 +38,10 @@ export function ProgressOverview() {
         <h2 id="overview-title" className="mb-4 text-2xl font-bold">
           Tổng quan
         </h2>
-        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4" aria-live="polite">
+        <p role="status" className="sr-only">
+          Đang xem {range} ngày gần nhất
+        </p>
+        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
           <StatCard icon={Clock} iconClass="bg-brand text-white" label="Tổng thời gian học" value={s.studyHours} unit="giờ">
             <Delta value={s.studyHoursDelta} suffix={`giờ ${prev}`} />
           </StatCard>

@@ -71,7 +71,7 @@ export function SidebarNav({ role, pathname }: { role: Role; pathname: string | 
   return (
     <>
       <ul className="flex flex-col gap-1">
-        {NAV[role].map((item) => (
+        {(role === "parent" ? [...NAV.parent, settings] : NAV[role]).map((item) => (
           <li key={item.href}>
             <NavLink item={item} active={isActive(pathname, item.href)} />
           </li>
@@ -86,7 +86,7 @@ export function SidebarNav({ role, pathname }: { role: Role; pathname: string | 
             </p>
           </div>
         )}
-        <NavLink item={settings} active={isActive(pathname, settings.href)} />
+        {role === "student" && <NavLink item={settings} active={isActive(pathname, settings.href)} />}
       </div>
     </>
   );
@@ -117,6 +117,18 @@ export function MobileNav({ role }: { role: Role }) {
       >
         <X className="size-6" aria-hidden />
       </button>
+      {/* Header ẩn ô tìm kiếm dưới md → đặt ở đây */}
+      {role === "student" && (
+        <form role="search" action="/courses" className="mb-4">
+          <input
+            name="q"
+            type="search"
+            placeholder="Tìm khóa học"
+            aria-label="Tìm khóa học"
+            className="w-full rounded-full bg-surface px-4 py-2.5 outline-none focus-visible:outline-2 focus-visible:outline-brand"
+          />
+        </form>
+      )}
       <Suspense fallback={<SidebarNav role={role} pathname={null} />}>
         <ActiveSidebarNav role={role} />
       </Suspense>

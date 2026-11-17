@@ -24,7 +24,7 @@ export function SkillPerformance({ scores, previous, title = "Hiệu suất theo
               <span className="w-10 text-right text-lg font-bold tabular-nums">{band(scores[k])}</span>
               <span className={`w-12 text-sm font-semibold ${delta > 0 ? "text-success-ink" : delta < 0 ? "text-danger-ink" : "text-muted"}`}>
                 {delta > 0 ? "↑ +" : delta < 0 ? "↓ " : "– "}
-                {delta !== 0 && band(delta)}
+                {delta !== 0 && band(Math.abs(delta))}
               </span>
             </li>
           );

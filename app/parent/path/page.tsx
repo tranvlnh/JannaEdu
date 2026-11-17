@@ -21,6 +21,7 @@ export default function ParentPathPage() {
         <ProgressBar value={pct} label={`Tiến độ lộ trình ${pct}%`} className="mt-3 max-w-xl" />
       </div>
 
+      <h2 className="sr-only">Các giai đoạn</h2>
       <ol className="grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
         {pathStages.map((s) => (
           <li key={s.weeks}>
@@ -37,9 +38,9 @@ export default function ParentPathPage() {
           {weekPlan.map((t) => (
             <li key={t.day} className="flex items-center gap-3">
               {t.done ? (
-                <CircleCheck className="size-5 shrink-0 text-success-ink" aria-label="Đã xong" />
+                <CircleCheck className="size-5 shrink-0 text-success-ink" role="img" aria-label="Đã xong" />
               ) : (
-                <Circle className="size-5 shrink-0 text-muted" aria-label="Chưa làm" />
+                <Circle className="size-5 shrink-0 text-muted" role="img" aria-label="Chưa làm" />
               )}
               <span className="w-14 font-semibold">{t.day}</span>
               <span className={`${skillStyle[t.skill].text} w-20 text-sm font-semibold`}>{skillStyle[t.skill].label}</span>

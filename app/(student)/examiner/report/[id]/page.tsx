@@ -33,12 +33,12 @@ async function Report({ params }: Pick<PageProps<"/examiner/report/[id]">, "para
   return (
     <div className="flex flex-col gap-6">
       <div className="flex flex-wrap items-center gap-4 border-b-2 border-skill-listening/50 pb-4">
-        <h1 className="mr-auto flex items-center gap-3 text-3xl font-bold">
-          <Link href="/examiner" aria-label="Quay lại Giám khảo AI" className="rounded-full p-1 hover:bg-white print:hidden">
+        <div className="mr-auto flex items-center gap-3">
+          <Link href="/mock-test" aria-label="Quay lại Phòng thi ảo" className="rounded-full p-1 hover:bg-white print:hidden">
             <ArrowLeft className="size-7" aria-hidden />
           </Link>
-          Báo cáo kết quả IELTS Mock Test
-        </h1>
+          <h1 className="text-3xl font-bold">Báo cáo kết quả IELTS Mock Test</h1>
+        </div>
         <p className="font-semibold">
           Ngày thi: <time dateTime={result.date}>{formatDate(result.date)}</time>
         </p>
@@ -48,11 +48,11 @@ async function Report({ params }: Pick<PageProps<"/examiner/report/[id]">, "para
       <div className="grid items-center justify-items-center gap-6 lg:grid-cols-[auto_1fr] lg:justify-items-stretch">
         <DonutChart
           size={200}
-          label={`Overall band ${band(overall)}`}
+          label={`Overall Band Score ${band(overall)}`}
           segments={SKILLS.map((s) => ({ value: result.scores[s], color: skillStyle[s].color }))}
         >
           <div>
-            <p className="text-xs font-semibold">Overall Band</p>
+            <p className="text-xs font-semibold">Overall Band Score</p>
             <p className="text-4xl font-bold">{band(overall)}</p>
           </div>
         </DonutChart>

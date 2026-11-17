@@ -90,7 +90,7 @@ export default function AnalysisPage() {
                         <Clock className="mr-1 size-3.5" aria-hidden />
                         {ex.minutes} phút
                       </Pill>
-                      <Button href="/examiner">
+                      <Button href={ex.href ?? "/examiner"}>
                         Làm ngay <ArrowRight className="size-4" aria-hidden />
                       </Button>
                     </li>

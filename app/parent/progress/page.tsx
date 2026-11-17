@@ -26,8 +26,8 @@ export default function ParentProgressPage() {
         <StatCard icon={NotebookPen} iconClass="bg-skill-reading text-white" label="Số bài hoàn thành" value={s.completed} unit="bài">
           <Delta value={s.completedDelta} suffix="bài so với 30 ngày trước" />
         </StatCard>
-        <StatCard icon={FileText} iconClass="bg-skill-listening/20 text-skill-listening" label="Mock test đã làm" value={s.mockTests} unit="bài">
-          <Delta value={s.mockTestsDelta} suffix="bài so với 30 ngày trước" />
+        <StatCard icon={FileText} iconClass="bg-skill-listening/20 text-skill-listening" label="Mock test đã làm" value={s.mockTests} unit="lần">
+          <Delta value={s.mockTestsDelta} suffix="lần so với 30 ngày trước" />
         </StatCard>
         <StatCard icon={Target} iconClass="bg-skill-speaking/20 text-skill-speaking" label="Mục tiêu tuần này" value={`${weeklyGoal.done}/${weeklyGoal.total}`} unit="bài">
           <ProgressBar value={weeklyGoal.done} max={weeklyGoal.total} label="Mục tiêu tuần này" />

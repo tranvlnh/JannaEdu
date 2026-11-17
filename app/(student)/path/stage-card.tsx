@@ -22,7 +22,7 @@ export function StageCard({ stage }: { stage: PathStage }) {
             <Icon className="size-6" aria-hidden />
           )}
         </span>
-        {stage.status === "locked" && <Lock className="size-6" aria-label="Chưa mở khóa" />}
+        {stage.status === "locked" && <Lock className="size-6" role="img" aria-label="Chưa mở khóa" />}
         {stage.status === "current" && <Pill tone="brand">Đang học</Pill>}
       </div>
       <p className={`self-start rounded-lg px-2 py-0.5 text-lg font-bold ${tone.badge}`}>{stage.weeks}</p>

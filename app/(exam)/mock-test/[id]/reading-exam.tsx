@@ -15,7 +15,7 @@ const HIGHLIGHT = "exam-highlight";
 
 export function ReadingExam({ test }: { test: PublicTest }) {
   const router = useRouter();
-  const { draft, update } = useExamDraft(test.id);
+  const { draft, update, reset } = useExamDraft(test.id);
   const [passageIdx, setPassageIdx] = useState(0);
   const [highlightOn, setHighlightOn] = useState(false);
   const [gridOpen, setGridOpen] = useState(false); // chỉ dùng < lg; desktop luôn hiện
@@ -37,7 +37,7 @@ export function ReadingExam({ test }: { test: PublicTest }) {
   // nếu kiểm tra theo `draft` sẽ ghi đè giờ bắt đầu cũ mỗi lần reload.
   useEffect(() => {
     update((d) => (d.startedAt || d.submittedAt ? d : { ...d, startedAt: Date.now() }));
-  }, [update]);
+  }, [update, draft.startedAt, draft.submittedAt]); // chạy lại sau "Làm lại" (reset xóa startedAt)
 
   function submit() {
     update((d) => ({ ...d, submittedAt: Date.now() }));
@@ -103,6 +103,24 @@ export function ReadingExam({ test }: { test: PublicTest }) {
   }
 
   const lowTime = remainingSec < 5 * 60;
+  // Chỉ thông báo ở mốc, không đọc đồng hồ mỗi giây.
+  const milestone = !draft.startedAt || !now ? "" : remainingSec <= 60 ? "Còn 1 phút" : remainingSec <= 300 ? "Còn 5 phút" : "";
+
+  // Đã nộp → không cho sửa bài (sửa sẽ làm sai kết quả chấm).
+  if (draft.submittedAt) {
+    return (
+      <div className="mx-auto flex max-w-md flex-col items-center gap-4 p-10 text-center">
+        <h1 className="text-2xl font-bold">Bạn đã nộp bài này</h1>
+        <p className="text-muted">Xem kết quả hoặc làm lại từ đầu.</p>
+        <div className="flex gap-3">
+          <Button href={`/mock-test/${test.id}/result`}>Xem kết quả</Button>
+          <Button variant="outline" onClick={reset}>
+            Làm lại
+          </Button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="grid gap-4 p-4 lg:h-[calc(100dvh-5rem)] lg:grid-cols-[1fr_1fr_17rem] lg:grid-rows-[auto_1fr] lg:p-6">
@@ -127,14 +145,14 @@ export function ReadingExam({ test }: { test: PublicTest }) {
             Xóa highlight ({highlightCount})
           </button>
         )}
-        <div role="tablist" aria-label="Passage" className="flex gap-2">
+        <div role="group" aria-label="Chọn passage" className="flex gap-2">
           {test.passages.map((p, i) => (
             <button
               key={p.title}
-              role="tab"
-              aria-selected={i === passageIdx}
+              type="button"
+              aria-pressed={i === passageIdx}
               onClick={() => setPassageIdx(i)}
-              className="rounded-full bg-white px-4 py-1.5 text-sm font-medium shadow-card aria-selected:bg-navy aria-selected:text-white"
+              className="rounded-full bg-white px-4 py-1.5 text-sm font-medium shadow-card aria-pressed:bg-navy aria-pressed:text-white"
             >
               Passage {i + 1}
             </button>
@@ -157,10 +175,12 @@ export function ReadingExam({ test }: { test: PublicTest }) {
             <p className="text-sm font-medium lg:text-lg">Thời gian còn lại</p>
             <p
               role="timer"
-              aria-live={lowTime ? "polite" : "off"}
               className={`text-3xl font-bold tabular-nums lg:text-4xl ${lowTime ? "text-danger-ink" : ""}`}
             >
               {formatClock(remainingSec)}
+            </p>
+            <p role="status" className="sr-only">
+              {milestone}
             </p>
           </div>
           <button

@@ -54,13 +54,16 @@ export default function PathPage() {
             id: "path",
             label: "Lộ trình học",
             content: (
-              <ol className="grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
-                {pathStages.map((s) => (
-                  <li key={s.weeks}>
-                    <StageCard stage={s} />
-                  </li>
-                ))}
-              </ol>
+              <>
+                <h2 className="sr-only">Các giai đoạn</h2>
+                <ol className="grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
+                  {pathStages.map((s) => (
+                    <li key={s.weeks}>
+                      <StageCard stage={s} />
+                    </li>
+                  ))}
+                </ol>
+              </>
             ),
           },
           {

@@ -1,2 +1,8 @@
-// Cùng nội dung /academy nhưng trong shell phụ huynh.
-export { default, metadata } from "@/app/(student)/academy/page";
+import type { Metadata } from "next";
+import { AcademyContent } from "@/app/(student)/academy/academy-content";
+
+export const metadata: Metadata = { title: "Janna Academy" };
+
+export default function AcademyPage() {
+  return <AcademyContent showCourses={false} />;
+}

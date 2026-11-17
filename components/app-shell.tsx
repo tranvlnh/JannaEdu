@@ -17,6 +17,7 @@ export function Header({ user, menu = false }: { user: User; menu?: boolean }) {
         <Logo href={isStudent ? "/" : "/parent"} />
       </div>
 
+      {isStudent && <p className="hidden shrink-0 font-semibold xl:block">Xin chào, Anh/Chị!</p>}
       {isStudent && (
         <form role="search" className="hidden flex-1 md:block" action="/courses">
           <label className="flex max-w-xl items-center gap-3 rounded-full bg-surface px-4 py-2.5">

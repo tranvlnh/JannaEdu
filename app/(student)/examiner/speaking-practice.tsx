@@ -1,9 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ArrowRight, Bot, Clock, Mic, Square } from "lucide-react";
 import { Button, Card } from "@/components/ui";
 import { formatClock } from "@/lib/exam-draft";
+import { band } from "@/lib/format";
+import { roundBand } from "@/lib/skills";
 import type { Criterion } from "@/lib/mock/student";
 import { CriteriaCard } from "./criteria-card";
 
@@ -16,6 +18,8 @@ const BARS = [30, 55, 40, 75, 50, 90, 35, 65, 80, 45, 100, 60, 30, 70, 85, 40, 9
 export function SpeakingPractice({ question, part, criteria }: { question: string; part: string; criteria: Criterion[] }) {
   const [phase, setPhase] = useState<Phase>("idle");
   const [seconds, setSeconds] = useState(0);
+  const endRef = useRef<HTMLButtonElement>(null);
+  const resultRef = useRef<HTMLAnchorElement>(null);
 
   useEffect(() => {
     if (phase === "recording") {
@@ -28,6 +32,14 @@ export function SpeakingPractice({ question, part, criteria }: { question: strin
     }
   }, [phase]);
 
+  // Nút vừa bấm bị gỡ khỏi DOM → chuyển focus tới hành động tiếp theo cho người dùng bàn phím.
+  useEffect(() => {
+    if (phase === "recording") endRef.current?.focus();
+    if (phase === "done") resultRef.current?.focus();
+  }, [phase]);
+
+  const overall = roundBand(criteria.reduce((s, c) => s + c.score, 0) / criteria.length);
+  const status = { idle: "", recording: "Đang ghi âm", scoring: "AI đang chấm điểm", done: `Đã chấm xong: Band ${band(overall)}` }[phase];
   const recording = phase === "recording";
 
   return (
@@ -39,7 +51,7 @@ export function SpeakingPractice({ question, part, criteria }: { question: strin
           Thời gian: <span className="tabular-nums">{formatClock(seconds)}</span>
         </p>
         {recording && (
-          <Button variant="outline" onClick={() => setPhase("scoring")}>
+          <Button ref={endRef} variant="outline" onClick={() => setPhase("scoring")}>
             <Square className="size-4" aria-hidden />
             Kết thúc
           </Button>
@@ -78,7 +90,6 @@ export function SpeakingPractice({ question, part, criteria }: { question: strin
               </Button>
             ) : (
               <p
-                aria-live="polite"
                 className="flex-1 rounded-full border-2 border-brand py-3 text-center text-xl font-medium text-brand-ink"
               >
                 {recording ? "Đang ghi âm" : "Đang chấm…"}
@@ -91,7 +102,7 @@ export function SpeakingPractice({ question, part, criteria }: { question: strin
           {phase === "done" ? (
             <>
               <CriteriaCard criteria={criteria} />
-              <Button href="/examiner/analysis" className="self-end">
+              <Button ref={resultRef} href="/examiner/analysis" className="self-end">
                 Xem phân tích lỗi chi tiết <ArrowRight className="size-5" aria-hidden />
               </Button>
             </>
@@ -103,9 +114,12 @@ export function SpeakingPractice({ question, part, criteria }: { question: strin
         </div>
       </div>
 
+      {/* Vùng live cố định từ đầu — mount cùng nội dung thì screen reader thường bỏ qua */}
+      <p role="status" className="sr-only">
+        {status}
+      </p>
       {phase === "scoring" && (
         <p
-          role="status"
           className="mx-auto flex items-center gap-3 rounded-xl border-2 border-skill-writing bg-skill-writing/30 px-6 py-3 text-lg"
         >
           <Bot className="size-7" aria-hidden />
