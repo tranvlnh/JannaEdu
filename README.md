@@ -60,6 +60,19 @@ bun run lint
 bun run test
 ```
 
+## Deploy with Docker
+
+The image uses Next.js standalone output. `NEXT_PUBLIC_*` values are baked in at build time; secrets are passed only at run time.
+
+```bash
+docker build -t janna-edu \
+  --build-arg NEXT_PUBLIC_SUPABASE_URL=<url> \
+  --build-arg NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=<publishable-key> .
+docker run -d --name janna-edu --restart unless-stopped -p 3000:3000 --env-file .env.local janna-edu
+```
+
+Put a reverse proxy with HTTPS (Caddy, nginx) in front of port 3000, and add `https://<your-domain>/auth/callback` to the Supabase redirect URLs.
+
 ## Changing the database schema
 
 The schema changes only through migrations in `supabase/migrations/`. Don't edit the database in the dashboard, and don't hand-edit `src/server/supabase/database.types.ts`.

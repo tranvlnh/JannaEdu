@@ -1,7 +1,8 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  // Self-contained server for the Docker image (see Dockerfile).
+  output: "standalone",
   experimental: {
     agentFeedback: true,
     // Speaking recordings are uploaded through a Server Action (default limit is 1 MB).
