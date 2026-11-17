@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
-import { featuredCourses } from "@/lib/mock/student";
+import { featuredCourses } from "@/lib/courses";
 import { CourseGrid, CourseList } from "./course-list";
 
 export const metadata: Metadata = { title: "Khóa học" };

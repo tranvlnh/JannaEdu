@@ -232,18 +232,21 @@ export type Database = {
         Row: {
           created_at: string
           full_name: string | null
+          goal_band: number | null
           id: string
           role: string | null
         }
         Insert: {
           created_at?: string
           full_name?: string | null
+          goal_band?: number | null
           id: string
           role?: string | null
         }
         Update: {
           created_at?: string
           full_name?: string | null
+          goal_band?: number | null
           id?: string
           role?: string | null
         }

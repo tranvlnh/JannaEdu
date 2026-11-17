@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { BookOpen, Clock, GraduationCap } from "lucide-react";
 import { Button, Card, Pill } from "@/components/ui";
-import type { Course } from "@/lib/mock/student";
+import type { Course } from "@/lib/courses";
 
 const BG = ["bg-skill-listening/15", "bg-skill-reading/15", "bg-skill-writing/15", "bg-skill-speaking/15"];
 

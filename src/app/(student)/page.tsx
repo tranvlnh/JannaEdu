@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { ArrowRight, Bot, GraduationCap, Lightbulb, Target, Users, type LucideIcon } from "lucide-react";
 import { Button, Card } from "@/components/ui";
-import { featuredCourses } from "@/lib/mock/student";
+import { featuredCourses } from "@/lib/courses";
 
 const FEATURES: { href: string; icon: LucideIcon; title: string; text: string }[] = [
   { href: "/examiner", icon: Bot, title: "Giám khảo AI 24/7", text: "Chấm điểm, phân tích lỗi chi tiết theo chuẩn quốc tế chỉ trong vài giây." },

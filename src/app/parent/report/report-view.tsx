@@ -1,20 +1,34 @@
 "use client";
 
 import { useState } from "react";
-import { BookA, Clock, FileText, NotebookPen } from "lucide-react";
+import { Bot, FileText, NotebookPen } from "lucide-react";
 import { LineChart } from "@/components/charts";
 import { Card, CardTitle, Delta, Select, StatCard } from "@/components/ui";
 import { band, formatDate } from "@/lib/format";
-import type { MonthlyReport } from "@/lib/mock/parent";
-import { SKILLS, overallBand, skillStyle } from "@/lib/skills";
+import type { Bands, monthStats } from "@/lib/progress";
+import { SKILLS, skillStyle } from "@/lib/skills";
 import { SkillPerformance } from "../skill-performance";
+
+export type MonthlyReport = {
+  key: string;
+  month: number;
+  year: number;
+  from: string; // ISO, first day
+  to: string; // ISO, last day
+  stats: ReturnType<typeof monthStats>;
+  scores: Bands; // at the end of the month
+  previousScores: Bands; // at the end of the month before
+  overall: number | null;
+  previousOverall: number | null;
+};
 
 const PREV = "so với tháng trước";
 
-export function ReportView({ reports, goalBand }: { reports: MonthlyReport[]; goalBand: number }) {
-  const [month, setMonth] = useState(reports[0].month);
-  const r = reports.find((x) => x.month === month) ?? reports[0];
+export function ReportView({ reports, goalBand, comment }: { reports: MonthlyReport[]; goalBand: number | null; comment: string | null }) {
+  const [key, setKey] = useState(reports[0].key);
+  const r = reports.find((x) => x.key === key) ?? reports[0];
   const st = r.stats;
+  const prevMonth = r.month === 1 ? 12 : r.month - 1;
 
   return (
     <div className="flex flex-col gap-6">
@@ -25,10 +39,10 @@ export function ReportView({ reports, goalBand }: { reports: MonthlyReport[]; go
             (Từ {formatDate(r.from)} – {formatDate(r.to)})
           </p>
         </div>
-        <Select aria-label="Chọn tháng" value={month} onChange={(e) => setMonth(Number(e.target.value))} className="w-48">
+        <Select aria-label="Chọn tháng" value={key} onChange={(e) => setKey(e.target.value)} className="w-52">
           {reports.map((x) => (
-            <option key={x.month} value={x.month}>
-              Tháng {x.month}
+            <option key={x.key} value={x.key}>
+              Tháng {x.month}/{x.year}
             </option>
           ))}
         </Select>
@@ -37,18 +51,15 @@ export function ReportView({ reports, goalBand }: { reports: MonthlyReport[]; go
       <p role="status" className="sr-only">
         Đang xem báo cáo tháng {r.month}
       </p>
-      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        <StatCard icon={Clock} label="Tổng thời gian học" value={st.hours} unit="giờ">
-          <Delta value={st.hoursDelta} suffix={`giờ ${PREV}`} />
+      <div className="grid gap-4 sm:grid-cols-3">
+        <StatCard icon={NotebookPen} iconClass="bg-skill-reading/15 text-skill-reading-ink" label="Số bài hoàn thành" value={st.completed.value} unit="bài">
+          <Delta value={st.completed.delta} suffix={`bài ${PREV}`} />
         </StatCard>
-        <StatCard icon={NotebookPen} iconClass="bg-skill-reading/15 text-skill-reading" label="Số bài hoàn thành" value={st.completed} unit="bài">
-          <Delta value={st.completedDelta} suffix={`bài ${PREV}`} />
+        <StatCard icon={FileText} iconClass="bg-skill-listening/15 text-skill-listening-ink" label="Mock test đã làm" value={st.exams.value} unit="lần">
+          <Delta value={st.exams.delta} suffix={`lần ${PREV}`} />
         </StatCard>
-        <StatCard icon={FileText} iconClass="bg-skill-listening/15 text-skill-listening" label="Mock test đã làm" value={st.mockTests} unit="lần">
-          <Delta value={st.mockTestsDelta} suffix={`lần ${PREV}`} />
-        </StatCard>
-        <StatCard icon={BookA} iconClass="bg-skill-speaking/15 text-skill-speaking" label="Từ vựng đã học" value={st.vocab} unit="từ">
-          <Delta value={st.vocabDelta} suffix={`từ ${PREV}`} />
+        <StatCard icon={Bot} iconClass="bg-skill-speaking/15 text-skill-speaking-ink" label="Bài AI đã chấm" value={st.graded.value} unit="bài">
+          <Delta value={st.graded.delta} suffix={`bài ${PREV}`} />
         </StatCard>
       </div>
 
@@ -57,11 +68,11 @@ export function ReportView({ reports, goalBand }: { reports: MonthlyReport[]; go
         <Card>
           <CardTitle>Tiến độ điểm số</CardTitle>
           <LineChart
-            title="Band tháng trước và tháng này"
-            labels={[`Tháng ${r.month === 1 ? 12 : r.month - 1}`, `Tháng ${r.month}`]}
-            domain={[4, 8]}
+            title="Band cuối tháng trước và cuối tháng này"
+            labels={[`Tháng ${prevMonth}`, `Tháng ${r.month}`]}
+            domain={[3, 9]}
             series={[
-              { name: "Overall", color: "var(--color-navy)", values: [overallBand(r.previousScores), overallBand(r.scores)] },
+              { name: "Overall", color: "var(--color-navy)", values: [r.previousOverall, r.overall] },
               ...SKILLS.map((s) => ({ name: skillStyle[s].label, color: skillStyle[s].color, values: [r.previousScores[s], r.scores[s]] })),
             ]}
           />
@@ -70,15 +81,16 @@ export function ReportView({ reports, goalBand }: { reports: MonthlyReport[]; go
 
       <div className="grid gap-6 xl:grid-cols-[2fr_1fr]">
         <Card>
-          <CardTitle>Nhận xét từ giáo viên</CardTitle>
-          <p className="leading-relaxed">{r.teacherComment}</p>
+          <CardTitle>Nhận xét từ AI</CardTitle>
+          <p className="leading-relaxed">{comment ?? "Con chưa lập lộ trình học nên AI chưa có nhận xét."}</p>
         </Card>
         <Card className="flex flex-col items-center justify-center gap-2 text-center">
           <h2 className="self-start text-xl font-bold">So sánh với mục tiêu</h2>
           <p className="mt-2">Overall band score</p>
           <p className="text-2xl">
-            <strong className="text-5xl">{band(overallBand(r.scores))}</strong> / {band(goalBand)}
+            <strong className="text-5xl">{r.overall === null ? "–" : band(r.overall)}</strong> / {goalBand === null ? "chưa đặt" : band(goalBand)}
           </p>
+          {r.overall === null && <p className="text-sm text-muted">Cần kết quả đủ 4 kỹ năng</p>}
         </Card>
       </div>
     </div>

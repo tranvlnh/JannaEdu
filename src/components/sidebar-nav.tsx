@@ -14,12 +14,11 @@ import {
   PenLine,
   Route,
   Settings,
-  UserRound,
   Users,
   X,
   type LucideIcon,
 } from "lucide-react";
-import type { Role } from "@/lib/mock/users";
+import type { Role } from "@/contracts/profile";
 
 type NavItem = { href: string; label: string; icon: LucideIcon };
 
@@ -34,7 +33,6 @@ const NAV: Record<Role, NavItem[]> = {
     { href: "/path", label: "Lộ trình học", icon: Route },
     { href: "/progress", label: "Tiến độ", icon: ChartLine },
     { href: "/academy", label: "Sách & tài liệu", icon: FileText },
-    { href: "/account", label: "Tài khoản & liên kết", icon: UserRound },
   ],
   parent: [
     { href: "/parent", label: "Trang chủ", icon: House },
@@ -71,7 +69,7 @@ function NavLink({ item, active }: { item: NavItem; active: boolean }) {
 
 // pathname = null → render không active (fallback Suspense khi route có param động).
 export function SidebarNav({ role, pathname }: { role: Role; pathname: string | null }) {
-  const settings: NavItem = { href: role === "parent" ? "/parent/settings" : "/settings", label: "Cài đặt", icon: Settings };
+  const settings: NavItem = { href: "/account", label: "Tài khoản & cài đặt", icon: Settings };
   return (
     <>
       <ul className="flex flex-col gap-1">

@@ -1,10 +1,20 @@
 "use client";
 
 import { useState } from "react";
-import { Clock } from "lucide-react";
+import { Clock, Sparkles } from "lucide-react";
 import { Button, Card, Pill } from "@/components/ui";
-import type { Exercise } from "@/lib/mock/student";
 import { skillStyle, type Skill } from "@/lib/skills";
+
+export type Exercise = {
+  id: string;
+  skill: Skill;
+  part: string;
+  title: string;
+  description: string;
+  minutes: number | null; // null = untimed
+  href: string;
+  suggested: boolean; // trains a skill the path or the results point at
+};
 
 // Thứ tự theo mockup (Reading trước Listening).
 const FILTERS = ["all", "reading", "listening", "writing", "speaking"] as const;
@@ -22,7 +32,7 @@ export function ExerciseList({ exercises }: { exercises: Exercise[] }) {
             type="button"
             aria-pressed={filter === f}
             onClick={() => setFilter(f)}
-            className="rounded-full bg-white px-4 py-1.5 font-bold shadow-card sm:px-6 sm:py-2 sm:text-lg transition-colors hover:bg-brand-soft/40 focus-visible:outline-2 focus-visible:outline-brand aria-pressed:bg-brand aria-pressed:text-white"
+            className="rounded-full bg-white px-4 py-1.5 font-bold shadow-card transition-colors hover:bg-brand-soft/40 focus-visible:outline-2 focus-visible:outline-brand aria-pressed:bg-brand aria-pressed:text-white sm:px-6 sm:py-2 sm:text-lg"
           >
             {f === "all" ? "Tất cả" : skillStyle[f].label}
           </button>
@@ -39,29 +49,31 @@ export function ExerciseList({ exercises }: { exercises: Exercise[] }) {
               <div className="mr-auto min-w-0">
                 <h2 className="text-xl font-bold">{e.title}</h2>
                 <p className="text-navy/80">{e.description}</p>
-                <div className="mt-3 flex gap-2">
-                  <Pill tone="none" className={`${skillStyle[e.skill].soft} ${skillStyle[e.skill].text}`}>{skillStyle[e.skill].label}</Pill>
+                <div className="mt-3 flex flex-wrap gap-2">
+                  <Pill tone="none" className={`${skillStyle[e.skill].soft} ${skillStyle[e.skill].text}`}>
+                    {skillStyle[e.skill].label}
+                  </Pill>
                   <Pill>{e.part}</Pill>
+                  {e.suggested && (
+                    <Pill tone="brand">
+                      <Sparkles className="mr-1 size-3.5" aria-hidden />
+                      AI gợi ý
+                    </Pill>
+                  )}
                 </div>
               </div>
               <p className="flex items-center gap-2">
                 <Clock className="size-5" aria-hidden />
-                Thời gian: {e.minutes} phút
+                {e.minutes === null ? "Không giới hạn" : `Thời gian: ${e.minutes} phút`}
               </p>
-              {e.href ? (
-                <Button href={e.href} className="w-36">
-                  Làm ngay
-                </Button>
-              ) : (
-                <Button disabled className="w-36">
-                  Sắp có
-                </Button>
-              )}
+              <Button href={e.href} className="w-36">
+                Làm ngay
+              </Button>
             </Card>
           </li>
         ))}
       </ul>
-      {shown.length === 0 && <p className="text-muted">Chưa có bài tập gợi ý cho kỹ năng này.</p>}
+      {shown.length === 0 && <p className="text-muted">Chưa có bài tập cho kỹ năng này.</p>}
     </div>
   );
 }

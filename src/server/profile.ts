@@ -1,11 +1,15 @@
 // Account API for the UI: profile, role, parent-student linking.
 import { randomInt } from "node:crypto";
+import { cache } from "react";
+import { cookies } from "next/headers";
+import { z } from "zod";
 import {
   chooseRoleInput,
   linkCodeSchema,
   profileSchema,
   redeemLinkCodeInput,
   redeemLinkCodeOutput,
+  setGoalBandInput,
   type LinkCode,
   type Profile,
   type RedeemLinkCodeOutput,
@@ -14,11 +18,12 @@ import { getUser } from "@/server/auth";
 import { createAdminClient } from "@/server/supabase/admin";
 import { createClient } from "@/server/supabase/server";
 
-const COLUMNS = "id, role, fullName:full_name";
+const COLUMNS = "id, role, fullName:full_name, goalBand:goal_band";
+const CHILD_COOKIE = "janna-child";
 const CODE_ALPHABET = "ABCDEFGHJKMNPQRSTVWXYZ23456789"; // no 0/O, 1/I/L, U
 const CODE_TTL_MS = 15 * 60 * 1000;
 
-export async function getProfile(): Promise<Profile | null> {
+async function loadProfile(): Promise<Profile | null> {
   const user = await getUser();
   if (!user) return null;
   const supabase = await createClient();
@@ -26,6 +31,9 @@ export async function getProfile(): Promise<Profile | null> {
   if (error) throw new Error(error.message);
   return data && profileSchema.parse(data);
 }
+
+// Once per request: the header, the sidebar and the page all ask for it.
+export const getProfile = cache(loadProfile);
 
 // Parent: their linked students. Student: their linked parents. RLS does the filtering.
 export async function getLinkedProfiles(): Promise<Profile[]> {
@@ -54,7 +62,29 @@ export async function chooseRole(input: unknown): Promise<Profile> {
     .eq("id", profile.id)
     .is("role", null);
   if (error) throw new Error(error.message);
-  return requireProfile();
+  return (await loadProfile())!; // not the cached one: it still has role null
+}
+
+export async function setGoalBand(input: unknown): Promise<void> {
+  "use server";
+  const { goalBand } = setGoalBandInput.parse(input);
+  const profile = await requireProfile();
+  if (profile.role !== "student") throw new Error("forbidden");
+  const { error } = await createAdminClient().from("profiles").update({ goal_band: goalBand }).eq("id", profile.id);
+  if (error) throw new Error(error.message);
+}
+
+// Parent: the linked child the /parent pages show. The cookie only picks among linked children, so it grants nothing.
+export async function getSelectedChild(): Promise<{ child: Profile | null; children: Profile[] }> {
+  const children = await getLinkedProfiles();
+  const picked = (await cookies()).get(CHILD_COOKIE)?.value;
+  return { child: children.find((c) => c.id === picked) ?? children[0] ?? null, children };
+}
+
+export async function selectChild(input: unknown): Promise<void> {
+  "use server";
+  const childId = z.uuid().parse(input);
+  (await cookies()).set(CHILD_COOKIE, childId, { httpOnly: true, sameSite: "lax", path: "/", maxAge: 60 * 60 * 24 * 365 });
 }
 
 // Student creates a code for a parent to enter. A new code replaces the old one.

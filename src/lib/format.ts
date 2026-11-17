@@ -10,3 +10,12 @@ export const formatDate = (iso: string) => dateFmt.format(new Date(iso));
 export const formatTime = (iso: string) => timeFmt.format(new Date(iso));
 /** 7 → "7.0" */
 export const band = (n: number) => n.toFixed(1);
+
+/** Giây → "mm:ss" (hoặc "h:mm:ss"). Âm → 00:00. */
+export function formatClock(totalSec: number): string {
+  const s = Math.max(0, Math.floor(totalSec));
+  const pad = (n: number) => String(n).padStart(2, "0");
+  const h = Math.floor(s / 3600);
+  const mmss = `${pad(Math.floor((s % 3600) / 60))}:${pad(s % 60)}`;
+  return h ? `${h}:${mmss}` : mmss;
+}
