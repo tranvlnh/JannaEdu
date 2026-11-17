@@ -15,10 +15,10 @@ Stack: Next.js (App Router, TypeScript), Supabase (Postgres, Auth with Google, S
 
 ```bash
 bun install
-cp .env.example .env.local
+cp .env.example .env
 ```
 
-Fill in `.env.local`:
+Fill in `.env` (used by `bun dev`, `bun run build` and Docker Compose):
 
 | Variable | Where to find it |
 | --- | --- |
@@ -62,13 +62,13 @@ bun run test
 
 ## Deploy with Docker
 
-The image uses Next.js standalone output. With `.env.local` filled in on the server:
+The image uses Next.js standalone output. With `.env` filled in on the server:
 
 ```bash
 docker compose up -d --build
 ```
 
-`.env.local` is used twice: mounted as a build secret so `next build` can bake in the `NEXT_PUBLIC_*` values (it is not stored in the image), and passed as the container's runtime env.
+`.env` is used twice: mounted as a build secret so `next build` can bake in the `NEXT_PUBLIC_*` values (it is not stored in the image), and passed as the container's runtime env.
 
 Put a reverse proxy with HTTPS (Caddy, nginx) in front of port 3000, and add `https://<your-domain>/auth/callback` to the Supabase redirect URLs.
 
