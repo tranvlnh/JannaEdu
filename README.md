@@ -26,6 +26,7 @@ Fill in `.env` (used by `bun dev`, `bun run build` and Docker Compose):
 | `SUPABASE_PUBLISHABLE_KEY` | Supabase dashboard → Project Settings → API Keys (publishable key) |
 | `SUPABASE_SECRET_KEY` | Same page (secret key). Server only, never prefix with `NEXT_PUBLIC_` |
 | `GEMINI_API_KEY` | Google AI Studio |
+| `GEMINI_MODELS` | Optional. Comma-separated model IDs, tried in order as fallbacks (default `gemini-3.6-flash`) |
 
 ## Set up the database
 
