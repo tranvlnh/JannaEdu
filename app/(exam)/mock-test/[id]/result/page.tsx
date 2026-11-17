@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import { ArrowRight, BookOpen } from "lucide-react";
@@ -90,6 +91,12 @@ async function Result({ params }: Pick<PageProps<"/mock-test/[id]/result">, "par
                 <SkillScoreCard key={s} skill={s} score={result.scores[s]} />
               ))}
             </div>
+            <Link
+              href={`/examiner/report/${result.id}`}
+              className="mt-4 block rounded-full border border-navy/15 py-2 text-center text-sm hover:bg-surface print:hidden"
+            >
+              Xem báo cáo chi tiết
+            </Link>
           </Card>
 
           <div className="grid gap-6 xl:grid-cols-2">
