@@ -98,9 +98,21 @@ export function Header({ user, menu = false }: { user: User; menu?: boolean }) {
   );
 }
 
+export function SkipLink() {
+  return (
+    <a
+      href="#main"
+      className="sr-only z-30 rounded-full bg-navy px-4 py-2 text-white focus:not-sr-only focus:fixed focus:top-3 focus:left-3"
+    >
+      Bỏ qua đến nội dung chính
+    </a>
+  );
+}
+
 export function AppShell({ user, children }: { user: User; children: React.ReactNode }) {
   return (
     <div className="flex min-h-screen flex-col">
+      <SkipLink />
       <Header user={user} menu />
       <MobileNav role={user.role} />
       <div className="flex flex-1">
@@ -110,7 +122,7 @@ export function AppShell({ user, children }: { user: User; children: React.React
             <ActiveSidebarNav role={user.role} />
           </Suspense>
         </nav>
-        <main className="min-w-0 flex-1 rounded-tl-3xl bg-linear-to-br from-surface to-surface-deep p-4 sm:p-6 lg:p-8">
+        <main id="main" tabIndex={-1} className="min-w-0 flex-1 rounded-tl-3xl outline-none bg-linear-to-br from-surface to-surface-deep p-4 sm:p-6 lg:p-8">
           {children}
         </main>
       </div>
