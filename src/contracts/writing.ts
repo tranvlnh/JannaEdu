@@ -5,6 +5,18 @@ import { z } from "zod";
 const timestamp = z.iso.datetime({ offset: true });
 // Shared with the Speaking contract.
 export const bandSchema = z.number().min(0).max(9).multipleOf(0.5);
+// Shared with the Speaking contract. How to fix the mistakes, not the mistakes themselves.
+export const tipsSchema = z
+  .array(
+    z.object({
+      focus: z.string().describe("The weakness this tip targets, in Vietnamese, a few words"),
+      advice: z
+        .string()
+        .describe("How to fix it and practise, in Vietnamese, 2-3 sentences: a concrete technique or rule, with a short English example"),
+    }),
+  )
+  .max(5)
+  .describe("Improvement advice for the patterns behind the errors, most impactful first. Do not repeat individual corrections from errors; empty if there are no errors");
 
 export const writingPromptSchema = z.object({
   id: z.uuid(),
@@ -41,10 +53,12 @@ export const writingAssessmentSchema = z.object({
     )
     .max(20)
     .describe("The most important errors, most serious first; empty if there are none"),
+  tips: tipsSchema,
 });
 export type WritingAssessment = z.infer<typeof writingAssessmentSchema>;
 
 export const writingReportSchema = writingAssessmentSchema.extend({
+  tips: tipsSchema.default([]), // reports graded before tips existed have none
   band: bandSchema, // mean of the four criteria, rounded to the nearest half band
 });
 export type WritingReport = z.infer<typeof writingReportSchema>;
