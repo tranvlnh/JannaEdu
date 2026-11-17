@@ -93,36 +93,39 @@ export function LineChart({
           </li>
         ))}
       </ul>
-      <svg viewBox={`0 0 ${W} ${H}`} className="h-auto w-full text-muted" aria-hidden>
-        {ticks.map((t) => (
-          <g key={t}>
-            <line x1={PAD.left} x2={W - PAD.right} y1={y(t)} y2={y(t)} stroke="currentColor" strokeOpacity={0.15} />
-            <text x={PAD.left - 8} y={y(t)} textAnchor="end" dominantBaseline="middle" fontSize={11} fill="currentColor">
-              {t.toFixed(1)}
+      {/* Màn hẹp: giữ tối thiểu 32rem rồi cuộn ngang, tránh chữ trục co quá nhỏ */}
+      <div className="overflow-x-auto">
+        <svg viewBox={`0 0 ${W} ${H}`} className="h-auto w-full min-w-lg text-muted" aria-hidden>
+          {ticks.map((t) => (
+            <g key={t}>
+              <line x1={PAD.left} x2={W - PAD.right} y1={y(t)} y2={y(t)} stroke="currentColor" strokeOpacity={0.15} />
+              <text x={PAD.left - 8} y={y(t)} textAnchor="end" dominantBaseline="middle" fontSize={11} fill="currentColor">
+                {t.toFixed(1)}
+              </text>
+            </g>
+          ))}
+          {labels.map((l, i) => (
+            <text key={l} x={x(i)} y={H - 10} textAnchor="middle" fontSize={11} fill="currentColor">
+              {l}
             </text>
-          </g>
-        ))}
-        {labels.map((l, i) => (
-          <text key={l} x={x(i)} y={H - 10} textAnchor="middle" fontSize={11} fill="currentColor">
-            {l}
-          </text>
-        ))}
-        {series.map((s) => (
-          <g key={s.name} fill={s.color} stroke={s.color}>
-            <polyline points={s.values.map((v, i) => `${x(i)},${y(v)}`).join(" ")} fill="none" strokeWidth={2} />
-            {s.values.map((v, i) => (
-              <g key={i}>
-                <circle cx={x(i)} cy={y(v)} r={3.5} />
-                {showValues && (
-                  <text x={x(i)} y={y(v) - 8} textAnchor="middle" fontSize={10} fontWeight={600} stroke="none">
-                    {v.toFixed(1)}
-                  </text>
-                )}
-              </g>
-            ))}
-          </g>
-        ))}
-      </svg>
+          ))}
+          {series.map((s) => (
+            <g key={s.name} fill={s.color} stroke={s.color}>
+              <polyline points={s.values.map((v, i) => `${x(i)},${y(v)}`).join(" ")} fill="none" strokeWidth={2} />
+              {s.values.map((v, i) => (
+                <g key={i}>
+                  <circle cx={x(i)} cy={y(v)} r={3.5} />
+                  {showValues && (
+                    <text x={x(i)} y={y(v) - 8} textAnchor="middle" fontSize={10} fontWeight={600} stroke="none">
+                      {v.toFixed(1)}
+                    </text>
+                  )}
+                </g>
+              ))}
+            </g>
+          ))}
+        </svg>
+      </div>
       {/* sr-only đặt trên div: <table> không bị co về 1px, sẽ kéo dài trang */}
       <div className="sr-only">
         <table>

@@ -15,7 +15,7 @@ export function Card({
   ...props
 }: React.ComponentProps<"section">) {
   return (
-    <section className={`rounded-2xl bg-white p-5 shadow-card sm:p-6 ${className}`} {...props}>
+    <section className={`min-w-0 rounded-2xl bg-white p-5 shadow-card sm:p-6 ${className}`} {...props}>
       {children}
     </section>
   );

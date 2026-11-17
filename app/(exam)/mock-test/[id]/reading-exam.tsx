@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { flushSync } from "react-dom";
 import { Flag, LogOut } from "lucide-react";
+import { Button } from "@/components/ui";
 import { formatClock, useExamDraft } from "@/lib/exam-draft";
 import type { Question, ReadingTest } from "@/lib/mock/exam";
 
@@ -21,6 +22,11 @@ export function ReadingExam({ test }: { test: PublicTest }) {
   // null tới khi effect chạy — Date.now() lúc render sẽ chặn prerender (cacheComponents).
   const [now, setNow] = useState<number | null>(null);
   const passageRef = useRef<HTMLDivElement>(null);
+  const dialogRef = useRef<HTMLDialogElement>(null);
+  const [highlightCount, setHighlightCount] = useState(0);
+
+  // Highlight registry là toàn cục → dọn khi rời màn thi.
+  useEffect(() => () => void (globalThis.CSS?.highlights?.delete(HIGHLIGHT)), []);
 
   const allQuestions = test.passages.flatMap((p) => p.groups.flatMap((g) => g.questions));
   const durationMs = test.minutes * 60_000;
@@ -57,10 +63,7 @@ export function ReadingExam({ test }: { test: PublicTest }) {
     };
   }, [draft.startedAt, draft.submittedAt, durationMs, update, router, test.id]);
 
-  function confirmSubmit() {
-    const left = allQuestions.length - Object.values(draft.answers).filter(Boolean).length;
-    if (confirm(left ? `Còn ${left} câu chưa làm. Nộp bài?` : "Nộp bài?")) submit();
-  }
+  const unanswered = allQuestions.length - Object.values(draft.answers).filter(Boolean).length;
 
   function setAnswer(n: number, value: string) {
     update((d) => ({ ...d, answers: { ...d.answers, [n]: value } }));
@@ -90,7 +93,13 @@ export function ReadingExam({ test }: { test: PublicTest }) {
     const hl = CSS.highlights.get(HIGHLIGHT) ?? new Highlight();
     hl.add(sel.getRangeAt(0).cloneRange());
     CSS.highlights.set(HIGHLIGHT, hl);
+    setHighlightCount(hl.size);
     sel.removeAllRanges();
+  }
+
+  function clearHighlights() {
+    CSS.highlights?.delete(HIGHLIGHT);
+    setHighlightCount(0);
   }
 
   const lowTime = remainingSec < 5 * 60;
@@ -113,6 +122,11 @@ export function ReadingExam({ test }: { test: PublicTest }) {
           />
           Highlight nội dung
         </label>
+        {highlightCount > 0 && (
+          <button type="button" onClick={clearHighlights} className="text-sm text-muted underline hover:text-navy">
+            Xóa highlight ({highlightCount})
+          </button>
+        )}
         <div role="tablist" aria-label="Passage" className="flex gap-2">
           {test.passages.map((p, i) => (
             <button
@@ -151,7 +165,7 @@ export function ReadingExam({ test }: { test: PublicTest }) {
           </div>
           <button
             type="button"
-            onClick={confirmSubmit}
+            onClick={() => dialogRef.current?.showModal()}
             className="rounded-xl bg-skill-listening px-6 py-2.5 text-lg font-bold text-white hover:bg-skill-listening/90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand lg:w-full"
           >
             Nộp bài
@@ -257,6 +271,24 @@ export function ReadingExam({ test }: { test: PublicTest }) {
           </div>
         ))}
       </div>
+
+      {/* <dialog> gốc: focus trap, Esc để đóng, backdrop sẵn */}
+      <dialog ref={dialogRef} aria-labelledby="submit-title" className="m-auto max-w-sm rounded-2xl p-6 text-navy shadow-card backdrop:bg-navy/40">
+        <h2 id="submit-title" className="text-xl font-bold">
+          Nộp bài?
+        </h2>
+        <p className="mt-2">
+          {unanswered ? `Bạn còn ${unanswered} câu chưa làm. Sau khi nộp sẽ không sửa được.` : "Bạn đã trả lời tất cả câu hỏi."}
+        </p>
+        <form method="dialog" className="mt-6 flex justify-end gap-3">
+          <Button type="submit" variant="outline" autoFocus>
+            Làm tiếp
+          </Button>
+          <Button type="button" onClick={submit}>
+            Nộp bài
+          </Button>
+        </form>
+      </dialog>
     </div>
   );
 }
