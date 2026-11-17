@@ -14,10 +14,9 @@ export async function generateJson<T>(
   system: string,
   input: ModelInput,
 ): Promise<T> {
-  // v1beta: the SDK defaults to v1, which lacks audio input and thinking levels.
   const ai = new GoogleGenAI({
     apiKey: process.env.GEMINI_API_KEY,
-    httpOptions: { apiVersion: "v1beta", timeout: TIMEOUT_MS },
+    httpOptions: { timeout: TIMEOUT_MS },
   });
   const response = await ai.models.generateContent({
     model: MODEL,
