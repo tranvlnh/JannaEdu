@@ -1,25 +1,67 @@
 @import "tailwindcss";
 
-/* Janna Edu design tokens (from _Ref). The design is light-only. */
+/* Janna Edu tokens — nguồn: mockup. Dùng qua class: bg-brand, text-navy, bg-skill-reading… */
 @theme {
-  --color-navy: #0b2b5e;
-  --color-brand: #f15a29;
+  --font-sans: var(--font-roboto), ui-sans-serif, system-ui, sans-serif;
+
+  --color-navy: #0b2a5b;
+  --color-brand: #f15a2b;
+  --color-brand-soft: #fad3c4;
+  /* *-ink: màu chữ nhỏ đạt WCAG AA (≥4.5:1 trên trắng/surface). Màu gốc chỉ dùng cho nền, viền, chữ lớn. */
+  --color-brand-ink: #c2410c;
+  --color-brand-tint: #feede6; /* nền trạng thái active: brand-ink trên nền này 4.55:1 */
+  --color-surface: #eaf2fe;
+  --color-surface-deep: #dce8fd;
+  --color-muted: #5b6b86;
+  --color-success: #22a45d;
+  --color-success-ink: #15803d;
+  --color-danger: #e5312b;
+  --color-danger-ink: #c81e1e;
+  --color-warning-soft: #fbe3c4;
+  --color-highlight: #fff085;
+
+  --color-skill-listening: #2f6bff;
+  --color-skill-reading: #1db98a;
+  --color-skill-writing: #f5922b;
+  --color-skill-speaking: #8b4df0;
+  --color-skill-listening-ink: #1d4ed8;
+  --color-skill-reading-ink: #047857;
+  --color-skill-writing-ink: #b45309;
+  --color-skill-speaking-ink: #6d28d9;
+
+  --shadow-card: 0 4px 16px rgb(47 107 255 / 0.12);
+
+  --animate-wave: wave 0.9s ease-in-out infinite;
+  @keyframes wave {
+    0%,
+    100% {
+      transform: scaleY(0.35);
+    }
+    50% {
+      transform: scaleY(1);
+    }
+  }
+}
+
+body {
+  @apply bg-white text-navy;
+}
+
+/* Highlight trong màn thi (CSS Custom Highlight API).
+   Lightning CSS cảnh báo "not a valid pseudo-element" lúc build — vô hại, browser hỗ trợ. */
+::highlight(exam-highlight) {
+  background-color: var(--color-highlight);
+}
+
+/* Utilities from develop, still used by account/writing/login/onboarding pages. */
+@theme {
   --color-brand-dark: #d4461a;
   --color-peach: #fcdccf;
   --color-panel: #eaf2fe;
 }
 
-@theme inline {
-  --font-sans: var(--font-roboto);
-}
-
-body {
-  background: #ffffff;
-  color: var(--color-navy);
-}
-
 @utility card {
-  @apply rounded-2xl bg-white p-5 shadow-[0_4px_16px_rgba(37,99,235,0.12)];
+  @apply rounded-2xl bg-white p-5 shadow-card;
 }
 
 @utility btn {
