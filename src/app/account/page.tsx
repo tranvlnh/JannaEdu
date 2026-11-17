@@ -20,7 +20,13 @@ async function redeemCode(_prev: string | null, formData: FormData) {
   "use server";
   const input = redeemLinkCodeInput.safeParse({ code: formData.get("code") });
   if (!input.success) return "Mã phải có đúng 8 ký tự.";
-  const { student } = await redeemLinkCode(input.data);
+  let student;
+  try {
+    ({ student } = await redeemLinkCode(input.data));
+  } catch (error) {
+    if (error instanceof Error && error.message === "too many attempts") return "Bạn đã nhập sai quá nhiều lần. Vui lòng thử lại sau 15 phút.";
+    throw error;
+  }
   if (!student) return "Mã sai hoặc đã hết hạn.";
   await selectChild(student.id);
   redirect("/parent");

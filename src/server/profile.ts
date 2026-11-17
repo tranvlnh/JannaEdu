@@ -22,6 +22,9 @@ const COLUMNS = "id, role, fullName:full_name, goalBand:goal_band";
 const CHILD_COOKIE = "janna-child";
 const CODE_ALPHABET = "ABCDEFGHJKMNPQRSTVWXYZ23456789"; // no 0/O, 1/I/L, U
 const CODE_TTL_MS = 15 * 60 * 1000;
+const REDEEM_LIMIT = 10; // wrong codes per parent per CODE_TTL_MS
+// shortcut: in-memory, so it resets on restart and is per process; move to a table if we run more than one container.
+const failedRedeems = new Map<string, number[]>();
 
 async function loadProfile(): Promise<Profile | null> {
   const user = await getUser();
@@ -92,7 +95,6 @@ export async function createLinkCode(): Promise<LinkCode> {
   "use server";
   const profile = await requireProfile();
   if (profile.role !== "student") throw new Error("forbidden");
-  // shortcut: no rate limit on redeem attempts (30^8 codes, 15 min TTL); add one if abuse shows up.
   const code = Array.from({ length: 8 }, () => CODE_ALPHABET[randomInt(CODE_ALPHABET.length)]).join("");
   const expiresAt = new Date(Date.now() + CODE_TTL_MS).toISOString();
   const { error } = await createAdminClient()
@@ -107,6 +109,8 @@ export async function redeemLinkCode(input: unknown): Promise<RedeemLinkCodeOutp
   const { code } = redeemLinkCodeInput.parse(input);
   const profile = await requireProfile();
   if (profile.role !== "parent") throw new Error("forbidden");
+  const failures = (failedRedeems.get(profile.id) ?? []).filter((t) => t > Date.now() - CODE_TTL_MS);
+  if (failures.length >= REDEEM_LIMIT) throw new Error("too many attempts");
   const admin = createAdminClient();
 
   // Deleting is the claim: two parents racing on one code cannot both win.
@@ -118,7 +122,10 @@ export async function redeemLinkCode(input: unknown): Promise<RedeemLinkCodeOutp
     .select("student_id")
     .maybeSingle();
   if (claim.error) throw new Error(claim.error.message);
-  if (!claim.data) return { student: null };
+  if (!claim.data) {
+    failedRedeems.set(profile.id, [...failures, Date.now()]);
+    return { student: null };
+  }
 
   const link = await admin
     .from("parent_links")
