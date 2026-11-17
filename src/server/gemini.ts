@@ -1,14 +1,12 @@
-// Minimal Gemini client: one structured-output call through the Interactions API. Server only.
-import { GoogleGenAI } from "@google/genai";
+// Minimal Gemini client: one structured-output generateContent call. Server only.
+import { GoogleGenAI, ThinkingLevel, type ContentListUnion } from "@google/genai";
 import { z } from "zod";
 
 const MODEL = "gemini-3.6-flash";
 const TIMEOUT_MS = 120_000;
 
-// Text, or a list of parts such as text plus an audio recording.
-export type ModelInput = Parameters<
-  GoogleGenAI["interactions"]["create"]
->[0]["input"];
+// Text, or a list of parts such as text plus an inline audio recording.
+export type ModelInput = ContentListUnion;
 
 // Asks the model for JSON matching `schema`, then validates it: the API does not enforce every constraint.
 export async function generateJson<T>(
@@ -16,28 +14,23 @@ export async function generateJson<T>(
   system: string,
   input: ModelInput,
 ): Promise<T> {
-  // v1beta: audio input is not available on the default API version yet.
+  // v1beta: the SDK defaults to v1, which lacks audio input and thinking levels.
   const ai = new GoogleGenAI({
     apiKey: process.env.GEMINI_API_KEY,
-    httpOptions: { apiVersion: "v1beta" },
+    httpOptions: { apiVersion: "v1beta", timeout: TIMEOUT_MS },
   });
-  const interaction = await ai.interactions.create(
-    {
-      model: MODEL,
-      system_instruction: system,
-      input,
-      store: false, // student work is not kept on the provider's side
-      generation_config: { thinking_level: "medium" },
-      response_format: {
-        type: "text",
-        mime_type: "application/json",
-        schema: z.toJSONSchema(schema),
-      },
+  const response = await ai.models.generateContent({
+    model: MODEL,
+    contents: input,
+    config: {
+      systemInstruction: system,
+      thinkingConfig: { thinkingLevel: ThinkingLevel.MEDIUM },
+      responseMimeType: "application/json",
+      responseJsonSchema: z.toJSONSchema(schema),
     },
-    { timeout: TIMEOUT_MS },
-  );
-  if (interaction.status !== "completed" || !interaction.output_text) {
-    throw new Error(`gemini: ${interaction.status}, no output`);
+  });
+  if (!response.text) {
+    throw new Error(`gemini: ${response.candidates?.[0]?.finishReason ?? "no candidates"}, no output`);
   }
-  return schema.parse(JSON.parse(interaction.output_text));
+  return schema.parse(JSON.parse(response.text));
 }
