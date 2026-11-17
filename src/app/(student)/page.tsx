@@ -1,46 +1,53 @@
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Bot, Lightbulb, Target, Users, type LucideIcon } from "lucide-react";
 import { Card } from "@/components/ui";
 import { featuredCourses } from "@/lib/courses";
 
-const FEATURES: { href: string; icon: string; title: string; text: string }[] = [
-  { href: "/examiner", icon: "/ref/icon-robot.png", title: "Giám khảo AI 24/7", text: "Chấm điểm, phân tích lỗi chi tiết theo chuẩn quốc tế chỉ trong vài giây." },
-  { href: "/mock-test", icon: "/ref/icon-bulb.png", title: "Phòng thi ảo", text: "Mô phỏng áp lực thời gian, giao diện và cấu trúc đề thi thật." },
-  { href: "/path", icon: "/ref/icon-target.png", title: "Lộ trình phù hợp", text: "AI phân tích điểm yếu, gợi ý bài tập trọng tâm, tối ưu thời gian." },
-  { href: "/parent", icon: "/ref/icon-parents.png", title: "Phụ huynh theo dõi tiến độ", text: "Theo dõi kết quả và báo cáo tiến độ học tập của con." },
+const FEATURES: { href: string; icon: LucideIcon; title: string; text: string }[] = [
+  { href: "/examiner", icon: Bot, title: "Giám khảo AI 24/7", text: "Chấm điểm, phân tích lỗi chi tiết theo chuẩn quốc tế chỉ trong vài giây." },
+  { href: "/mock-test", icon: Lightbulb, title: "Phòng thi ảo", text: "Mô phỏng áp lực thời gian, giao diện và cấu trúc đề thi thật." },
+  { href: "/path", icon: Target, title: "Lộ trình phù hợp", text: "AI phân tích điểm yếu, gợi ý bài tập trọng tâm, tối ưu thời gian." },
+  { href: "/parent", icon: Users, title: "Phụ huynh theo dõi tiến độ", text: "Theo dõi kết quả và báo cáo tiến độ học tập của con." },
 ];
 
 export default function HomePage() {
   return (
     <div className="flex flex-col gap-8">
-      {/* The headline and button are part of the mockup image, so the whole banner is the link. */}
-      <h1 className="sr-only">Chinh phục IELTS cùng Janna Edu</h1>
-      <Link href="/path" className="block overflow-hidden rounded-3xl focus-visible:outline-2 focus-visible:outline-brand">
+      <section className="relative isolate flex min-h-56 flex-col items-start justify-center gap-5 overflow-hidden rounded-3xl p-6 sm:p-10">
         <Image
           src="/ref/hero.jpg"
-          alt="Bắt đầu học ngay"
-          width={1097}
-          height={221}
+          alt=""
+          fill
           preload
           sizes="(min-width: 1024px) calc(100vw - 20rem), 100vw"
-          className="h-40 w-full object-cover object-left sm:h-auto"
+          className="-z-10 object-cover object-right"
         />
-      </Link>
+        <div aria-hidden className="absolute inset-0 -z-10 bg-linear-to-r from-navy via-navy/80 to-navy/0 sm:via-navy/70 sm:to-60%" />
+        <h1 className="text-3xl leading-tight font-bold text-white sm:text-4xl">
+          Chinh phục IELTS
+          <br />
+          cùng <span className="text-brand">Janna Edu</span>
+        </h1>
+        <Link href="/path" className="btn focus-visible:outline-2 focus-visible:outline-white">
+          Bắt đầu học ngay
+          <ArrowRight className="size-4" aria-hidden />
+        </Link>
+      </section>
 
       <section aria-labelledby="features">
         <h2 id="features" className="sr-only">
           Tính năng nổi bật
         </h2>
         <ul className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-          {FEATURES.map(({ href, icon, title, text }) => (
+          {FEATURES.map(({ href, icon: Icon, title, text }) => (
             <li key={href}>
               <Link
                 href={href}
                 className="flex h-full flex-col gap-3 rounded-2xl bg-white p-5 shadow-card transition-transform hover:-translate-y-0.5 focus-visible:outline-2 focus-visible:outline-brand"
               >
                 <span className="flex items-center gap-3">
-                  <Image src={icon} alt="" width={48} height={48} className="size-12 shrink-0 object-contain" />
+                  <Icon className="size-12 shrink-0 text-navy" strokeWidth={1.75} aria-hidden />
                   <span className="text-lg font-bold">{title}</span>
                 </span>
                 <span className="text-sm leading-relaxed text-muted">{text}</span>
@@ -63,7 +70,7 @@ export default function HomePage() {
           {featuredCourses.map((c) => (
             <li key={c.id}>
               <Card className="relative flex h-full flex-col gap-3 p-4!">
-                <Image src={c.image} alt="" width={150} height={88} className="aspect-video w-full rounded-xl object-cover" />
+                <Image src={c.image} alt="" width={800} height={450} className="aspect-video w-full rounded-xl object-cover" />
                 <h3 className="font-bold">
                   <Link href={`/courses#${c.id}`} className="after:absolute after:inset-0 hover:underline">
                     {c.title}

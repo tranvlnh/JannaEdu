@@ -4,7 +4,8 @@ import { ArrowRight, BookOpenText, Check, Clapperboard, Clock, Lightbulb, Monito
 import { Logo } from "@/components/logo";
 import { Button, Card } from "@/components/ui";
 import type { LearningPath } from "@/contracts/learning-path";
-import { SKILLS, skillStyle, type Skill } from "@/lib/skills";
+import { skillStyle } from "@/lib/skills";
+import { BOOK_ORDER, BookCover } from "./book-cover";
 
 const VALUES: { icon: LucideIcon; text: string }[] = [
   { icon: BookOpenText, text: "Nội dung chuẩn quốc tế" },
@@ -21,26 +22,6 @@ const COURSE_PERKS: { icon: LucideIcon; text: string }[] = [
   { icon: BookOpenText, text: "Hệ thống bài tập & kiểm tra định kỳ" },
   { icon: Clock, text: "Hỗ trợ giải đáp 24/7" },
 ];
-
-const BOOK_SIZE: Record<Skill, [number, number]> = {
-  listening: [389, 464],
-  reading: [412, 466],
-  writing: [384, 463],
-  speaking: [371, 466],
-};
-
-function BookCover({ skill }: { skill: Skill }) {
-  const [width, height] = BOOK_SIZE[skill];
-  return (
-    <Image
-      src={`/ref/book-${skill}.jpg`}
-      alt={`Bìa sách IELTS ${skillStyle[skill].label} Band 5.0 – 6.5`}
-      width={width}
-      height={height}
-      className="w-full rounded-r-xl rounded-l-sm shadow-[6px_8px_20px_rgb(11_42_91/0.18)]"
-    />
-  );
-}
 
 /** Sách AI đã gợi ý trong lộ trình học; không hiện gì khi chưa có lộ trình hoặc AI không gợi ý. */
 export function BookAdvice({ title, advice }: { title: string; advice: LearningPath["bookAdvice"] }) {
@@ -110,22 +91,23 @@ export function AcademyContent({ showCourses = true, advice }: { showCourses?: b
           Hệ thống sách thiết kế theo từng kỹ năng, từ cơ bản đến nâng cao, giúp người học hiểu sâu – tiến bộ.
         </p>
         {advice}
-        <div className="mt-8 grid gap-8 xl:grid-cols-[3fr_1fr]">
-          <ul className="grid grid-cols-2 gap-6 md:grid-cols-4">
-            {SKILLS.map((s) => (
+        <div className="mt-8 grid items-center gap-8 xl:grid-cols-[minmax(0,1fr)_auto]">
+          <ul className="grid grid-cols-2 gap-4 md:grid-cols-4">
+            {BOOK_ORDER.map((s) => (
               <li key={s}>
                 <BookCover skill={s} />
-                <p className="mt-3 text-center font-semibold">IELTS {skillStyle[s].label}</p>
               </li>
             ))}
           </ul>
           <ul className="flex flex-col justify-center gap-3">
             {BOOK_PERKS.map((p) => (
-              <li key={p} className="flex items-center gap-3 rounded-full bg-white py-2 pr-5 pl-2 font-medium shadow-card">
-                <span className="grid size-9 shrink-0 place-items-center rounded-full bg-navy text-white">
-                  <Check className="size-5" aria-hidden />
+              <li key={p} className="flex items-center gap-3">
+                <span className="grid size-12 shrink-0 place-items-center rounded-full bg-white shadow-card">
+                  <span className="grid size-9 place-items-center rounded-full bg-navy text-white">
+                    <Check className="size-5" strokeWidth={3} aria-hidden />
+                  </span>
                 </span>
-                {p}
+                <span className="flex min-h-12 flex-1 items-center rounded-3xl bg-white px-4 py-2 font-medium shadow-[4px_4px_0_rgb(11_42_91/0.18)]">{p}</span>
               </li>
             ))}
           </ul>

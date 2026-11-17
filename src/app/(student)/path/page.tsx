@@ -46,7 +46,7 @@ async function LearningPath() {
   return (
     <div className="flex flex-col gap-6">
       <div className="relative overflow-hidden rounded-3xl bg-white/50 p-6 sm:p-8">
-        <Image src="/ref/learning-path.jpg" alt="" width={492} height={407} preload className="absolute top-6 right-6 hidden h-auto w-[30%] max-w-sm xl:block" />
+        <Image src="/ref/learning-path.svg" alt="" width={492} height={407} preload className="absolute top-6 right-6 hidden h-auto w-[30%] max-w-sm xl:block" />
         <h1 className="text-4xl font-bold">Lộ trình học cá nhân hóa</h1>
         <p className="mt-2 max-w-3xl text-lg text-navy/80 xl:max-w-[65%]">
           Dựa trên mục tiêu, kết quả bài thi và phân tích từ AI, Janna Edu thiết kế lộ trình phù hợp nhất để giúp bạn đạt mục tiêu IELTS.

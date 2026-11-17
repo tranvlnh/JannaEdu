@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 492 407" fill="none">
+  <rect x="80" y="50" width="290" height="270" rx="18" fill="#2f6bff"/>
+  <rect x="0" y="222" width="150" height="185" rx="18" fill="#2f6bff"/>
+  <rect x="262" y="180" width="230" height="185" rx="18" fill="#f15a2b"/>
+  <!-- stairs: each step is a riser + tread, rising to the top right -->
+  <g fill="#ffffff" stroke="#c9d8f5" stroke-width="2">
+    <path d="M120 407V370h330v37z"/>
+    <path d="M140 370v-34h290v34z"/>
+    <path d="M160 336v-34h250v34z"/>
+    <path d="M180 302v-34h210v34z"/>
+    <path d="M200 268v-34h175v34z"/>
+    <path d="M222 234v-32h145v32z"/>
+    <path d="M246 202v-30h122v30z"/>
+    <path d="M272 172v-28h100v28z"/>
+    <path d="M300 144v-26h76v26z"/>
+    <path d="M330 118v-22h52v22z"/>
+    <path d="M358 96v-20h34v20z"/>
+    <path d="M384 76v-18h26v18z"/>
+    <path d="M404 58v-16h24v16z"/>
+    <path d="M422 42v-14h30v14z"/>
+  </g>
+  <!-- flag at the top -->
+  <path d="M462 28V4" stroke="#0b2a5b" stroke-width="3" stroke-linecap="round"/>
+  <path d="M463 5l22 8-22 8z" fill="#e5312b"/>
+  <!-- climber: back foot on the lower step, front foot one step up -->
+  <g stroke-linecap="round" stroke-linejoin="round" fill="none">
+    <path d="M234 214l-10 44-8 40h22" stroke="#0b2a5b" stroke-width="15"/>
+    <path d="M246 212l30 26-4 28h20" stroke="#3d5a99" stroke-width="15"/>
+    <path d="M230 154l-8 38-6 22" stroke="#0b2a5b" stroke-width="10"/>
+    <rect x="223" y="140" width="38" height="80" rx="16" fill="#ffffff" stroke="#0b2a5b" stroke-width="4" transform="rotate(10 242 180)"/>
+    <path d="M228 150v58" stroke="#2f6bff" stroke-width="9" transform="rotate(10 242 180)"/>
+    <path d="M254 154l12 32 18 8" stroke="#0b2a5b" stroke-width="10"/>
+  </g>
+  <circle cx="287" cy="195" r="7" fill="#f2a578"/>
+  <circle cx="215" cy="216" r="6" fill="#f2a578"/>
+  <rect x="192" y="220" width="48" height="30" rx="6" fill="#c2410c" stroke="#7a2a0c" stroke-width="3"/>
+  <path d="M206 220v-6h20v6" stroke="#7a2a0c" stroke-width="3"/>
+  <rect x="236" y="128" width="14" height="16" rx="4" fill="#f2a578"/>
+  <circle cx="246" cy="112" r="21" fill="#f2a578"/>
+  <path d="M225 110c-2-20 12-31 28-29 12 2 18 10 16 17-9-3-17-2-22 4-3 5-5 10-9 14-6 0-11-2-13-6z" fill="#1e2b3c"/>
+</svg>
