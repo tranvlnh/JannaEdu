@@ -1,11 +1,12 @@
 import { NextResponse } from "next/server";
+import { roleSchema } from "@/contracts/profile";
+import { homeOf } from "@/server/auth";
 import { createClient } from "@/server/supabase/server";
 
 export async function GET(request: Request) {
   const { searchParams, origin } = new URL(request.url);
   const code = searchParams.get("code");
-  let next = searchParams.get("next") ?? "/";
-  if (!next.startsWith("/")) next = "/";
+  const next = searchParams.get("next");
 
   if (code) {
     const supabase = await createClient();
@@ -16,8 +17,10 @@ export async function GET(request: Request) {
         .select("role")
         .eq("id", data.user.id)
         .maybeSingle();
-      if (!profile?.role) next = "/onboarding";
-      return NextResponse.redirect(`${origin}${next}`);
+      const role = roleSchema.nullable().catch(null).parse(profile?.role ?? null);
+      // Same-origin paths only: the result is appended to our own origin.
+      const target = role && next?.startsWith("/") ? next : homeOf(role);
+      return NextResponse.redirect(`${origin}${target}`);
     }
   }
   return NextResponse.redirect(`${origin}/login?error=oauth`);

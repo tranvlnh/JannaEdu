@@ -56,7 +56,8 @@ export function ArcGauge({
   );
 }
 
-export type Series = { name: string; color: string; values: number[] };
+/** null = no value at that point (e.g. a skill not tested yet): no dot, the line skips it. */
+export type Series = { name: string; color: string; values: (number | null)[] };
 
 const W = 640;
 const H = 280;
@@ -111,8 +112,12 @@ export function LineChart({
           ))}
           {series.map((s) => (
             <g key={s.name} fill={s.color} stroke={s.color}>
-              <polyline points={s.values.map((v, i) => `${x(i)},${y(v)}`).join(" ")} fill="none" strokeWidth={2} />
-              {s.values.map((v, i) => (
+              <polyline
+                points={s.values.flatMap((v, i) => (v === null ? [] : [`${x(i)},${y(v)}`])).join(" ")}
+                fill="none"
+                strokeWidth={2}
+              />
+              {s.values.map((v, i) => v !== null && (
                 <g key={i}>
                   <circle cx={x(i)} cy={y(v)} r={3.5} />
                   {showValues && (
@@ -145,7 +150,7 @@ export function LineChart({
               <tr key={s.name}>
                 <th scope="row">{s.name}</th>
                 {s.values.map((v, i) => (
-                  <td key={i}>{v}</td>
+                  <td key={i}>{v ?? "chưa có"}</td>
                 ))}
               </tr>
             ))}

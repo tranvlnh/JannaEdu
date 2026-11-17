@@ -1,17 +1,18 @@
 import { Suspense } from "react";
 import { redirect } from "next/navigation";
+import { homeOf } from "@/server/auth";
 import { chooseRole, getProfile } from "@/server/profile";
 
 async function pickRole(formData: FormData) {
   "use server";
-  await chooseRole({ role: formData.get("role") });
-  redirect("/account");
+  const { role } = await chooseRole({ role: formData.get("role") });
+  redirect(homeOf(role));
 }
 
 async function RolePicker() {
   const profile = await getProfile();
   if (!profile) redirect("/login");
-  if (profile.role) redirect("/account");
+  if (profile.role) redirect(homeOf(profile.role));
 
   return (
     <form action={pickRole} className="card flex flex-col items-center gap-4 p-10">

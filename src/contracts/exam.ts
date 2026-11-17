@@ -98,6 +98,8 @@ export type AttemptResult = z.infer<typeof attemptResultSchema>;
 export const attemptSummarySchema = z.object({
   id: z.uuid(),
   testTitle: z.string(),
+  skill: skillSchema,
+  kind: testKindSchema,
   submittedAt: timestamp,
   rawScore: z.number().int().nonnegative(),
   band: z.number().min(0).max(9).nullable(),

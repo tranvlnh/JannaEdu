@@ -1,8 +1,9 @@
 import { DonutChart } from "@/components/charts";
 import { Card } from "@/components/ui";
 import { band } from "@/lib/format";
-import type { Criterion } from "@/lib/mock/student";
 import { roundBand } from "@/lib/skills";
+
+export type Criterion = { name: string; score: number };
 
 /** Donut band + 4 tiêu chí chấm (Speaking/Writing). Dùng ở /examiner và /examiner/analysis. */
 export function CriteriaCard({ criteria, showDonut = true }: { criteria: Criterion[]; showDonut?: boolean }) {

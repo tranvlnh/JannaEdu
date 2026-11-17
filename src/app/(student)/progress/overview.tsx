@@ -1,31 +1,40 @@
 "use client";
 
 import { useState } from "react";
-import { CalendarDays, Clock, FileText, NotebookPen, Target } from "lucide-react";
+import { Bot, CalendarDays, FileText, NotebookPen, Target } from "lucide-react";
 import { Delta, ProgressBar, Select, StatCard } from "@/components/ui";
-import { progressByRange, weeklyGoal } from "@/lib/mock/student";
+import { band } from "@/lib/format";
+import type { rangeStats } from "@/lib/progress";
 
-const RANGES = [7, 30, 90] as const;
+export const RANGES = [7, 30, 90] as const;
+type Range = (typeof RANGES)[number];
 
-/** Tiêu đề + chọn khoảng thời gian + 4 thẻ thống kê. */
-export function ProgressOverview() {
-  const [range, setRange] = useState<(typeof RANGES)[number]>(30);
-  const s = progressByRange[range];
+/** Tiêu đề + chọn khoảng thời gian + 4 thẻ thống kê. Dùng cho học sinh và phụ huynh. */
+export function ProgressOverview({
+  title,
+  subtitle,
+  stats,
+  overall,
+  goal,
+}: {
+  title: string;
+  subtitle: string;
+  stats: Record<Range, ReturnType<typeof rangeStats>>;
+  overall: number | null;
+  goal: number | null;
+}) {
+  const [range, setRange] = useState<Range>(30);
+  const s = stats[range];
   const prev = `so với ${range} ngày trước`;
 
   return (
     <>
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
-          <h1 className="text-4xl font-bold">Theo dõi tiến độ học tập</h1>
-          <p className="mt-2 text-lg">Cùng xem hành trình chinh phục IELTS của bạn nhé!</p>
+          <h1 className="text-4xl font-bold">{title}</h1>
+          <p className="mt-2 text-lg">{subtitle}</p>
         </div>
-        <Select
-          icon={CalendarDays}
-          aria-label="Khoảng thời gian"
-          value={range}
-          onChange={(e) => setRange(Number(e.target.value) as typeof range)}
-        >
+        <Select icon={CalendarDays} aria-label="Khoảng thời gian" value={range} onChange={(e) => setRange(Number(e.target.value) as Range)}>
           {RANGES.map((r) => (
             <option key={r} value={r}>
               Trong {r} ngày
@@ -42,23 +51,28 @@ export function ProgressOverview() {
           Đang xem {range} ngày gần nhất
         </p>
         <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-          <StatCard icon={Clock} iconClass="bg-brand text-white" label="Tổng thời gian học" value={s.studyHours} unit="giờ">
-            <Delta value={s.studyHoursDelta} suffix={`giờ ${prev}`} />
+          <StatCard icon={NotebookPen} iconClass="bg-brand text-white" label="Số bài hoàn thành" value={s.completed.value} unit="bài">
+            <Delta value={s.completed.delta} suffix={`bài ${prev}`} />
           </StatCard>
-          <StatCard icon={NotebookPen} iconClass="bg-skill-reading text-white" label="Số bài hoàn thành" value={s.completed} unit="bài">
-            <Delta value={s.completedDelta} suffix={`bài ${prev}`} />
+          <StatCard icon={FileText} iconClass="bg-skill-reading text-white" label="Mock test đã làm" value={s.exams.value} unit="bài">
+            <Delta value={s.exams.delta} suffix={`bài ${prev}`} />
           </StatCard>
-          <StatCard icon={FileText} iconClass="bg-skill-listening/20 text-skill-listening" label="Mock test đã làm" value={s.mockTests} unit="bài">
-            <Delta value={s.mockTestsDelta} suffix={`bài ${prev}`} />
+          <StatCard icon={Bot} iconClass="bg-skill-listening/20 text-skill-listening-ink" label="Bài AI đã chấm" value={s.graded.value} unit="bài">
+            <Delta value={s.graded.delta} suffix={`bài ${prev}`} />
           </StatCard>
           <StatCard
             icon={Target}
-            iconClass="bg-skill-speaking/20 text-skill-speaking"
-            label="Mục tiêu tuần này"
-            value={`${weeklyGoal.done}/${weeklyGoal.total}`}
-            unit="bài"
+            iconClass="bg-skill-speaking/20 text-skill-speaking-ink"
+            label="Band so với mục tiêu"
+            value={overall === null ? "–" : band(overall)}
+            unit={goal === null ? undefined : `/ ${band(goal)}`}
           >
-            <ProgressBar value={weeklyGoal.done} max={weeklyGoal.total} label="Mục tiêu tuần này" />
+            {goal === null ? (
+              <p className="text-sm text-muted">Chưa đặt band mục tiêu</p>
+            ) : (
+              <ProgressBar value={overall ?? 0} max={goal} label="Band hiện tại so với mục tiêu" />
+            )}
+            {overall === null && <p className="text-sm text-muted">Cần kết quả đủ 4 kỹ năng</p>}
           </StatCard>
         </div>
       </section>

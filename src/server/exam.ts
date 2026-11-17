@@ -52,13 +52,15 @@ export async function listAttempts(studentId?: string): Promise<AttemptSummary[]
   const supabase = await createClient();
   let query = supabase
     .from("attempts")
-    .select("id, submittedAt:submitted_at, rawScore:raw_score, band, test:tests(title)")
+    .select("id, submittedAt:submitted_at, rawScore:raw_score, band, test:tests(title, skill, kind)")
     .not("submitted_at", "is", null)
     .order("submitted_at", { ascending: false });
   if (studentId) query = query.eq("student_id", studentId); // a parent looking at one child
   const { data, error } = await query;
   if (error) throw new Error(error.message);
-  return attemptSummarySchema.array().parse(data.map((a) => ({ ...a, testTitle: a.test.title })));
+  return attemptSummarySchema
+    .array()
+    .parse(data.map(({ test, ...a }) => ({ ...a, testTitle: test.title, skill: test.skill, kind: test.kind })));
 }
 
 async function loadAttempt(admin: Admin, attemptId: string) {
