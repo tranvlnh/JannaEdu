@@ -2,6 +2,7 @@
 import { randomInt } from "node:crypto";
 import { cache } from "react";
 import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 import { z } from "zod";
 import {
   chooseRoleInput,
@@ -50,7 +51,7 @@ export async function getLinkedProfiles(): Promise<Profile[]> {
 
 export async function requireProfile(): Promise<Profile> {
   const profile = await getProfile();
-  if (!profile) throw new Error("unauthenticated");
+  if (!profile) redirect("/login"); // session expired mid-visit: send to login, not the error page
   return profile;
 }
 

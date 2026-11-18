@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
-import { redirect } from "next/navigation";
+import { redirect, unstable_rethrow } from "next/navigation";
 import { ArrowLeft, Lightbulb } from "lucide-react";
 import type { WritingReport } from "@/contracts/writing";
 import { RetryButton } from "@/app/retry-button";
@@ -46,6 +46,7 @@ async function Analysis({ params }: Pick<PageProps<"/examiner/writing/analysis/[
     try {
       await gradeWriting({ submissionId });
     } catch (error) {
+      unstable_rethrow(error); // let the login redirect through
       console.error("writing regrade failed", submissionId, error); // the page shows it is still ungraded
     }
     redirect(`/examiner/writing/analysis/${submissionId}`);
