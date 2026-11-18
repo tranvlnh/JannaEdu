@@ -69,13 +69,9 @@ export default function HomePage() {
         <ul className="grid grid-cols-2 gap-4 xl:grid-cols-4">
           {featuredCourses.map((c) => (
             <li key={c.id}>
-              <Card className="relative flex h-full flex-col gap-3 p-4!">
+              <Card className="flex h-full cursor-pointer flex-col gap-3 p-4! transition-transform select-none hover:-translate-y-0.5 active:scale-95">
                 <Image src={c.image} alt="" width={800} height={450} className="aspect-video w-full rounded-xl object-cover" />
-                <h3 className="font-bold">
-                  <Link href={`/courses#${c.id}`} className="after:absolute after:inset-0 hover:underline">
-                    {c.title}
-                  </Link>
-                </h3>
+                <h3 className="font-bold">{c.title}</h3>
                 <p className="-mt-2 text-sm text-muted">{c.range}</p>
               </Card>
             </li>
