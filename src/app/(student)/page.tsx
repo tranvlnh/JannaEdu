@@ -4,11 +4,11 @@ import { ArrowRight, Bot, Lightbulb, Target, Users, type LucideIcon } from "luci
 import { Card } from "@/components/ui";
 import { featuredCourses } from "@/lib/courses";
 
-const FEATURES: { href: string; icon: LucideIcon; title: string; text: string }[] = [
-  { href: "/examiner", icon: Bot, title: "Giám khảo AI 24/7", text: "Chấm điểm, phân tích lỗi chi tiết theo chuẩn quốc tế chỉ trong vài giây." },
-  { href: "/mock-test", icon: Lightbulb, title: "Phòng thi ảo", text: "Mô phỏng áp lực thời gian, giao diện và cấu trúc đề thi thật." },
-  { href: "/path", icon: Target, title: "Lộ trình phù hợp", text: "AI phân tích điểm yếu, gợi ý bài tập trọng tâm, tối ưu thời gian." },
-  { href: "/parent", icon: Users, title: "Phụ huynh theo dõi tiến độ", text: "Theo dõi kết quả và báo cáo tiến độ học tập của con." },
+const FEATURES: { icon: LucideIcon; title: string; text: string }[] = [
+  { icon: Bot, title: "Giám khảo AI 24/7", text: "Chấm điểm, phân tích lỗi chi tiết theo chuẩn quốc tế chỉ trong vài giây." },
+  { icon: Lightbulb, title: "Phòng thi ảo", text: "Mô phỏng áp lực thời gian, giao diện và cấu trúc đề thi thật." },
+  { icon: Target, title: "Lộ trình phù hợp", text: "AI phân tích điểm yếu, gợi ý bài tập trọng tâm, tối ưu thời gian." },
+  { icon: Users, title: "Phụ huynh theo dõi tiến độ", text: "Theo dõi kết quả và báo cáo tiến độ học tập của con." },
 ];
 
 export default function HomePage() {
@@ -40,18 +40,15 @@ export default function HomePage() {
           Tính năng nổi bật
         </h2>
         <ul className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-          {FEATURES.map(({ href, icon: Icon, title, text }) => (
-            <li key={href}>
-              <Link
-                href={href}
-                className="flex h-full flex-col gap-3 rounded-2xl bg-white p-5 shadow-card transition-transform hover:-translate-y-0.5 focus-visible:outline-2 focus-visible:outline-brand"
-              >
+          {FEATURES.map(({ icon: Icon, title, text }) => (
+            <li key={title}>
+              <div className="flex h-full cursor-pointer flex-col gap-3 rounded-2xl bg-white p-5 shadow-card transition-transform select-none hover:-translate-y-0.5 active:scale-95">
                 <span className="flex items-center gap-3">
                   <Icon className="size-12 shrink-0 text-navy" strokeWidth={1.75} aria-hidden />
                   <span className="text-lg font-bold">{title}</span>
                 </span>
                 <span className="text-sm leading-relaxed text-muted">{text}</span>
-              </Link>
+              </div>
             </li>
           ))}
         </ul>
