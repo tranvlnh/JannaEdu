@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
-import { notFound, redirect } from "next/navigation";
+import { notFound, redirect, unstable_rethrow } from "next/navigation";
 import { submitWritingInput } from "@/contracts/writing";
 import { homeOf } from "@/server/auth";
 import { getProfile } from "@/server/profile";
@@ -33,6 +33,7 @@ async function Write({ params }: Pick<PageProps<"/examiner/writing/[promptId]">,
     try {
       return await submitWriting(input.data);
     } catch (error) {
+      unstable_rethrow(error); // let the login redirect through
       if (error instanceof Error && error.message === "daily limit reached") {
         return { error: "Bạn đã nộp đủ số bài trong 24 giờ qua. Bài đang viết vẫn được giữ trên máy, hãy nộp lại sau." };
       }
