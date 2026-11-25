@@ -1,8 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { Suspense } from "react";
 import { ArrowRight, Bot, Lightbulb, Target, Users, type LucideIcon } from "lucide-react";
-import { DailyTasks } from "@/components/daily-tasks";
 import { Card } from "@/components/ui";
 import { featuredCourses } from "@/lib/courses";
 
@@ -16,10 +14,6 @@ const FEATURES: { icon: LucideIcon; title: string; text: string }[] = [
 export default function HomePage() {
   return (
     <div className="flex flex-col gap-8">
-      <Suspense fallback={<p className="text-muted">Đang tải nhiệm vụ…</p>}>
-        <DailyTasks />
-      </Suspense>
-
       <section className="relative isolate flex min-h-56 flex-col items-start justify-center gap-5 overflow-hidden rounded-3xl p-6 sm:p-10">
         <Image
           src="/ref/hero.jpg"

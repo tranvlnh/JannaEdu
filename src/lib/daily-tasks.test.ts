@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { dailyTasks, vnDay } from "./daily-tasks.ts";
+import { dailyTasks, vnDay, weekDays } from "./daily-tasks.ts";
 import type { Activity } from "./progress.ts";
 
 const DAY = 24 * 60 * 60 * 1000;
@@ -58,4 +58,25 @@ test("a stage with one task gives one stage task; past the end uses the last sta
   const tasks = dailyTasks(path, [], Date.parse(start) + 30 * DAY);
   assert.deepEqual(tasks.map((t) => t.label).slice(0, 1), ["Nghe podcast"]);
   assert.equal(tasks.length, 2);
+});
+
+test("weekDays: Monday to Sunday of the Vietnam week, each a time inside that day", () => {
+  // Thu 26/11/2026 01:00 in Vietnam = Wed 25/11 18:00 UTC
+  const days = weekDays(Date.parse("2026-11-25T18:00:00Z"));
+  assert.equal(days.length, 7);
+  assert.equal(new Date(days[0]).toISOString(), "2026-11-23T05:00:00.000Z"); // Mon 23/11 noon VN
+  assert.equal(new Date(days[6]).toISOString(), "2026-11-29T05:00:00.000Z");
+  // Sunday belongs to the week that started the Monday before
+  assert.deepEqual(weekDays(days[6]), days);
+});
+
+test("doneBy is the matching submission, earliest first", () => {
+  const now = Date.parse(start) + 3600_000;
+  const late = act("writing", new Date(now - 1000).toISOString());
+  const early = act("writing", new Date(now - 2000).toISOString());
+  const tasks = dailyTasks(path, [late, early], now);
+  assert.equal(tasks[0].doneBy, early);
+  assert.equal(tasks[1].doneBy, late);
+  assert.equal(tasks[2].doneBy, null);
+  assert.equal(tasks[3].minutes, 15); // practice Speaking
 });
