@@ -6,7 +6,7 @@ import { band } from "@/lib/format";
 import { homeOf, signOut } from "@/server/auth";
 import { skillStyle } from "@/lib/skills";
 import { finishPlacement, placementStatus, setBaseline } from "@/server/placement";
-import { chooseRole, getProfile, setGoalBand } from "@/server/profile";
+import { chooseRole, getProfile, openDemoLearning, setGoalBand } from "@/server/profile";
 
 async function pickRole(formData: FormData) {
   "use server";
@@ -57,9 +57,11 @@ async function Steps() {
   if (!profile.learningAccess) {
     return (
       <section className="card flex w-full max-w-lg flex-col items-start gap-4 p-8">
-        <h1 className="page-title">Chờ xác nhận khóa học</h1>
-        <p>Hãy liên hệ tư vấn viên Janna Academy và cung cấp email Google bạn đã dùng để đăng nhập. Trung tâm sẽ mở quyền sau khi xác nhận thanh toán.</p>
-        <Button href="/courses">Xem khóa học</Button>
+        <h1 className="page-title">Mở khóa học</h1>
+        <form action={openDemoLearning}>
+          <Button type="submit">Thanh toán (demo)</Button>
+        </form>
+        <Button href="/courses" variant="outline">Xem các khóa học</Button>
         <form action={signOut}><button className="underline">Đăng xuất</button></form>
       </section>
     );

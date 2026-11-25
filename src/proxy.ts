@@ -43,7 +43,8 @@ export async function proxy(request: NextRequest) {
     const parentPage = pathname === "/parent" || pathname.startsWith("/parent/");
     const destination = !profile?.role ? "/onboarding"
       : profile.role === "student" && (!profile.learning_access ||
-        (profile.baseline_band === null && !(profile.placement_started_at && placementPage))) ? "/onboarding"
+        (profile.baseline_band === null && pathname !== "/dashboard" &&
+          !(profile.placement_started_at && placementPage))) ? "/onboarding"
       : profile.role === "parent" && !parentPage && !result ? "/parent"
       : profile.role === "student" && parentPage ? "/dashboard"
       : null;

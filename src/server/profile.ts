@@ -55,6 +55,18 @@ export async function requireProfile(): Promise<Profile> {
   return profile;
 }
 
+export async function openDemoLearning() {
+  "use server";
+  const profile = await requireProfile();
+  if (profile.role !== "student") redirect(profile.role === "parent" ? "/parent" : "/onboarding");
+  if (!profile.learningAccess) {
+    const { error } = await createAdminClient().from("profiles")
+      .update({ learning_access: true }).eq("id", profile.id).eq("role", "student");
+    if (error) throw new Error(error.message);
+  }
+  redirect("/dashboard");
+}
+
 export async function requireLearningAccess() {
   const profile = await requireProfile();
   if (profile.role !== "student") throw new Error("forbidden");
