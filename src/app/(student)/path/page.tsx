@@ -6,7 +6,7 @@ import { redirect } from "next/navigation";
 import { ArrowRight, BookOpen, Target } from "lucide-react";
 import { RetryButton } from "@/app/retry-button";
 import { Tabs } from "@/components/tabs";
-import { AIComment, Button, Card, ProgressBar, SKILL_ICON } from "@/components/ui";
+import { AIComment, Button, Card, ProgressBar } from "@/components/ui";
 import { band, formatDate } from "@/lib/format";
 import { pathTimeline } from "@/lib/path";
 import { skillStyle } from "@/lib/skills";
@@ -14,6 +14,7 @@ import { requestTime } from "@/server/activity";
 import { generateLearningPath, getMyLearningPath } from "@/server/learning-path";
 import { getProfile } from "@/server/profile";
 import { StageCard } from "./stage-card";
+import { WeekList } from "./week-list";
 
 export const metadata: Metadata = { title: "Lộ trình học" };
 
@@ -41,7 +42,6 @@ async function LearningPath() {
   const { path, canGenerate } = await getMyLearningPath();
   const timeline = path && pathTimeline(path.stages, path.generatedAt, requestTime());
   const pct = timeline ? Math.round((timeline.currentWeek / timeline.totalWeeks) * 100) : 0;
-  const current = timeline?.stages.find((s) => s.status === "current") ?? timeline?.stages.at(-1);
 
   return (
     <div className="flex flex-col gap-6">
@@ -145,26 +145,11 @@ async function LearningPath() {
               {
                 id: "week",
                 label: "Kế hoạch tuần",
-                content: current && (
-                  <Card>
-                    <h2 className="mb-1 text-xl font-bold">Tuần {timeline.currentWeek}</h2>
-                    <p className="mb-4 text-muted">
-                      Giai đoạn “{current.title}” · {current.goal}
-                    </p>
-                    <ul className="flex flex-col divide-y divide-navy/10">
-                      {current.tasks.map((task, i) => (
-                        <li key={i} className="flex items-center gap-3 py-3">
-                          <span className="flex gap-1">
-                            {current.skills.map((skill) => {
-                              const Icon = SKILL_ICON[skill];
-                              return <Icon key={skill} className={`size-5 ${skillStyle[skill].text}`} role="img" aria-label={skillStyle[skill].label} />;
-                            })}
-                          </span>
-                          <span>{task}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </Card>
+                content: (
+                  <>
+                    <h2 className="sr-only">Kế hoạch từng tuần</h2>
+                    <WeekList stages={timeline.stages} currentWeek={timeline.currentWeek} weekPlan={path.weekPlan} />
+                  </>
                 ),
               },
               {

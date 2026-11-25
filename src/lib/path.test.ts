@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { pathTimeline, weekRange } from "./path.ts";
+import { pathTimeline, pathWeeks, weekRange } from "./path.ts";
 
 const DAY = 24 * 60 * 60 * 1000;
 const start = "2026-11-01T00:00:00Z";
@@ -30,4 +30,17 @@ test("past the end everything is done and the week stops at the last one", () =>
 test("weekRange", () => {
   assert.equal(weekRange(3, 3), "Tuần 3");
   assert.equal(weekRange(3, 5), "Tuần 3 – 5");
+});
+
+test("pathWeeks lists every week with its stage and status", () => {
+  const t = pathTimeline(stages, start, Date.parse(start) + 17.5 * DAY); // week 3, first week of stage 2
+  const weeks = pathWeeks(t.stages, t.currentWeek);
+  assert.deepEqual(weeks.map((w) => w.week), [1, 2, 3, 4, 5, 6]);
+  assert.deepEqual(weeks.map((w) => w.status), ["done", "done", "current", "locked", "locked", "locked"]);
+  assert.equal(weeks[3].stage, t.stages[1]);
+});
+
+test("pathWeeks marks the last week done once the path is over", () => {
+  const t = pathTimeline(stages, start, Date.parse(start) + 100 * DAY);
+  assert.ok(pathWeeks(t.stages, t.currentWeek).every((w) => w.status === "done"));
 });

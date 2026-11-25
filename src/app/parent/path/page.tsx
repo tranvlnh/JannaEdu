@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
-import { Circle } from "lucide-react";
 import { StageCard } from "@/app/(student)/path/stage-card";
-import { AIComment, Card, CardTitle, ProgressBar } from "@/components/ui";
+import { WeekList } from "@/app/(student)/path/week-list";
+import { AIComment, Card, ProgressBar } from "@/components/ui";
 import { band, formatDate } from "@/lib/format";
 import { pathTimeline } from "@/lib/path";
 import { requestTime } from "@/server/activity";
@@ -38,7 +38,6 @@ async function ChildPath() {
 
   const timeline = pathTimeline(path.stages, path.generatedAt, requestTime());
   const pct = Math.round((timeline.currentWeek / timeline.totalWeeks) * 100);
-  const current = timeline.stages.find((s) => s.status === "current");
 
   return (
     <div className="flex flex-col gap-6">
@@ -68,21 +67,10 @@ async function ChildPath() {
         ))}
       </ol>
 
-      {current && (
-        <Card>
-          <CardTitle>
-            Tuần {timeline.currentWeek} · giai đoạn “{current.title}”
-          </CardTitle>
-          <ul className="flex flex-col gap-2">
-            {current.tasks.map((task, i) => (
-              <li key={i} className="flex items-center gap-3">
-                <Circle className="size-5 shrink-0 text-muted" aria-hidden />
-                <span className="flex-1">{task}</span>
-              </li>
-            ))}
-          </ul>
-        </Card>
-      )}
+      <section className="flex flex-col gap-3">
+        <h2 className="text-2xl font-bold">Kế hoạch từng tuần</h2>
+        <WeekList stages={timeline.stages} currentWeek={timeline.currentWeek} weekPlan={path.weekPlan} />
+      </section>
     </div>
   );
 }
