@@ -5,6 +5,7 @@ import { Suspense } from "react";
 import { usePathname } from "next/navigation";
 import {
   Bot,
+  CalendarCheck,
   ChartLine,
   ClipboardList,
   FileText,
@@ -29,6 +30,7 @@ const NAV: Record<Role, NavItem[]> = {
     { href: "/mock-test", label: "Luyện đề", icon: NotebookPen },
     { href: "/examiner", label: "Giám khảo AI", icon: Bot },
     { href: "/path", label: "Lộ trình học", icon: Route },
+    { href: "/tasks", label: "Nhiệm vụ hằng ngày", icon: CalendarCheck },
     { href: "/progress", label: "Tiến độ", icon: ChartLine },
     { href: "/academy", label: "Sách & tài liệu", icon: FileText },
   ],
