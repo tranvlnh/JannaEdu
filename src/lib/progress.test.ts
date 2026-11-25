@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { activeMonths, bandSeries, bandsAt, monthOf, monthStats, overallOf, previousMonth, rangeStats, type Activity } from "./progress.ts";
+import { activeMonths, bandSeries, bandsAt, lastDays, monthOf, monthStats, overallOf, previousMonth, rangeStats, type Activity } from "./progress.ts";
 
 const item = (skill: Activity["skill"], band: number | null, submittedAt: string, kind: Activity["kind"] = "exam"): Activity => ({
   id: submittedAt + skill,
@@ -53,4 +53,15 @@ test("months follow Vietnam time and wrap at January", () => {
   assert.equal(previousMonth(monthOf(Date.parse("2026-01-10T00:00:00Z"))).key, "2025-12");
   assert.deepEqual(activeMonths(activity, Date.parse("2026-11-18T00:00:00Z")).map((m) => m.key), ["2026-11", "2026-10"]);
   assert.deepEqual(monthStats(activity, monthOf(Date.parse("2026-11-18T00:00:00Z"))).completed, { value: 4, delta: 2 });
+});
+
+test("lastDays gives 7 Vietnam-time days ending today, oldest first", () => {
+  const now = Date.parse("2026-11-24T18:30:00Z"); // 01:30 on Wed 25 Nov in Vietnam
+  const days = lastDays(now, 7);
+  assert.equal(days.length, 7);
+  assert.deepEqual(days.map((d) => d.label), ["T5 19/11", "T6 20/11", "T7 21/11", "CN 22/11", "T2 23/11", "T3 24/11", "T4 25/11"]);
+  assert.equal(days.at(-1)!.key, "2026-11-25");
+  assert.equal(days.at(-1)!.from, Date.parse("2026-11-24T17:00:00Z")); // midnight in Vietnam
+  assert.ok(days.at(-1)!.from <= now && now < days.at(-1)!.to);
+  assert.equal(lastDays(Date.parse("2026-11-24T16:59:59Z"), 1)[0].key, "2026-11-24"); // 23:59:59 in Vietnam
 });

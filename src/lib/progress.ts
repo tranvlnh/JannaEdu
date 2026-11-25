@@ -83,11 +83,19 @@ export function monthOf(ms: number): Month {
 
 export const previousMonth = (m: Month) => (m.month === 1 ? monthBounds(m.year - 1, 12) : monthBounds(m.year, m.month - 1));
 
-/** The last `count` calendar months up to the one containing `now`, oldest first. */
-export function lastMonths(now: number, count: number): Month[] {
-  const months = [monthOf(now)];
-  while (months.length < count) months.unshift(previousMonth(months[0]));
-  return months;
+export type Day = { key: string; label: string; from: number; to: number };
+
+/** The last `count` calendar days (Vietnam time) up to the one containing `now`, oldest first. */
+export function lastDays(now: number, count: number): Day[] {
+  const today = Math.floor((now + VN_OFFSET) / DAY) * DAY - VN_OFFSET;
+  return Array.from({ length: count }, (_, i) => {
+    const from = today - (count - 1 - i) * DAY;
+    const d = new Date(from + VN_OFFSET);
+    const dd = String(d.getUTCDate()).padStart(2, "0");
+    const mm = String(d.getUTCMonth() + 1).padStart(2, "0");
+    const weekday = d.getUTCDay() === 0 ? "CN" : `T${d.getUTCDay() + 1}`;
+    return { key: `${d.getUTCFullYear()}-${mm}-${dd}`, label: `${weekday} ${dd}/${mm}`, from, to: from + DAY };
+  });
 }
 
 /** This month plus every month with activity, newest first. */

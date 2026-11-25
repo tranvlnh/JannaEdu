@@ -5,7 +5,7 @@ import { ActivityList } from "@/components/activity-list";
 import { DonutChart, LineChart } from "@/components/charts";
 import { Avatar, Card, CardTitle, Delta, Pill, ProgressBar } from "@/components/ui";
 import { band, formatDate } from "@/lib/format";
-import { bandSeries, bandsAt, lastMonths, overallOf } from "@/lib/progress";
+import { bandSeries, bandsAt, lastDays, overallOf } from "@/lib/progress";
 import { SKILLS, skillStyle } from "@/lib/skills";
 import { listActivity, requestTime } from "@/server/activity";
 import { childName, loadChild, NoChild } from "./child";
@@ -30,8 +30,9 @@ async function Overview() {
   const bands = bandsAt(activity);
   const overall = overallOf(bands);
   const monthAgo = overallOf(bandsAt(activity, now - 30 * DAY));
-  const months = lastMonths(now, 6);
-  const series = bandSeries(activity, months.map((m) => Math.min(now, m.to - 1)));
+  const days = lastDays(now, 7);
+  const series = bandSeries(activity, days.map((d) => Math.min(now, d.to - 1)));
+  const noBands = Object.values(series).every((values) => values.every((v) => v === null));
   const active = activity.some((a) => now - Date.parse(a.submittedAt) < ACTIVE_DAYS * DAY);
   const first = activity.at(-1);
 
@@ -117,16 +118,20 @@ async function Overview() {
 
       <div className="grid gap-6 xl:grid-cols-[2fr_1fr]">
         <Card>
-          <CardTitle>Tiến độ học tập 6 tháng gần nhất</CardTitle>
-          <LineChart
-            title="Band theo tháng"
-            labels={months.map((m) => `Tháng ${m.month}`)}
-            domain={[3, 9]}
-            series={[
-              { name: "Overall", color: "var(--color-navy)", values: series.overall },
-              ...SKILLS.map((s) => ({ name: skillStyle[s].label, color: skillStyle[s].color, values: series[s] })),
-            ]}
-          />
+          <CardTitle>Tiến độ học tập 7 ngày gần đây</CardTitle>
+          {noBands ? (
+            <p className="text-muted">Con chưa có bài nào trong 7 ngày qua</p>
+          ) : (
+            <LineChart
+              title="Band theo ngày"
+              labels={days.map((d) => d.label)}
+              domain={[3, 9]}
+              series={[
+                { name: "Overall", color: "var(--color-navy)", values: series.overall },
+                ...SKILLS.map((s) => ({ name: skillStyle[s].label, color: skillStyle[s].color, values: series[s] })),
+              ]}
+            />
+          )}
         </Card>
 
         <Card>
