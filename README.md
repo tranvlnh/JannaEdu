@@ -61,17 +61,22 @@ bun run lint
 bun run test
 ```
 
-## Deploy with Docker
+## Deploy the static demo
 
-The image uses Next.js standalone output. With `.env` filled in on the server:
+The default production service serves the demo at `/` on VPS port `1234`. It uses
+sample data and browser storage. The demo image does not need `.env`, Supabase,
+Gemini, Google OAuth, or database migrations.
 
 ```bash
 docker compose up -d --build
 ```
 
-The image holds no env; `.env` is read at runtime. To change config, edit `.env` and run `docker compose up -d` (no rebuild needed). Rebuild (`--build`) only when the code changes.
+Keep the existing HTTPS reverse proxy pointed at port `1234`. For a local
+preview without Docker, run `python -m http.server 3001 --directory public` and
+open `http://localhost:3001/demo.html`.
 
-Put a reverse proxy with HTTPS (Caddy, nginx) in front of port 3000, and add `https://<your-domain>/auth/callback` to the Supabase redirect URLs.
+The existing Next.js application can still be developed with the commands above
+or built separately with `Dockerfile`.
 
 ## Changing the database schema
 
