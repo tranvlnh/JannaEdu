@@ -16,8 +16,8 @@ export function NoChild() {
   return (
     <Card className="flex flex-col items-start gap-4">
       <Users className="size-10" aria-hidden />
-      <h1 className="text-2xl font-bold">Chưa liên kết với con</h1>
-      <p>Nhờ con tạo mã liên kết trong trang Tài khoản của con, rồi nhập mã đó ở trang Tài khoản của bạn.</p>
+      <h1 className="text-2xl font-bold">Chưa có hồ sơ học tập của con</h1>
+      <p>Sau khi Janna Academy mở quyền học cho con, hãy nhập mã liên kết từ trang Tài khoản của con.</p>
       <Button href="/account">Nhập mã liên kết</Button>
     </Card>
   );

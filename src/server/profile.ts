@@ -19,7 +19,7 @@ import { getUser } from "@/server/auth";
 import { createAdminClient } from "@/server/supabase/admin";
 import { createClient } from "@/server/supabase/server";
 
-const COLUMNS = "id, role, fullName:full_name, avatarUrl:avatar_url, goalBand:goal_band";
+const COLUMNS = "id, role, fullName:full_name, avatarUrl:avatar_url, goalBand:goal_band, learningAccess:learning_access, baselineBand:baseline_band, baselineSource:baseline_source, placementStartedAt:placement_started_at";
 const CHILD_COOKIE = "janna-child";
 const CODE_ALPHABET = "ABCDEFGHJKMNPQRSTVWXYZ23456789"; // no 0/O, 1/I/L, U
 const CODE_TTL_MS = 15 * 60 * 1000;
@@ -53,6 +53,25 @@ export async function requireProfile(): Promise<Profile> {
   const profile = await getProfile();
   if (!profile) redirect("/login"); // session expired mid-visit: send to login, not the error page
   return profile;
+}
+
+export async function requireLearningAccess() {
+  const profile = await requireProfile();
+  if (profile.role !== "student") throw new Error("forbidden");
+  if (!profile.learningAccess) redirect("/onboarding");
+  return profile;
+}
+
+export async function requireLearningReady() {
+  const profile = await requireLearningAccess();
+  if (profile.baselineBand === null) redirect("/onboarding");
+  return { ...profile, baselineBand: profile.baselineBand };
+}
+
+export function isPlacementWork(profile: Profile, eligible: boolean) {
+  if (profile.baselineBand !== null) return false;
+  if (!profile.placementStartedAt || !eligible) redirect("/onboarding");
+  return true;
 }
 
 // One-time: the role cannot be changed once set.

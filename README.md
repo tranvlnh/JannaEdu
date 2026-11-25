@@ -43,7 +43,7 @@ Apply all migrations and load the sample data (seeds are safe to re-run):
 bunx supabase db push --remote --include-seed
 ```
 
-The sample Listening test expects an audio file `sample-beeps.wav` in the `listening-audio` storage bucket. Upload it by hand in the dashboard.
+Upload the audio files listed in the Listening seed to the private `listening-audio` bucket in the dashboard.
 
 ## Set up Google sign-in
 
@@ -84,3 +84,25 @@ bunx supabase db push --remote --dry-run       # preview which migrations will r
 bun run db:push                                # apply them to the linked project
 bun run db:types                               # regenerate types; commit them with the migration
 ```
+
+## Cấp quyền học sau khi xác nhận thanh toán
+
+Học viên đăng nhập Google và chọn vai trò **Học sinh** trước. Sau khi đối chiếu
+danh sách đã thanh toán, người có quyền quản trị cơ sở dữ liệu chạy trong
+Supabase SQL Editor:
+
+```sql
+select public.set_learning_access('hocvien@example.com', true);
+```
+
+Kết quả `true` xác nhận đã tìm thấy tài khoản học sinh có email Google xác thực.
+Nếu trả về `false`, kiểm tra email và việc học viên đã chọn vai trò. Học viên tải
+lại trang để tiếp tục. Dùng `false` ở tham số thứ hai để thu hồi quyền. Bài làm và
+liên kết phụ huynh vẫn được lưu.
+
+Khi phát hành tính năng, áp dụng migration trong cửa sổ bảo trì, rồi cấp quyền
+cho học viên cũ theo danh sách đã mua trước khi mở lại ứng dụng. Xác nhận các seed
+Reading, Listening, Writing và Speaking đã có trên môi trường đích. Bài Listening
+đầu vào cần tệp `ielts-listening-test-6.mp3` trong bucket riêng `listening-audio`.
+Thử một tài khoản đã mua, một tài khoản chưa mua và một phụ huynh đã liên kết
+trước khi kết thúc bảo trì.

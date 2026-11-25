@@ -3,7 +3,9 @@ import { redirect } from "next/navigation";
 import { Button } from "@/components/ui";
 import { GOAL_BANDS } from "@/contracts/profile";
 import { band } from "@/lib/format";
-import { homeOf } from "@/server/auth";
+import { homeOf, signOut } from "@/server/auth";
+import { skillStyle } from "@/lib/skills";
+import { finishPlacement, placementStatus, setBaseline } from "@/server/placement";
 import { chooseRole, getProfile, setGoalBand } from "@/server/profile";
 
 async function pickRole(formData: FormData) {
@@ -15,7 +17,19 @@ async function pickRole(formData: FormData) {
 async function pickGoal(formData: FormData) {
   "use server";
   await setGoalBand({ goalBand: formData.get("goalBand") });
-  redirect(homeOf("student"));
+  redirect("/onboarding");
+}
+
+async function chooseBaseline(formData: FormData) {
+  "use server";
+  await setBaseline({ mode: formData.get("mode"), band: formData.get("band") });
+  redirect("/onboarding");
+}
+
+async function completePlacement() {
+  "use server";
+  await finishPlacement();
+  redirect("/onboarding");
 }
 
 async function Steps() {
@@ -38,7 +52,69 @@ async function Steps() {
       </form>
     );
   }
-  if (profile.role !== "student" || profile.goalBand !== null) redirect(homeOf(profile.role));
+  if (profile.role !== "student") redirect(homeOf(profile.role));
+
+  if (!profile.learningAccess) {
+    return (
+      <section className="card flex w-full max-w-lg flex-col items-start gap-4 p-8">
+        <h1 className="page-title">Chờ xác nhận khóa học</h1>
+        <p>Hãy liên hệ tư vấn viên Janna Academy và cung cấp email Google bạn đã dùng để đăng nhập. Trung tâm sẽ mở quyền sau khi xác nhận thanh toán.</p>
+        <Button href="/courses">Xem khóa học</Button>
+        <form action={signOut}><button className="underline">Đăng xuất</button></form>
+      </section>
+    );
+  }
+
+  if (profile.baselineBand !== null) redirect(homeOf("student"));
+  if (profile.placementStartedAt) {
+    const { items, overall } = await placementStatus(profile.id, true);
+    return (
+      <section className="card flex w-full max-w-xl flex-col gap-4 p-8">
+        <h1 className="page-title">Kiểm tra năng lực đầu vào</h1>
+        <p>Hoàn thành bốn kỹ năng để nhận band IELTS ước tính và bắt đầu học.</p>
+        <ul className="divide-y divide-navy/10">
+          {items.map((item) => (
+            <li key={item.id} className="flex flex-wrap items-center justify-between gap-2 py-3">
+              <span className="font-semibold">{skillStyle[item.skill].label}{item.band !== null && ` · Band ${band(item.band)}`}</span>
+              <Button href={item.resultHref ?? item.href} variant="outline">
+                {item.band !== null ? "Xem kết quả" : item.resultHref ? "Xem trạng thái chấm" : "Làm hoặc tiếp tục bài"}
+              </Button>
+            </li>
+          ))}
+        </ul>
+        {overall !== null && (
+          <form action={completePlacement} className="flex flex-wrap items-center gap-3">
+            <strong>Band đầu vào ước tính: {band(overall)}</strong>
+            <Button type="submit">Vào trang học</Button>
+          </form>
+        )}
+      </section>
+    );
+  }
+
+  if (profile.goalBand !== null) {
+    return (
+      <section className="card flex w-full max-w-lg flex-col gap-5 p-8">
+        <h1 className="page-title">Band IELTS hiện tại của bạn?</h1>
+        <form action={chooseBaseline} className="flex flex-wrap items-end gap-3">
+          <label className="flex flex-col gap-2">
+            Band hiện tại
+            <select name="band" className="rounded-lg border border-navy/30 bg-white p-2" required defaultValue="">
+              <option value="" disabled>Chọn band</option>
+              {Array.from({ length: 19 }, (_, i) => i / 2).map((value) => (
+                <option key={value} value={value}>{band(value)}</option>
+              ))}
+            </select>
+          </label>
+          <Button type="submit" name="mode" value="self">Lưu band tự khai</Button>
+        </form>
+        <form action={chooseBaseline}>
+          <p className="mb-2">Chọn kiểm tra đầu vào nếu bạn chưa biết band của mình.</p>
+          <Button type="submit" variant="outline" name="mode" value="placement">Tôi chưa biết band</Button>
+        </form>
+      </section>
+    );
+  }
 
   return (
     <form action={pickGoal} className="card flex flex-col items-center gap-4 p-10">

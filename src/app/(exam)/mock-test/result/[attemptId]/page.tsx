@@ -96,13 +96,13 @@ async function Result({ params }: Pick<PageProps<"/mock-test/result/[attemptId]"
             action={
               isStudent && (
                 <div className="mt-2 flex flex-wrap gap-3 print:hidden">
-                  <Button href="/path">
-                    Xem lộ trình cá nhân <ArrowRight className="size-5" aria-hidden />
+                  <Button href={profile?.baselineBand === null ? "/onboarding" : "/path"}>
+                    {profile?.baselineBand === null ? "Về bài kiểm tra đầu vào" : "Xem lộ trình cá nhân"} <ArrowRight className="size-5" aria-hidden />
                   </Button>
-                  <Button href={`/mock-test/${test.id}`} variant="outline">
+                  {profile?.baselineBand !== null && <Button href={`/mock-test/${test.id}`} variant="outline">
                     <RotateCcw className="size-4" aria-hidden />
                     Làm lại đề này
-                  </Button>
+                  </Button>}
                 </div>
               )
             }

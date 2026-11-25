@@ -5,13 +5,13 @@ import { Card } from "@/components/ui";
 import { featuredCourses } from "@/lib/courses";
 
 const FEATURES: { icon: LucideIcon; title: string; text: string }[] = [
-  { icon: Bot, title: "Giám khảo AI 24/7", text: "Chấm điểm, phân tích lỗi chi tiết theo chuẩn quốc tế chỉ trong vài giây." },
+  { icon: Bot, title: "Giám khảo AI Writing & Speaking", text: "Nhận band ước tính và phân tích lỗi để biết cách sửa bài." },
   { icon: Lightbulb, title: "Phòng thi ảo", text: "Mô phỏng áp lực thời gian, giao diện và cấu trúc đề thi thật." },
   { icon: Target, title: "Lộ trình phù hợp", text: "AI phân tích điểm yếu, gợi ý bài tập trọng tâm, tối ưu thời gian." },
   { icon: Users, title: "Phụ huynh theo dõi tiến độ", text: "Theo dõi kết quả và báo cáo tiến độ học tập của con." },
 ];
 
-export default function HomePage() {
+export function HomeContent({ publicView = false }: { publicView?: boolean }) {
   return (
     <div className="flex flex-col gap-8">
       <section className="relative isolate flex min-h-56 flex-col items-start justify-center gap-5 overflow-hidden rounded-3xl p-6 sm:p-10">
@@ -29,8 +29,9 @@ export default function HomePage() {
           <br />
           cùng <span className="text-brand">Janna Edu</span>
         </h1>
-        <Link href="/path" className="btn focus-visible:outline-2 focus-visible:outline-white">
-          Bắt đầu học ngay
+        {publicView && <p className="max-w-lg text-lg text-white">Nền tảng luyện IELTS của Janna Academy dành cho học viên và phụ huynh.</p>}
+        <Link href={publicView ? "/login" : "/path"} className="btn focus-visible:outline-2 focus-visible:outline-white">
+          {publicView ? "Đăng nhập Google" : "Bắt đầu học ngay"}
           <ArrowRight className="size-4" aria-hidden />
         </Link>
       </section>
@@ -42,7 +43,7 @@ export default function HomePage() {
         <ul className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
           {FEATURES.map(({ icon: Icon, title, text }) => (
             <li key={title}>
-              <div className="flex h-full cursor-pointer flex-col gap-3 rounded-2xl bg-white p-5 shadow-card transition-transform select-none hover:-translate-y-0.5 active:scale-95">
+              <div className="flex h-full flex-col gap-3 rounded-2xl bg-white p-5 shadow-card">
                 <span className="flex items-center gap-3">
                   <Icon className="size-12 shrink-0 text-navy" strokeWidth={1.75} aria-hidden />
                   <span className="text-lg font-bold">{title}</span>
@@ -66,7 +67,7 @@ export default function HomePage() {
         <ul className="grid grid-cols-2 gap-4 xl:grid-cols-4">
           {featuredCourses.map((c) => (
             <li key={c.id}>
-              <Card className="flex h-full cursor-pointer flex-col gap-3 p-4! transition-transform select-none hover:-translate-y-0.5 active:scale-95">
+              <Card className="flex h-full flex-col gap-3 p-4!">
                 <Image src={c.image} alt="" width={800} height={450} className="aspect-video w-full rounded-xl object-cover" />
                 <h3 className="font-bold">{c.title}</h3>
                 <p className="-mt-2 text-sm text-muted">{c.range}</p>

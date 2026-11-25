@@ -21,15 +21,17 @@ export const metadata: Metadata = { title: "Gợi ý bài tập" };
 const WRITING_MINUTES = { 1: 20, 2: 40 };
 const SPEAKING_MINUTES = { 1: 5, 2: 4, 3: 5 };
 
-export default function ExercisesPage() {
+export default function ExercisesPage({ searchParams }: PageProps<"/path/exercises">) {
   return (
     <Suspense fallback={<p className="text-muted">Đang tải bài tập…</p>}>
-      <Exercises />
+      <Exercises searchParams={searchParams} />
     </Suspense>
   );
 }
 
-async function Exercises() {
+async function Exercises({ searchParams }: Pick<PageProps<"/path/exercises">, "searchParams">) {
+  const { skill } = await searchParams;
+  const initialSkill = SKILLS.find((option) => option === skill);
   const profile = await getProfile();
   if (!profile) redirect("/login");
   const [{ path }, activity, tests, writing, speaking] = await Promise.all([
@@ -42,7 +44,7 @@ async function Exercises() {
 
   // Suggested: the skills of the current stage; without a path, the two weakest (untested counts as weakest).
   const bands = bandsAt(activity);
-  const current = path && pathTimeline(path.stages, path.generatedAt, requestTime()).stages.find((s) => s.status === "current");
+  const current = path && pathTimeline(path.stages, path.startedAt ?? path.generatedAt, requestTime()).stages.find((s) => s.status === "current");
   const focus = new Set<Skill>(current?.skills ?? [...SKILLS].sort((a, b) => (bands[a] ?? -1) - (bands[b] ?? -1)).slice(0, 2));
 
   const exercises: Exercise[] = [
@@ -100,7 +102,7 @@ async function Exercises() {
           </div>
         </div>
       </div>
-      <ExerciseList exercises={exercises} />
+      <ExerciseList key={initialSkill} exercises={exercises} initialSkill={initialSkill} />
     </div>
   );
 }

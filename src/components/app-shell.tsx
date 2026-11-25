@@ -29,7 +29,7 @@ export function Header({ role, menu = false }: { role: Role; menu?: boolean }) {
   return (
     <header className="sticky top-0 z-20 flex h-20 items-center gap-4 bg-white px-4 lg:gap-6 lg:px-6 print:hidden">
       <div className="shrink-0 lg:w-56">
-        <Logo href={role === "student" ? "/" : "/parent"} />
+        <Logo href={role === "student" ? "/dashboard" : "/parent"} />
       </div>
       <Suspense fallback={<div className="ml-auto" />}>
         <HeaderUser role={role} menu={menu} />
