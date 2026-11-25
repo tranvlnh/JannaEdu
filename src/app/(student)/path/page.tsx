@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { Suspense } from "react";
-import { redirect } from "next/navigation";
+import { redirect, unstable_rethrow } from "next/navigation";
 import { ArrowRight, BookOpen, Target } from "lucide-react";
 import { RetryButton } from "@/app/retry-button";
 import { Tabs } from "@/components/tabs";
@@ -22,6 +22,7 @@ async function generate() {
   try {
     await generateLearningPath();
   } catch (error) {
+    unstable_rethrow(error);
     console.error("learning path generation failed", error); // the page still shows the previous path
   }
   redirect("/path");
@@ -39,7 +40,7 @@ async function LearningPath() {
   const profile = await getProfile();
   if (!profile) redirect("/login");
   const { path, canGenerate } = await getMyLearningPath();
-  const timeline = path && pathTimeline(path.stages, path.generatedAt, requestTime());
+  const timeline = path && pathTimeline(path.stages, path.startedAt ?? path.generatedAt, requestTime());
   const pct = timeline ? Math.round((timeline.currentWeek / timeline.totalWeeks) * 100) : 0;
   const current = timeline?.stages.find((s) => s.status === "current") ?? timeline?.stages.at(-1);
 
@@ -90,30 +91,12 @@ async function LearningPath() {
         <Card>
           <form action={generate} className="flex flex-wrap items-center gap-4">
             <p className="mr-auto">
-              {path ? "Bạn có kết quả mới kể từ lần lập lộ trình trước." : "Bạn đã có kết quả thi, hãy để AI lập lộ trình đầu tiên."}
+              {!path ? "Lập lộ trình từ band đầu vào và mục tiêu của bạn."
+                : !path.weekDetails ? "Cập nhật sang lộ trình 14 tuần để xem kế hoạch chi tiết tuần 1 và 2."
+                : "Bạn có kết quả mới kể từ lần lập lộ trình trước."}
             </p>
             <RetryButton label={path ? "Cập nhật lộ trình" : "Lập lộ trình"} pendingLabel="AI đang lập lộ trình, có thể mất tới một phút…" />
           </form>
-        </Card>
-      )}
-
-      {!path && !canGenerate && (
-        <Card>
-          <p>
-            Chưa có kết quả nào để lập lộ trình. Hãy làm một{" "}
-            <Link href="/mock-test" className="font-semibold text-brand-ink underline">
-              bài thi
-            </Link>
-            , bài{" "}
-            <Link href="/examiner" className="font-semibold text-brand-ink underline">
-              Writing
-            </Link>{" "}
-            hoặc{" "}
-            <Link href="/examiner" className="font-semibold text-brand-ink underline">
-              Speaking
-            </Link>{" "}
-            trước.
-          </p>
         </Card>
       )}
 
@@ -146,25 +129,42 @@ async function LearningPath() {
                 id: "week",
                 label: "Kế hoạch tuần",
                 content: current && (
-                  <Card>
-                    <h2 className="mb-1 text-xl font-bold">Tuần {timeline.currentWeek}</h2>
-                    <p className="mb-4 text-muted">
-                      Giai đoạn “{current.title}” · {current.goal}
-                    </p>
-                    <ul className="flex flex-col divide-y divide-navy/10">
-                      {current.tasks.map((task, i) => (
-                        <li key={i} className="flex items-center gap-3 py-3">
-                          <span className="flex gap-1">
-                            {current.skills.map((skill) => {
-                              const Icon = SKILL_ICON[skill];
-                              return <Icon key={skill} className={`size-5 ${skillStyle[skill].text}`} role="img" aria-label={skillStyle[skill].label} />;
-                            })}
-                          </span>
-                          <span>{task}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </Card>
+                  <div className="flex flex-col gap-4">
+                    {path.weekDetails && Object.entries(path.weekDetails).map(([key, week], index) => (
+                      <Card key={key}>
+                        <h2 className="text-xl font-bold">Tuần {index + 1}</h2>
+                        <p className="mb-3 text-muted">{week.goal}</p>
+                        <ul className="divide-y divide-navy/10">
+                          {week.lessons.map((lesson, n) => (
+                            <li key={n} className="py-3">
+                              <strong>{skillStyle[lesson.skill].label}</strong>
+                              <p>{lesson.activity}</p>
+                              <p className="text-sm text-muted">Hoàn thành khi: {lesson.completion}</p>
+                            </li>
+                          ))}
+                        </ul>
+                      </Card>
+                    ))}
+                    {(!path.weekDetails || timeline.currentWeek > 2) && <Card>
+                      <h2 className="mb-1 text-xl font-bold">Tuần {timeline.currentWeek}</h2>
+                      <p className="mb-4 text-muted">
+                        Giai đoạn “{current.title}” · {current.goal}
+                      </p>
+                      <ul className="flex flex-col divide-y divide-navy/10">
+                        {current.tasks.map((task, i) => (
+                          <li key={i} className="flex items-center gap-3 py-3">
+                            <span className="flex gap-1">
+                              {current.skills.map((skill) => {
+                                const Icon = SKILL_ICON[skill];
+                                return <Icon key={skill} className={`size-5 ${skillStyle[skill].text}`} role="img" aria-label={skillStyle[skill].label} />;
+                              })}
+                            </span>
+                            <span>{task}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </Card>}
+                  </div>
                 ),
               },
               {

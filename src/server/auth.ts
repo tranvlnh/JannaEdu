@@ -13,7 +13,7 @@ export const getUser = cache(async () => {
 });
 
 // Where a signed-in user lands: their role's home, or onboarding until they pick a role.
-export const homeOf = (role: Role | null) => (role === "parent" ? "/parent" : role === "student" ? "/" : "/onboarding");
+export const homeOf = (role: Role | null) => (role === "parent" ? "/parent" : role === "student" ? "/dashboard" : "/onboarding");
 
 export async function signInWithGoogle() {
   "use server";

@@ -5,7 +5,7 @@ import { ActivityList } from "@/components/activity-list";
 import { DonutChart, LineChart } from "@/components/charts";
 import { Avatar, Card, CardTitle, Delta, Pill, ProgressBar } from "@/components/ui";
 import { band, formatDate } from "@/lib/format";
-import { bandSeries, bandsAt, lastMonths, overallOf } from "@/lib/progress";
+import { bandSeries, bandsAt, dayStart, lastSevenDays, overallOf } from "@/lib/progress";
 import { SKILLS, skillStyle } from "@/lib/skills";
 import { listActivity, requestTime } from "@/server/activity";
 import { childName, loadChild, NoChild } from "./child";
@@ -30,8 +30,9 @@ async function Overview() {
   const bands = bandsAt(activity);
   const overall = overallOf(bands);
   const monthAgo = overallOf(bandsAt(activity, now - 30 * DAY));
-  const months = lastMonths(now, 6);
-  const series = bandSeries(activity, months.map((m) => Math.min(now, m.to - 1)));
+  const days = lastSevenDays(now);
+  const series = bandSeries(activity, days.map((d) => d.end));
+  const hasNewBand = activity.some((a) => a.band !== null && Date.parse(a.submittedAt) >= dayStart(days[0].day));
   const active = activity.some((a) => now - Date.parse(a.submittedAt) < ACTIVE_DAYS * DAY);
   const first = activity.at(-1);
 
@@ -54,7 +55,7 @@ async function Overview() {
           <div className="min-w-0 flex-1">
             <h2 className="text-2xl font-bold">{name}</h2>
             <p>
-              Trình độ hiện tại: <strong>{overall === null ? "chưa đủ 4 kỹ năng" : `Band ${band(overall)}`}</strong>
+              Trình độ hiện tại: <strong>{overall !== null ? `Band ${band(overall)}` : child.baselineBand !== null ? `Band ${band(child.baselineBand)} (${child.baselineSource === "self" ? "tự khai" : "đầu vào ước tính"})` : "chưa đủ 4 kỹ năng"}</strong>
             </p>
             <p>{first ? `Bài đầu tiên: ${formatDate(first.submittedAt)}` : "Con chưa nộp bài nào."}</p>
             <p>Đã nộp {activity.length} bài</p>
@@ -117,11 +118,12 @@ async function Overview() {
 
       <div className="grid gap-6 xl:grid-cols-[2fr_1fr]">
         <Card>
-          <CardTitle>Tiến độ học tập 6 tháng gần nhất</CardTitle>
+          <CardTitle>Tiến độ học tập 7 ngày gần đây</CardTitle>
+          {!hasNewBand && <p className="mb-3 text-sm text-muted">Con chưa có kết quả chấm mới trong 7 ngày này.</p>}
           <LineChart
-            title="Band theo tháng"
-            labels={months.map((m) => `Tháng ${m.month}`)}
-            domain={[3, 9]}
+            title="Band theo ngày"
+            labels={days.map(({ day }) => `${day.slice(8)}/${day.slice(5, 7)}`)}
+            domain={[0, 9]}
             series={[
               { name: "Overall", color: "var(--color-navy)", values: series.overall },
               ...SKILLS.map((s) => ({ name: skillStyle[s].label, color: skillStyle[s].color, values: series[s] })),

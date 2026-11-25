@@ -1,15 +1,20 @@
 import { Suspense } from "react";
-import { getUser, signInWithGoogle, signOut } from "@/server/auth";
+import { Button } from "@/components/ui";
+import { getUser, homeOf, signInWithGoogle, signOut } from "@/server/auth";
 
-// Test-only page: shows login state and a Google sign-in button.
+import { getProfile } from "@/server/profile";
 async function LoginState({ searchParams }: { searchParams: Promise<{ error?: string }> }) {
   const user = await getUser();
   const { error } = await searchParams;
+  const profile = user ? await getProfile() : null;
 
   return (
     <>
       {error && <p className="text-danger-ink">OAuth lỗi: {error}</p>}
-      {user && <p>Đã đăng nhập: {user.email}</p>}
+      {user && <>
+        <p>Đã đăng nhập: {user.email}</p>
+        <Button href={homeOf(profile?.role ?? null)}>Tiếp tục</Button>
+      </>}
       <form action={user ? signOut : signInWithGoogle}>
         <button className="btn">
           {user ? "Đăng xuất" : "Đăng nhập bằng Google"}
