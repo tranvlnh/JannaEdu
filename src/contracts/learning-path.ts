@@ -26,7 +26,28 @@ export const learningPlanSchema = z.object({
     )
     .min(1)
     .max(5)
-    .describe("Stages in study order, weakest areas first; at most 12 weeks in total"),
+    .describe("Stages in study order, weakest areas first; 8 to 16 weeks in total"),
+  weekPlan: z
+    .array(
+      z.object({
+        week: z.int().min(1).max(2).describe("Week number of the path: 1 or 2"),
+        sessions: z
+          .array(
+            z.object({
+              day: z.string().describe("Day of the week in Vietnamese, e.g. \"Thứ 2\""),
+              skill: pathSkillSchema.describe("The skill this session trains"),
+              topic: z.string().describe("In Vietnamese: the exact content, e.g. a question type, grammar point or vocabulary topic"),
+              activity: z.string().describe("In Vietnamese, one sentence: what the student does in this session on this site or in self-study"),
+              minutes: z.int().min(10).max(120).describe("Session length in minutes"),
+            }),
+          )
+          .min(5)
+          .max(7)
+          .describe("One session per study day, in day order"),
+      }),
+    )
+    .max(2)
+    .describe("Day-by-day plan for weeks 1 and 2, following the stage(s) that cover those weeks: exactly two items, week 1 then week 2"),
   bookAdvice: z
     .array(
       z.object({
@@ -39,8 +60,8 @@ export const learningPlanSchema = z.object({
 });
 export type LearningPlan = z.infer<typeof learningPlanSchema>;
 
-// bookAdvice is optional here only: paths stored before it existed do not have it.
-export const learningPathSchema = learningPlanSchema.partial({ bookAdvice: true }).extend({
+// bookAdvice and weekPlan are optional here only: paths stored before they existed do not have them.
+export const learningPathSchema = learningPlanSchema.partial({ bookAdvice: true, weekPlan: true }).extend({
   bands: z.record(pathSkillSchema, bandSchema.nullable()), // latest band per skill; null = no result yet
   overall: bandSchema.nullable(), // null until all four skills have a result
   generatedAt: z.iso.datetime({ offset: true }),

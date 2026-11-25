@@ -104,6 +104,7 @@ export async function generateLearningPath(): Promise<void> {
   "use server";
   const profile = await requireProfile();
   if (profile.role !== "student") throw new Error("forbidden");
+  if (!profile.enrolledCourse) throw new Error("locked");
   const [current, { newestAt, bands, overall, history }] = await Promise.all([
     getLearningPath(profile.id),
     loadResults(profile.id),

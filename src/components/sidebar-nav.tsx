@@ -5,6 +5,7 @@ import { Suspense } from "react";
 import { usePathname } from "next/navigation";
 import {
   Bot,
+  CalendarCheck,
   ChartLine,
   ClipboardList,
   FileText,
@@ -24,11 +25,12 @@ type NavItem = { href: string; label: string; icon: LucideIcon };
 // Định nghĩa ở client vì icon là component, không truyền được từ Server Component.
 const NAV: Record<Role, NavItem[]> = {
   student: [
-    { href: "/", label: "Trang chủ", icon: House },
+    { href: "/home", label: "Trang chủ", icon: House },
     { href: "/courses", label: "Khóa học", icon: Library },
     { href: "/mock-test", label: "Luyện đề", icon: NotebookPen },
     { href: "/examiner", label: "Giám khảo AI", icon: Bot },
     { href: "/path", label: "Lộ trình học", icon: Route },
+    { href: "/tasks", label: "Nhiệm vụ hằng ngày", icon: CalendarCheck },
     { href: "/progress", label: "Tiến độ", icon: ChartLine },
     { href: "/academy", label: "Sách & tài liệu", icon: FileText },
   ],
@@ -45,7 +47,7 @@ const NAV: Record<Role, NavItem[]> = {
 function isActive(pathname: string | null, href: string) {
   if (!pathname) return false;
   // Trang gốc của mỗi role chỉ active khi khớp chính xác.
-  if (href === "/" || href === "/parent") return pathname === href;
+  if (href === "/home" || href === "/parent") return pathname === href;
   return pathname === href || pathname.startsWith(href + "/");
 }
 

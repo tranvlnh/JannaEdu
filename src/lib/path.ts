@@ -18,3 +18,15 @@ export function pathTimeline<T extends { weeks: number }>(stages: T[], generated
 
 /** "Tuần 3" or "Tuần 3 – 5". */
 export const weekRange = (first: number, last: number) => (first === last ? `Tuần ${first}` : `Tuần ${first} – ${last}`);
+
+/** Every week of the path in order, each with its stage; only the current week of the current stage is "current". */
+export function pathWeeks<T extends { firstWeek: number; lastWeek: number; status: StageStatus }>(stages: T[], currentWeek: number) {
+  return stages.flatMap((stage) =>
+    Array.from({ length: stage.lastWeek - stage.firstWeek + 1 }, (_, i) => {
+      const week = stage.firstWeek + i;
+      const status: StageStatus =
+        stage.status !== "current" ? stage.status : week < currentWeek ? "done" : week === currentWeek ? "current" : "locked";
+      return { week, stage, status };
+    }),
+  );
+}
