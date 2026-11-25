@@ -136,13 +136,14 @@ export async function startAttempt(input: unknown): Promise<StartAttemptOutput> 
   const test = await admin
     .from("tests")
     .select(
-      "id, skill, kind, title, durationSeconds:duration_seconds, sections, audioPath:audio_path, questions(id, number, section, instruction, prompt, options)",
+      "id, skill, kind, title, durationSeconds:duration_seconds, sections, audioPath:audio_path, isPlacement:is_placement, questions(id, number, section, instruction, prompt, options)",
     )
     .eq("id", testId)
     .order("number", { referencedTable: "questions" })
     .maybeSingle();
   if (test.error) throw new Error(test.error.message);
   if (!test.data) throw new Error("not found");
+  if (!profile.enrolledCourse && !test.data.isPlacement) throw new Error("locked"); // the placement test is free
   const { durationSeconds } = test.data;
 
   const findOpen = () =>

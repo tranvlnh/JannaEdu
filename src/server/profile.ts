@@ -6,10 +6,12 @@ import { redirect } from "next/navigation";
 import { z } from "zod";
 import {
   chooseRoleInput,
+  enrollCourseInput,
   linkCodeSchema,
   profileSchema,
   redeemLinkCodeInput,
   redeemLinkCodeOutput,
+  setCurrentBandInput,
   setGoalBandInput,
   type LinkCode,
   type Profile,
@@ -19,7 +21,8 @@ import { getUser } from "@/server/auth";
 import { createAdminClient } from "@/server/supabase/admin";
 import { createClient } from "@/server/supabase/server";
 
-const COLUMNS = "id, role, fullName:full_name, avatarUrl:avatar_url, goalBand:goal_band";
+const COLUMNS =
+  "id, role, fullName:full_name, avatarUrl:avatar_url, goalBand:goal_band, enrolledCourse:enrolled_course, currentBand:current_band, needsPlacement:needs_placement";
 const CHILD_COOKIE = "janna-child";
 const CODE_ALPHABET = "ABCDEFGHJKMNPQRSTVWXYZ23456789"; // no 0/O, 1/I/L, U
 const CODE_TTL_MS = 15 * 60 * 1000;
@@ -75,6 +78,34 @@ export async function setGoalBand(input: unknown): Promise<void> {
   const profile = await requireProfile();
   if (profile.role !== "student") throw new Error("forbidden");
   const { error } = await createAdminClient().from("profiles").update({ goal_band: goalBand }).eq("id", profile.id);
+  if (error) throw new Error(error.message);
+}
+
+// One-time, at onboarding: a band, or "unknown" to take the placement test first.
+export async function setCurrentBand(input: unknown): Promise<void> {
+  "use server";
+  const { currentBand } = setCurrentBandInput.parse(input);
+  const profile = await requireProfile();
+  if (profile.role !== "student") throw new Error("forbidden");
+  const { error } = await createAdminClient()
+    .from("profiles")
+    .update(currentBand === "unknown" ? { needs_placement: true } : { current_band: currentBand })
+    .eq("id", profile.id)
+    .is("current_band", null)
+    .eq("needs_placement", false); // so a student owing the placement test cannot skip it by picking a band
+  if (error) throw new Error(error.message);
+}
+
+// Demo purchase: no payment, access opens at once. Buying another course switches to it.
+export async function enrollCourse(input: unknown): Promise<void> {
+  "use server";
+  const { courseId } = enrollCourseInput.parse(input);
+  const profile = await requireProfile();
+  if (profile.role !== "student") throw new Error("forbidden");
+  const { error } = await createAdminClient()
+    .from("profiles")
+    .update({ enrolled_course: courseId, enrolled_at: new Date().toISOString() })
+    .eq("id", profile.id);
   if (error) throw new Error(error.message);
 }
 
