@@ -1,9 +1,8 @@
 services:
   janna-edu:
-    build:
-      context: .
-      dockerfile: Dockerfile.demo
-    image: janna-edu-demo
+    build: .
+    image: janna-edu
+    env_file: .env
     ports:
-      - "1234:80"
+      - "1234:3000"
     restart: unless-stopped

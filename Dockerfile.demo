@@ -1,4 +1,0 @@
-FROM nginx:alpine
-COPY public/demo.html /usr/share/nginx/html/index.html
-COPY public/demo.css public/demo.js /usr/share/nginx/html/
-COPY public/ref/ /usr/share/nginx/html/ref/
