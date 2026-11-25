@@ -230,24 +230,39 @@ export type Database = {
       }
       profiles: {
         Row: {
+          avatar_url: string | null
           created_at: string
+          current_band: number | null
+          enrolled_at: string | null
+          enrolled_course: string | null
           full_name: string | null
           goal_band: number | null
           id: string
+          needs_placement: boolean
           role: string | null
         }
         Insert: {
+          avatar_url?: string | null
           created_at?: string
+          current_band?: number | null
+          enrolled_at?: string | null
+          enrolled_course?: string | null
           full_name?: string | null
           goal_band?: number | null
           id: string
+          needs_placement?: boolean
           role?: string | null
         }
         Update: {
+          avatar_url?: string | null
           created_at?: string
+          current_band?: number | null
+          enrolled_at?: string | null
+          enrolled_course?: string | null
           full_name?: string | null
           goal_band?: number | null
           id?: string
+          needs_placement?: boolean
           role?: string | null
         }
         Relationships: []
@@ -294,6 +309,7 @@ export type Database = {
         Row: {
           created_at: string
           id: string
+          is_placement: boolean
           part: number
           prompt: string
           title: string
@@ -301,6 +317,7 @@ export type Database = {
         Insert: {
           created_at?: string
           id?: string
+          is_placement?: boolean
           part: number
           prompt: string
           title: string
@@ -308,6 +325,7 @@ export type Database = {
         Update: {
           created_at?: string
           id?: string
+          is_placement?: boolean
           part?: number
           prompt?: string
           title?: string
@@ -368,6 +386,7 @@ export type Database = {
           created_at: string
           duration_seconds: number | null
           id: string
+          is_placement: boolean
           kind: string
           sections: Json
           skill: string
@@ -378,6 +397,7 @@ export type Database = {
           created_at?: string
           duration_seconds?: number | null
           id?: string
+          is_placement?: boolean
           kind: string
           sections: Json
           skill: string
@@ -388,6 +408,7 @@ export type Database = {
           created_at?: string
           duration_seconds?: number | null
           id?: string
+          is_placement?: boolean
           kind?: string
           sections?: Json
           skill?: string
@@ -399,6 +420,7 @@ export type Database = {
         Row: {
           created_at: string
           id: string
+          is_placement: boolean
           prompt: string
           task: number
           title: string
@@ -406,6 +428,7 @@ export type Database = {
         Insert: {
           created_at?: string
           id?: string
+          is_placement?: boolean
           prompt: string
           task: number
           title: string
@@ -413,6 +436,7 @@ export type Database = {
         Update: {
           created_at?: string
           id?: string
+          is_placement?: boolean
           prompt?: string
           task?: number
           title?: string
