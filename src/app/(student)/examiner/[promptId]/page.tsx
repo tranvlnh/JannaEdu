@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
-import { notFound, redirect, unstable_rethrow } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { submitSpeakingInput } from "@/contracts/speaking";
 import { homeOf } from "@/server/auth";
 import { getProfile } from "@/server/profile";
@@ -33,7 +33,6 @@ async function Speak({ params }: Pick<PageProps<"/examiner/[promptId]">, "params
     try {
       return await submitSpeaking(input.data);
     } catch (error) {
-      unstable_rethrow(error);
       if (error instanceof Error && error.message === "daily limit reached") {
         return { error: "Bạn đã nộp đủ số bài trong 24 giờ qua. Hãy thử lại sau." };
       }

@@ -109,16 +109,3 @@ export function monthStats(activity: Activity[], m: Month) {
     graded: pair((a) => (a.kind === "writing" || a.kind === "speaking") && a.band !== null),
   };
 }
-
-/** Calendar dates in Vietnam, independent of the server's timezone. */
-export const vietnamDay = (ms: number) => new Date(ms + VN_OFFSET).toISOString().slice(0, 10);
-export const dayStart = (day: string) => Date.parse(day + "T00:00:00+07:00");
-export const shiftDay = (day: string, days: number) => vietnamDay(dayStart(day) + days * DAY);
-
-export function lastSevenDays(now: number) {
-  const today = vietnamDay(now);
-  return Array.from({ length: 7 }, (_, i) => {
-    const day = shiftDay(today, i - 6);
-    return { day, end: Math.min(now, dayStart(shiftDay(day, 1)) - 1) };
-  });
-}

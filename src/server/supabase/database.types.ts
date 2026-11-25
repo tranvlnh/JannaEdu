@@ -44,7 +44,6 @@ export type Database = {
           accepted: string[]
           question_id: string
         }
-        ComputedFields: never
         Insert: {
           accepted: string[]
           question_id: string
@@ -70,7 +69,6 @@ export type Database = {
           flagged: boolean
           question_id: string
         }
-        ComputedFields: never
         Insert: {
           answer?: string | null
           attempt_id: string
@@ -104,18 +102,15 @@ export type Database = {
         Row: {
           band: number | null
           id: string
-          placement: boolean
           raw_score: number | null
           started_at: string
           student_id: string
           submitted_at: string | null
           test_id: string
         }
-        ComputedFields: never
         Insert: {
           band?: number | null
           id?: string
-          placement?: boolean
           raw_score?: number | null
           started_at?: string
           student_id: string
@@ -125,7 +120,6 @@ export type Database = {
         Update: {
           band?: number | null
           id?: string
-          placement?: boolean
           raw_score?: number | null
           started_at?: string
           student_id?: string
@@ -149,57 +143,20 @@ export type Database = {
           },
         ]
       }
-      daily_tasks: {
-        Row: {
-          day: string
-          done: boolean
-          href: string | null
-          slot: number
-          student_id: string
-          title: string
-        }
-        ComputedFields: never
-        Insert: {
-          day: string
-          done?: boolean
-          href?: string | null
-          slot: number
-          student_id: string
-          title: string
-        }
-        Update: {
-          day?: string
-          done?: boolean
-          href?: string | null
-          slot?: number
-          student_id?: string
-          title?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "daily_tasks_student_id_fkey"
-            columns: ["student_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
       learning_paths: {
         Row: {
           generated_at: string
-          path: NonNullable<Json>
+          path: Json
           student_id: string
         }
-        ComputedFields: never
         Insert: {
           generated_at?: string
-          path: NonNullable<Json>
+          path: Json
           student_id: string
         }
         Update: {
           generated_at?: string
-          path?: NonNullable<Json>
+          path?: Json
           student_id?: string
         }
         Relationships: [
@@ -218,7 +175,6 @@ export type Database = {
           expires_at: string
           student_id: string
         }
-        ComputedFields: never
         Insert: {
           code: string
           expires_at: string
@@ -245,7 +201,6 @@ export type Database = {
           parent_id: string
           student_id: string
         }
-        ComputedFields: never
         Insert: {
           created_at?: string
           parent_id: string
@@ -275,40 +230,24 @@ export type Database = {
       }
       profiles: {
         Row: {
-          avatar_url: string | null
-          baseline_band: number | null
-          baseline_source: string | null
           created_at: string
           full_name: string | null
           goal_band: number | null
           id: string
-          learning_access: boolean
-          placement_started_at: string | null
           role: string | null
         }
-        ComputedFields: never
         Insert: {
-          avatar_url?: string | null
-          baseline_band?: number | null
-          baseline_source?: string | null
           created_at?: string
           full_name?: string | null
           goal_band?: number | null
           id: string
-          learning_access?: boolean
-          placement_started_at?: string | null
           role?: string | null
         }
         Update: {
-          avatar_url?: string | null
-          baseline_band?: number | null
-          baseline_source?: string | null
           created_at?: string
           full_name?: string | null
           goal_band?: number | null
           id?: string
-          learning_access?: boolean
-          placement_started_at?: string | null
           role?: string | null
         }
         Relationships: []
@@ -323,7 +262,6 @@ export type Database = {
           section: number
           test_id: string
         }
-        ComputedFields: never
         Insert: {
           id?: string
           instruction?: string | null
@@ -360,7 +298,6 @@ export type Database = {
           prompt: string
           title: string
         }
-        ComputedFields: never
         Insert: {
           created_at?: string
           id?: string
@@ -383,19 +320,16 @@ export type Database = {
           audio_type: string
           band: number | null
           id: string
-          placement: boolean
           prompt_id: string
           report: Json | null
           student_id: string
           submitted_at: string
         }
-        ComputedFields: never
         Insert: {
           audio_path: string
           audio_type: string
           band?: number | null
           id?: string
-          placement?: boolean
           prompt_id: string
           report?: Json | null
           student_id: string
@@ -406,7 +340,6 @@ export type Database = {
           audio_type?: string
           band?: number | null
           id?: string
-          placement?: boolean
           prompt_id?: string
           report?: Json | null
           student_id?: string
@@ -436,18 +369,17 @@ export type Database = {
           duration_seconds: number | null
           id: string
           kind: string
-          sections: NonNullable<Json>
+          sections: Json
           skill: string
           title: string
         }
-        ComputedFields: never
         Insert: {
           audio_path?: string | null
           created_at?: string
           duration_seconds?: number | null
           id?: string
           kind: string
-          sections: NonNullable<Json>
+          sections: Json
           skill: string
           title: string
         }
@@ -457,7 +389,7 @@ export type Database = {
           duration_seconds?: number | null
           id?: string
           kind?: string
-          sections?: NonNullable<Json>
+          sections?: Json
           skill?: string
           title?: string
         }
@@ -471,7 +403,6 @@ export type Database = {
           task: number
           title: string
         }
-        ComputedFields: never
         Insert: {
           created_at?: string
           id?: string
@@ -493,18 +424,15 @@ export type Database = {
           band: number | null
           essay: string
           id: string
-          placement: boolean
           prompt_id: string
           report: Json | null
           student_id: string
           submitted_at: string
         }
-        ComputedFields: never
         Insert: {
           band?: number | null
           essay: string
           id?: string
-          placement?: boolean
           prompt_id: string
           report?: Json | null
           student_id: string
@@ -514,7 +442,6 @@ export type Database = {
           band?: number | null
           essay?: string
           id?: string
-          placement?: boolean
           prompt_id?: string
           report?: Json | null
           student_id?: string
@@ -542,10 +469,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      set_learning_access: {
-        Args: { enabled: boolean; student_email: string }
-        Returns: boolean
-      }
+      [_ in never]: never
     }
     Enums: {
       [_ in never]: never

@@ -19,8 +19,8 @@ export type Exercise = {
 // Thứ tự theo mockup (Reading trước Listening).
 const FILTERS = ["all", "reading", "listening", "writing", "speaking"] as const;
 
-export function ExerciseList({ exercises, initialSkill }: { exercises: Exercise[]; initialSkill?: Skill }) {
-  const [filter, setFilter] = useState<Skill | "all">(initialSkill ?? "all");
+export function ExerciseList({ exercises }: { exercises: Exercise[] }) {
+  const [filter, setFilter] = useState<Skill | "all">("all");
   const shown = filter === "all" ? exercises : exercises.filter((e) => e.skill === filter);
 
   return (
