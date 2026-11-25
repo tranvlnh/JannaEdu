@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import { redirect } from "next/navigation";
-import { ArrowRight, LogOut, Target } from "lucide-react";
+import { ArrowRight, GraduationCap, Lock, LogOut, Target } from "lucide-react";
 import { GOAL_BANDS, redeemLinkCodeInput } from "@/contracts/profile";
 import { Button, Card } from "@/components/ui";
+import { featuredCourses } from "@/lib/courses";
 import { band } from "@/lib/format";
 import { homeOf, signOut } from "@/server/auth";
 import { createLinkCode, getLinkedProfiles, getProfile, redeemLinkCode, selectChild, setGoalBand } from "@/server/profile";
@@ -44,7 +45,8 @@ async function viewChild(formData: FormData) {
   redirect("/parent");
 }
 
-async function Account() {
+async function Account({ searchParams }: Pick<PageProps<"/account">, "searchParams">) {
+  const locked = (await searchParams).locked !== undefined; // proxy: no linked child has a course yet
   const profile = await getProfile();
   if (!profile) redirect("/login");
   if (!profile.role) redirect(homeOf(null));
@@ -57,6 +59,28 @@ async function Account() {
         <h1 className="text-4xl font-bold">{profile.fullName ?? "Tài khoản"}</h1>
         <p className="mt-2 text-lg">{isStudent ? "Học sinh" : "Phụ huynh"}</p>
       </div>
+
+      {locked && !isStudent && (
+        <p role="alert" className="flex items-center gap-3 rounded-2xl bg-yellow-300/40 p-4 font-medium">
+          <Lock className="size-5 shrink-0" aria-hidden />
+          Con bạn chưa mua khóa học nào. Khi con đã liên kết mua khóa học, bạn sẽ xem được kết quả và lộ trình học của con.
+        </p>
+      )}
+
+      {isStudent && (
+        <Card className="flex flex-wrap items-center gap-4">
+          <h2 className="flex items-center gap-2 text-xl font-bold">
+            <GraduationCap className="size-6 text-brand-ink" aria-hidden />
+            Khóa học
+          </h2>
+          <p className="flex-1">
+            {featuredCourses.find((c) => c.id === profile.enrolledCourse)?.title ?? "Bạn chưa mua khóa học nào."}
+          </p>
+          <Button href="/courses" variant="outline">
+            {profile.enrolledCourse ? "Đổi khóa học" : "Xem khóa học"}
+          </Button>
+        </Card>
+      )}
 
       {isStudent && (
         <Card>
@@ -123,11 +147,11 @@ async function Account() {
   );
 }
 
-export default function AccountPage() {
+export default function AccountPage({ searchParams }: PageProps<"/account">) {
   return (
     <div className="mx-auto flex w-full max-w-4xl flex-col gap-6">
       <Suspense fallback={<p className="text-muted">Đang tải…</p>}>
-        <Account />
+        <Account searchParams={searchParams} />
       </Suspense>
     </div>
   );

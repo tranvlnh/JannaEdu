@@ -70,6 +70,13 @@ export async function submitWriting(input: unknown): Promise<SubmitWritingOutput
   if (profile.role !== "student") throw new Error("forbidden");
   const admin = createAdminClient();
 
+  if (!profile.enrolledCourse) {
+    // Without a course only the placement prompt is free.
+    const prompt = await admin.from("writing_prompts").select("is_placement").eq("id", promptId).maybeSingle();
+    if (prompt.error) throw new Error(prompt.error.message);
+    if (!prompt.data?.is_placement) throw new Error("locked");
+  }
+
   const since = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
   const recent = await admin
     .from("writing_submissions")
