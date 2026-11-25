@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import { featuredCourses } from "@/lib/courses";
-import { openDemoLearning } from "@/server/profile";
 import { CourseGrid, CourseList } from "./course-list";
 
 export const metadata: Metadata = { title: "Khóa học" };
@@ -14,8 +13,8 @@ export default function CoursesPage() {
         <p className="mt-2 text-lg">Chọn khóa học phù hợp với trình độ và mục tiêu band của bạn.</p>
       </div>
       {/* useSearchParams cần Suspense; fallback = danh sách đầy đủ (prerender tĩnh) */}
-      <Suspense fallback={<CourseGrid courses={featuredCourses} purchaseAction={openDemoLearning} />}>
-        <CourseList courses={featuredCourses} purchaseAction={openDemoLearning} />
+      <Suspense fallback={<CourseGrid courses={featuredCourses} />}>
+        <CourseList courses={featuredCourses} />
       </Suspense>
     </div>
   );

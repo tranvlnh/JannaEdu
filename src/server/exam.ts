@@ -1,7 +1,5 @@
 // Exam room API for the UI: list tests, take an attempt, read results.
 // Every write uses the admin client; the server owns the timer and the grading.
-import { redirect } from "next/navigation";
-import { PLACEMENT } from "@/contracts/profile";
 import { z } from "zod";
 import {
   attemptResultSchema,
@@ -19,7 +17,7 @@ import {
   type TestSummary,
 } from "@/contracts/exam";
 import { isCorrect, toBand } from "@/server/grading";
-import { isPlacementWork, requireLearningAccess } from "@/server/profile";
+import { requireProfile } from "@/server/profile";
 import { createAdminClient } from "@/server/supabase/admin";
 import { createClient } from "@/server/supabase/server";
 
@@ -69,7 +67,7 @@ async function loadAttempt(admin: Admin, attemptId: string) {
   const { data, error } = await admin
     .from("attempts")
     .select(
-      "id, testId:test_id, studentId:student_id, placement, startedAt:started_at, submittedAt:submitted_at, rawScore:raw_score, band, test:tests(id, skill, kind, title, durationSeconds:duration_seconds)",
+      "id, testId:test_id, studentId:student_id, startedAt:started_at, submittedAt:submitted_at, rawScore:raw_score, band, test:tests(id, skill, kind, title, durationSeconds:duration_seconds)",
     )
     .eq("id", attemptId)
     .maybeSingle();
@@ -131,8 +129,8 @@ async function buildResult(admin: Admin, attempt: LoadedAttempt): Promise<Attemp
 export async function startAttempt(input: unknown): Promise<StartAttemptOutput> {
   "use server";
   const { testId } = startAttemptInput.parse(input);
-  const profile = await requireLearningAccess();
-  const placement = isPlacementWork(profile, PLACEMENT.some((item) => item.id === testId));
+  const profile = await requireProfile();
+  if (profile.role !== "student") throw new Error("forbidden");
   const admin = createAdminClient();
 
   const test = await admin
@@ -147,35 +145,34 @@ export async function startAttempt(input: unknown): Promise<StartAttemptOutput> 
   if (!test.data) throw new Error("not found");
   const { durationSeconds } = test.data;
 
-  const findAttempt = () => {
-    const query = admin.from("attempts")
-      .select("id, startedAt:started_at, submittedAt:submitted_at")
-      .eq("student_id", profile.id).eq("test_id", testId).eq("placement", placement);
-    return (placement ? query : query.is("submitted_at", null)).maybeSingle();
-  };
+  const findOpen = () =>
+    admin
+      .from("attempts")
+      .select("id, startedAt:started_at")
+      .eq("student_id", profile.id)
+      .eq("test_id", testId)
+      .is("submitted_at", null)
+      .maybeSingle();
 
-  let open = await findAttempt();
+  let open = await findOpen();
   if (open.error) throw new Error(open.error.message);
   let row = open.data;
-  if (row?.submittedAt) redirect(`/mock-test/result/${row.id}`);
   if (row && isPast(deadlineOf(row.startedAt, durationSeconds))) {
     await finalize(admin, { id: row.id, testId, deadline: deadlineOf(row.startedAt, durationSeconds), test: test.data });
-    if (placement) redirect(`/mock-test/result/${row.id}`);
     row = null;
   }
   if (!row) {
     const created = await admin
       .from("attempts")
-      .insert({ student_id: profile.id, test_id: testId, placement })
-      .select("id, startedAt:started_at, submittedAt:submitted_at")
+      .insert({ student_id: profile.id, test_id: testId })
+      .select("id, startedAt:started_at")
       .single();
     row = created.data;
     if (!row) {
       // Double click: the one-in-progress index rejected this insert, so use the attempt that won.
-      open = await findAttempt();
+      open = await findOpen();
       row = open.data;
       if (!row) throw new Error(created.error?.message ?? "could not start attempt");
-      if (row.submittedAt) redirect(`/mock-test/result/${row.id}`);
     }
   }
 
@@ -209,10 +206,9 @@ export async function startAttempt(input: unknown): Promise<StartAttemptOutput> 
 export async function saveAnswers(input: unknown): Promise<SaveAnswersOutput> {
   "use server";
   const { attemptId, answers } = saveAnswersInput.parse(input);
-  const profile = await requireLearningAccess();
+  const profile = await requireProfile();
   const admin = createAdminClient();
   const attempt = await loadOwnAttempt(admin, attemptId, profile.id);
-  isPlacementWork(profile, attempt.placement);
 
   if (attempt.submittedAt) return { locked: true };
   if (isPast(attempt.deadline, SAVE_GRACE_MS)) {
@@ -231,10 +227,9 @@ export async function saveAnswers(input: unknown): Promise<SaveAnswersOutput> {
 export async function submitAttempt(input: unknown): Promise<AttemptResult> {
   "use server";
   const { attemptId } = submitAttemptInput.parse(input);
-  const profile = await requireLearningAccess();
+  const profile = await requireProfile();
   const admin = createAdminClient();
   const attempt = await loadOwnAttempt(admin, attemptId, profile.id);
-  isPlacementWork(profile, attempt.placement);
   if (!attempt.submittedAt) await finalize(admin, attempt);
   return buildResult(admin, (await loadAttempt(admin, attemptId))!);
 }

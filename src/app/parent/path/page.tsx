@@ -30,13 +30,13 @@ async function ChildPath() {
       <div className="flex flex-col gap-6">
         <h1 className="text-4xl font-bold sm:text-5xl">Lộ trình học của con</h1>
         <Card>
-          <p>{name} chưa lập lộ trình học. Con có thể lập lộ trình sau khi thiết lập band đầu vào và mục tiêu.</p>
+          <p>{name} chưa lập lộ trình học. Lộ trình được AI lập sau khi con làm bài thi, bài Writing hoặc Speaking.</p>
         </Card>
       </div>
     );
   }
 
-  const timeline = pathTimeline(path.stages, path.startedAt ?? path.generatedAt, requestTime());
+  const timeline = pathTimeline(path.stages, path.generatedAt, requestTime());
   const pct = Math.round((timeline.currentWeek / timeline.totalWeeks) * 100);
   const current = timeline.stages.find((s) => s.status === "current");
 

@@ -8,17 +8,13 @@ import { Button, Card, Pill } from "@/components/ui";
 import type { Course } from "@/lib/courses";
 
 /** Lọc theo `?q=` (ô tìm kiếm trên Header submit về đây). */
-export function CourseList({ courses, purchaseAction }: { courses: Course[]; purchaseAction: () => Promise<void> }) {
+export function CourseList({ courses }: { courses: Course[] }) {
   const q = (useSearchParams().get("q") ?? "").trim().toLowerCase();
   const shown = q ? courses.filter((c) => `${c.title} ${c.description}`.toLowerCase().includes(q)) : courses;
-  return <CourseGrid courses={shown} query={q} purchaseAction={purchaseAction} />;
+  return <CourseGrid courses={shown} query={q} />;
 }
 
-export function CourseGrid({ courses, query = "", purchaseAction }: {
-  courses: Course[];
-  query?: string;
-  purchaseAction: () => Promise<void>;
-}) {
+export function CourseGrid({ courses, query = "" }: { courses: Course[]; query?: string }) {
   return (
     <>
       {query && (
@@ -47,9 +43,9 @@ export function CourseGrid({ courses, query = "", purchaseAction }: {
                   {c.weeks} tuần
                 </span>
               </p>
-              <form action={purchaseAction}>
-                <Button type="submit" className="w-full" variant="outline">Mua khóa học</Button>
-              </form>
+              <Button href="/path" variant="outline">
+                Xem lộ trình
+              </Button>
             </Card>
           </li>
         ))}

@@ -6,16 +6,6 @@ import { bandSchema } from "@/contracts/writing";
 export const pathSkillSchema = z.enum(["reading", "listening", "writing", "speaking"]);
 export type PathSkill = z.infer<typeof pathSkillSchema>;
 
-const weekDetailSchema = z.object({
-  goal: z.string().describe("Mục tiêu cụ thể của tuần, bằng tiếng Việt"),
-  lessons: z.array(z.object({
-    skill: pathSkillSchema,
-    activity: z.string().describe("Nội dung học và bài thực hành cụ thể, bằng tiếng Việt"),
-    exerciseId: z.uuid().nullable().optional().describe("ID của bài có sẵn nếu khớp nội dung và kỹ năng; nếu không thì null"),
-    completion: z.string().describe("Tiêu chí hoàn thành bài thực hành, bằng tiếng Việt"),
-  })).min(2).max(6),
-});
-
 // What the model returns. Bands are not here: the server reads them from the student's results.
 export const learningPlanSchema = z.object({
   studentComment: z
@@ -36,11 +26,7 @@ export const learningPlanSchema = z.object({
     )
     .min(1)
     .max(5)
-    .describe("Stages in study order, weakest areas first; exactly 14 weeks: lengths 2, 4, 4, 4 in that order"),
-  weekDetails: z.object({
-    week1: weekDetailSchema,
-    week2: weekDetailSchema,
-  }),
+    .describe("Stages in study order, weakest areas first; at most 12 weeks in total"),
   bookAdvice: z
     .array(
       z.object({
@@ -54,10 +40,9 @@ export const learningPlanSchema = z.object({
 export type LearningPlan = z.infer<typeof learningPlanSchema>;
 
 // bookAdvice is optional here only: paths stored before it existed do not have it.
-export const learningPathSchema = learningPlanSchema.partial({ bookAdvice: true, weekDetails: true }).extend({
+export const learningPathSchema = learningPlanSchema.partial({ bookAdvice: true }).extend({
   bands: z.record(pathSkillSchema, bandSchema.nullable()), // latest band per skill; null = no result yet
   overall: bandSchema.nullable(), // null until all four skills have a result
-  startedAt: z.iso.datetime({ offset: true }).optional(),
   generatedAt: z.iso.datetime({ offset: true }),
 });
 export type LearningPath = z.infer<typeof learningPathSchema>;
@@ -68,8 +53,3 @@ export const myLearningPathSchema = z.object({
   canGenerate: z.boolean(),
 });
 export type MyLearningPath = z.infer<typeof myLearningPathSchema>;
-
-export const newLearningPlanSchema = learningPlanSchema.refine(
-  (plan) => plan.stages.map((stage) => stage.weeks).join(",") === "2,4,4,4",
-  { message: "Expected four stages covering weeks 1–2, 3–6, 7–10 and 11–14", path: ["stages"] },
-);

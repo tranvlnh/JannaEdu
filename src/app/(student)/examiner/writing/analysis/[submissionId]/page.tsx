@@ -63,9 +63,9 @@ async function Analysis({ params }: Pick<PageProps<"/examiner/writing/analysis/[
         </p>
       </div>
       {profile?.role === "student" && (
-        <Button href={profile.baselineBand === null ? "/onboarding" : "/examiner"} variant="outline">
+        <Button href="/examiner" variant="outline">
           <ArrowLeft className="size-4" aria-hidden />
-          {profile.baselineBand === null ? "Về bài kiểm tra đầu vào" : "Danh sách đề"}
+          Danh sách đề
         </Button>
       )}
     </div>

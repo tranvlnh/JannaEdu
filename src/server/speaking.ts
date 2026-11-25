@@ -12,8 +12,7 @@ import {
   type SpeakingSubmissionSummary,
   type SubmitSpeakingOutput,
 } from "@/contracts/speaking";
-import { PLACEMENT } from "@/contracts/profile";
-import { isPlacementWork, requireLearningAccess } from "@/server/profile";
+import { requireProfile } from "@/server/profile";
 import { assessSpeaking } from "@/server/speaking-examiner";
 import { createAdminClient } from "@/server/supabase/admin";
 import { createClient } from "@/server/supabase/server";
@@ -68,17 +67,9 @@ async function grade(admin: Admin, submission: { id: string; audio_path: string;
 export async function submitSpeaking(input: unknown): Promise<SubmitSpeakingOutput> {
   "use server";
   const { promptId, audio } = submitSpeakingInput.parse(input);
-  const profile = await requireLearningAccess();
-  const placement = isPlacementWork(profile, promptId === PLACEMENT[3].id);
+  const profile = await requireProfile();
+  if (profile.role !== "student") throw new Error("forbidden");
   const admin = createAdminClient();
-
-  const findPlacement = () => admin.from("speaking_submissions").select("id")
-    .eq("student_id", profile.id).eq("placement", true).maybeSingle();
-  if (placement) {
-    const existing = await findPlacement();
-    if (existing.error) throw new Error(existing.error.message);
-    if (existing.data) return { id: existing.data.id };
-  }
 
   const since = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
   const recent = await admin
@@ -96,15 +87,11 @@ export async function submitSpeaking(input: unknown): Promise<SubmitSpeakingOutp
 
   const created = await admin
     .from("speaking_submissions")
-    .insert({ id, student_id: profile.id, placement, prompt_id: promptId, audio_path: path, audio_type: audio.type })
+    .insert({ id, student_id: profile.id, prompt_id: promptId, audio_path: path, audio_type: audio.type })
     .select("id, audio_path, audio_type, prompt:speaking_prompts(id, part, title, prompt)")
     .single();
   if (created.error) {
     await admin.storage.from(BUCKET).remove([path]); // do not keep a recording nothing points to
-    if (placement && created.error.code === "23505") {
-      const existing = await findPlacement();
-      if (existing.data) return { id: existing.data.id };
-    }
     throw new Error(created.error.message);
   }
 
@@ -120,16 +107,15 @@ export async function submitSpeaking(input: unknown): Promise<SubmitSpeakingOutp
 export async function gradeSpeaking(input: unknown): Promise<void> {
   "use server";
   const { submissionId } = gradeSpeakingInput.parse(input);
-  const profile = await requireLearningAccess();
+  const profile = await requireProfile();
   const admin = createAdminClient();
   const { data, error } = await admin
     .from("speaking_submissions")
-    .select("id, student_id, placement, audio_path, audio_type, report, prompt:speaking_prompts(id, part, title, prompt)")
+    .select("id, student_id, audio_path, audio_type, report, prompt:speaking_prompts(id, part, title, prompt)")
     .eq("id", submissionId)
     .maybeSingle();
   if (error) throw new Error(error.message);
   if (!data || data.student_id !== profile.id) throw new Error("not found");
-  isPlacementWork(profile, data.placement);
   if (data.report) return;
   await grade(admin, data);
 }

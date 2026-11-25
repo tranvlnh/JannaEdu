@@ -10,10 +10,6 @@ export const profileSchema = z.object({
   role: roleSchema.nullable(), // null until the user picks one at onboarding
   fullName: z.string().nullable(),
   avatarUrl: z.url().nullable(), // Google profile picture
-  learningAccess: z.boolean(),
-  baselineBand: bandSchema.nullable(),
-  baselineSource: z.enum(["self", "placement", "previous"]).nullable(),
-  placementStartedAt: z.iso.datetime({ offset: true }).nullable(),
   goalBand: bandSchema.nullable(), // the student's target band; null until they pick one
 });
 export type Profile = z.infer<typeof profileSchema>;
@@ -36,15 +32,3 @@ export const redeemLinkCodeInput = z.object({
 // student is null when the code is wrong or expired.
 export const redeemLinkCodeOutput = z.object({ student: profileSchema.nullable() });
 export type RedeemLinkCodeOutput = z.infer<typeof redeemLinkCodeOutput>;
-
-export const baselineInput = z.discriminatedUnion("mode", [
-  z.object({ mode: z.literal("self"), band: z.string().regex(/^[0-9](?:\.[05])?$/).transform(Number).pipe(bandSchema) }),
-  z.object({ mode: z.literal("placement") }),
-]);
-
-export const PLACEMENT = [
-  { skill: "reading", id: "00000000-0000-4000-8000-000000000011", href: "/mock-test/00000000-0000-4000-8000-000000000011" },
-  { skill: "listening", id: "00000000-0000-4000-8000-000000000021", href: "/mock-test/00000000-0000-4000-8000-000000000021" },
-  { skill: "writing", id: "00000000-0000-4000-8000-000000000111", href: "/examiner/writing/00000000-0000-4000-8000-000000000111" },
-  { skill: "speaking", id: "00000000-0000-4000-8000-000000000213", href: "/examiner/00000000-0000-4000-8000-000000000213" },
-] as const;
