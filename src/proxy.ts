@@ -44,8 +44,8 @@ export async function proxy(request: NextRequest) {
   // Default-deny for anonymous users: new pages need login unless listed in src/lib/access.ts.
   const target = accessRedirect(request.nextUrl.pathname, facts);
   if (target) {
-    // Relative Location: behind Docker/tunnel request.url is http://0.0.0.0:3000.
-    const redirect = new NextResponse(null, { status: 307, headers: { Location: target } });
+    // Next needs an absolute URL here; it re-relativizes same-host redirects, so 0.0.0.0 behind Docker never leaks.
+    const redirect = NextResponse.redirect(new URL(target, request.url));
     response.cookies.getAll().forEach((c) => redirect.cookies.set(c)); // keep a session refreshed above
     return redirect;
   }
